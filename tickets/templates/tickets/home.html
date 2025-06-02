@@ -1,0 +1,158 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}Helpdesk Dashboard{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="display-5 mb-4">Helpdesk Dashboard</h1>
+        <p class="lead">Welcome to the Helpdesk Support System. Submit a ticket to get help with your technical issues.</p>
+    </div>
+</div>
+
+<!-- Ticket Status Cards -->
+<div class="row mb-5">
+    <div class="col-md-3">
+        <div class="card text-white bg-secondary mb-3">
+            <div class="card-header">Open Tickets</div>
+            <div class="card-body">
+                <h1 class="card-title display-4">{{ counts.open }}</h1>
+                <p class="card-text">Tickets waiting for assignment</p>
+                {% if user.is_staff %}
+                <a href="{% url 'manage_tickets' %}?status=open" class="btn btn-light btn-sm">View All</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-header">In Process Tickets</div>
+            <div class="card-body">
+                <h1 class="card-title display-4">{{ counts.in_process }}</h1>
+                <p class="card-text">Tickets currently being worked on</p>
+                {% if user.is_staff %}
+                <a href="{% url 'manage_tickets' %}?status=in_process" class="btn btn-light btn-sm">View All</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-header">Closed Tickets</div>
+            <div class="card-body">
+                <h1 class="card-title display-4">{{ counts.closed }}</h1>
+                <p class="card-text">Tickets that have been resolved</p>
+                {% if user.is_staff %}
+                <a href="{% url 'manage_tickets' %}?status=closed" class="btn btn-light btn-sm">View All</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-dark mb-3">
+            <div class="card-header">Total Tickets</div>
+            <div class="card-body">
+                <h1 class="card-title display-4">{{ counts.total }}</h1>
+                <p class="card-text">Total tickets in the system</p>
+                {% if user.is_staff %}
+                <a href="{% url 'manage_tickets' %}" class="btn btn-light btn-sm">View All</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-5">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'create_ticket' %}" class="btn btn-primary">
+                        <i class="fas fa-plus-circle me-2"></i> Submit New Ticket
+                    </a>
+                    <a href="{% url 'check_ticket' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-search me-2"></i> Check Ticket Status
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Response Time Guidelines</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Normal Priority
+                        <span class="badge bg-info rounded-pill">48 hours</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Priority
+                        <span class="badge bg-warning rounded-pill">24 hours</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Urgent
+                        <span class="badge bg-danger rounded-pill">8 hours</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Tickets -->
+{% if recent_tickets %}
+<div class="row">
+    <div class="col-12">
+        <h3 class="mb-4">Recent Tickets</h3>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Subject</th>
+                        <th>Requester</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticket in recent_tickets %}
+                    <tr class="priority-{{ ticket.priority }} status-{{ ticket.status }}">
+                        <td>{{ ticket.ticket_id|truncatechars:8 }}</td>
+                        <td>{{ ticket.subject|truncatechars:30 }}</td>
+                        <td>{{ ticket.requester_name }}</td>
+                        <td>
+                            <span class="badge bg-{{ ticket.get_priority_color }}">
+                                {{ ticket.get_priority_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-{{ ticket.get_status_color }}">
+                                {{ ticket.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ ticket.created_at|date:"M d, Y" }}</td>
+                        <td>
+                            <a href="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

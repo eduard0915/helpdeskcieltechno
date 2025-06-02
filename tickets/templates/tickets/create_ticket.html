@@ -1,0 +1,122 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}Submit a Ticket{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="display-5 mb-4">Submit a Support Ticket</h1>
+        <p class="lead">Fill out the form below to submit a new support ticket. We'll respond according to the priority level you select.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Ticket Information</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.subject.id_for_label }}" class="form-label">Subject</label>
+                        {{ form.subject }}
+                        {% if form.subject.errors %}
+                            <div class="text-danger">{{ form.subject.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="text-danger">{{ form.description.errors }}</div>
+                        {% endif %}
+                        <div class="form-text">Please provide as much detail as possible about your issue.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.priority.id_for_label }}" class="form-label">Priority</label>
+                        {{ form.priority }}
+                        {% if form.priority.errors %}
+                            <div class="text-danger">{{ form.priority.errors }}</div>
+                        {% endif %}
+                        <div class="form-text">
+                            <ul class="mb-0">
+                                <li>Normal: Response within 48 hours</li>
+                                <li>Priority: Response within 24 hours</li>
+                                <li>Urgent: Response within 8 hours</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <h5 class="mb-3">Your Contact Information</h5>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.requester_name.id_for_label }}" class="form-label">Your Name</label>
+                        {{ form.requester_name }}
+                        {% if form.requester_name.errors %}
+                            <div class="text-danger">{{ form.requester_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.requester_email.id_for_label }}" class="form-label">Your Email</label>
+                        {{ form.requester_email }}
+                        {% if form.requester_email.errors %}
+                            <div class="text-danger">{{ form.requester_email.errors }}</div>
+                        {% endif %}
+                        <div class="form-text">We'll send you a confirmation email with your ticket number.</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i> Submit Ticket
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Response Time Guidelines</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Normal Priority
+                        <span class="badge bg-info rounded-pill">48 hours</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Priority
+                        <span class="badge bg-warning rounded-pill">24 hours</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Urgent
+                        <span class="badge bg-danger rounded-pill">8 hours</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">Already Submitted a Ticket?</h5>
+            </div>
+            <div class="card-body">
+                <p>If you've already submitted a ticket and want to check its status, you can use our ticket lookup tool.</p>
+                <a href="{% url 'check_ticket' %}" class="btn btn-outline-secondary w-100">
+                    <i class="fas fa-search me-2"></i> Check Ticket Status
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

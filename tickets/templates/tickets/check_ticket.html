@@ -1,0 +1,61 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}Check Ticket Status{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="display-5 mb-4">Check Ticket Status</h1>
+        <p class="lead">Enter your ticket ID and email address to check the status of your support request.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">Ticket Lookup</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="ticket_id" class="form-label">Ticket ID</label>
+                        <input type="text" class="form-control" id="ticket_id" name="ticket_id" required>
+                        <div class="form-text">Enter the ticket ID you received in your confirmation email.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                        <div class="form-text">Enter the email address you used when submitting the ticket.</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search me-2"></i> Find My Ticket
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Don't Have Your Ticket ID?</h5>
+            </div>
+            <div class="card-body">
+                <p>If you've lost your ticket ID, please check your email for a confirmation message from our support system.</p>
+                <p>The subject line will be "Helpdesk Ticket # Received" and will contain your ticket ID.</p>
+                <p>If you can't find the email, you can submit a new ticket and reference your previous issue.</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'create_ticket' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-plus-circle me-2"></i> Submit New Ticket
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

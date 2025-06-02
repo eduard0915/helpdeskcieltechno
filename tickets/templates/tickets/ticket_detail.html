@@ -1,0 +1,198 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}Ticket #{{ ticket.ticket_id|truncatechars:8 }}{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                {% if user.is_staff %}
+                <li class="breadcrumb-item"><a href="{% url 'manage_tickets' %}">Manage Tickets</a></li>
+                {% endif %}
+                <li class="breadcrumb-item active">Ticket #{{ ticket.ticket_id|truncatechars:8 }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="card mb-4 priority-{{ ticket.priority }} status-{{ ticket.status }}">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <span class="badge bg-{{ ticket.get_priority_color }} me-2">{{ ticket.get_priority_display }}</span>
+                    <span class="badge bg-{{ ticket.get_status_color }} me-2">{{ ticket.get_status_display }}</span>
+                    Ticket #{{ ticket.ticket_id|truncatechars:8 }}
+                </h5>
+                <small class="text-muted">Created: {{ ticket.created_at|date:"M d, Y H:i" }}</small>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">{{ ticket.subject }}</h4>
+                <p class="card-text">
+                    <strong>From:</strong> {{ ticket.requester_name }} ({{ ticket.requester_email }})
+                </p>
+                
+                <div class="card mb-3">
+                    <div class="card-body bg-light">
+                        <p class="card-text">{{ ticket.description|linebreaks }}</p>
+                    </div>
+                </div>
+                
+                {% if ticket.assigned_to %}
+                <p class="card-text">
+                    <strong>Assigned to:</strong> {{ ticket.assigned_to.get_full_name|default:ticket.assigned_to.username }}
+                </p>
+                {% endif %}
+                
+                {% if ticket.status == 'closed' and ticket.resolution_time %}
+                <p class="card-text">
+                    <strong>Resolution Time:</strong> {{ ticket.resolution_time }}
+                </p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Comments Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Comments ({{ comments|length }})</h5>
+            </div>
+            <div class="card-body">
+                {% if comments %}
+                    {% for comment in comments %}
+                    <div class="mb-3 p-3 {% if comment.author %}bg-light{% else %}bg-white{% endif %} border rounded">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong>{{ comment.author.get_full_name|default:comment.author.username|default:comment.author_name }}</strong>
+                            <small class="text-muted">{{ comment.created_at|date:"M d, Y H:i" }}</small>
+                        </div>
+                        <p class="mb-0">{{ comment.content|linebreaks }}</p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">No comments yet.</p>
+                {% endif %}
+                
+                <!-- Comment Form -->
+                <form method="post" class="mt-4">
+                    {% csrf_token %}
+                    <input type="hidden" name="comment_submit" value="1">
+                    <div class="mb-3">
+                        <label for="{{ comment_form.content.id_for_label }}" class="form-label">Add a Comment</label>
+                        {{ comment_form.content }}
+                        {% if comment_form.content.errors %}
+                            <div class="text-danger">{{ comment_form.content.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-comment me-2"></i> Add Comment
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <!-- Ticket Status Card -->
+        <div class="card mb-4">
+            <div class="card-header bg-{{ ticket.get_status_color }} text-white">
+                <h5 class="mb-0">Ticket Status</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Status
+                        <span class="badge bg-{{ ticket.get_status_color }}">{{ ticket.get_status_display }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Priority
+                        <span class="badge bg-{{ ticket.get_priority_color }}">{{ ticket.get_priority_display }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Created
+                        <span>{{ ticket.created_at|date:"M d, Y H:i" }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Last Updated
+                        <span>{{ ticket.updated_at|date:"M d, Y H:i" }}</span>
+                    </li>
+                    {% if ticket.closed_at %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Closed
+                        <span>{{ ticket.closed_at|date:"M d, Y H:i" }}</span>
+                    </li>
+                    {% endif %}
+                    {% if ticket.assigned_to %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Assigned To
+                        <span>{{ ticket.assigned_to.get_full_name|default:ticket.assigned_to.username }}</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Staff Actions -->
+        {% if user.is_authenticated and user.is_staff %}
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Staff Actions</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="update_submit" value="1">
+                    
+                    <div class="mb-3">
+                        <label for="{{ update_form.status.id_for_label }}" class="form-label">Update Status</label>
+                        {{ update_form.status }}
+                        {% if update_form.status.errors %}
+                            <div class="text-danger">{{ update_form.status.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ update_form.priority.id_for_label }}" class="form-label">Update Priority</label>
+                        {{ update_form.priority }}
+                        {% if update_form.priority.errors %}
+                            <div class="text-danger">{{ update_form.priority.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ update_form.assigned_to.id_for_label }}" class="form-label">Assign To</label>
+                        {{ update_form.assigned_to }}
+                        {% if update_form.assigned_to.errors %}
+                            <div class="text-danger">{{ update_form.assigned_to.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i> Update Ticket
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Response Time Info -->
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Response Time</h5>
+            </div>
+            <div class="card-body">
+                <p>This ticket requires a response within:</p>
+                <h3 class="text-center">
+                    <span class="badge bg-{{ ticket.get_priority_color }}">
+                        {{ ticket.get_response_time_requirement }} hours
+                    </span>
+                </h3>
+                <p class="text-muted mt-2 mb-0 small">Based on {{ ticket.get_priority_display }} priority level</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

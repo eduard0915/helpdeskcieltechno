@@ -1,0 +1,143 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}My Assigned Tickets{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="display-5 mb-4">My Assigned Tickets</h1>
+        <p class="lead">View and manage tickets assigned to you.</p>
+    </div>
+</div>
+
+<!-- Tickets Table -->
+<div class="row">
+    <div class="col-12">
+        {% if tickets %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Subject</th>
+                        <th>Requester</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticket in tickets %}
+                    <tr class="priority-{{ ticket.priority }} status-{{ ticket.status }}">
+                        <td>{{ ticket.ticket_id|truncatechars:8 }}</td>
+                        <td>{{ ticket.subject|truncatechars:30 }}</td>
+                        <td>{{ ticket.requester_name }}</td>
+                        <td>
+                            <span class="badge bg-{{ ticket.get_priority_color }}">
+                                {{ ticket.get_priority_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-{{ ticket.get_status_color }}">
+                                {{ ticket.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ ticket.created_at|date:"M d, Y" }}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                                {% if ticket.status != 'closed' %}
+                                <form method="post" action="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="update_submit" value="1">
+                                    <input type="hidden" name="status" value="in_process">
+                                    <input type="hidden" name="priority" value="{{ ticket.priority }}">
+                                    <input type="hidden" name="assigned_to" value="{{ user.id }}">
+                                    {% if ticket.status == 'open' %}
+                                    <button type="submit" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-play"></i> Start Working
+                                    </button>
+                                    {% endif %}
+                                </form>
+                                
+                                <form method="post" action="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="update_submit" value="1">
+                                    <input type="hidden" name="status" value="closed">
+                                    <input type="hidden" name="priority" value="{{ ticket.priority }}">
+                                    <input type="hidden" name="assigned_to" value="{{ user.id }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-check"></i> Close Ticket
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i> You don't have any tickets assigned to you.
+            <a href="{% url 'manage_tickets' %}" class="alert-link">View all tickets</a> to find tickets to work on.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Priority and Status Legend -->
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Priority Legend</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-column gap-2">
+                    <div class="p-2 priority-normal rounded">
+                        <span class="badge bg-info me-2">Normal</span>
+                        Response within 48 hours
+                    </div>
+                    <div class="p-2 priority-priority rounded">
+                        <span class="badge bg-warning me-2">Priority</span>
+                        Response within 24 hours
+                    </div>
+                    <div class="p-2 priority-urgent rounded">
+                        <span class="badge bg-danger me-2">Urgent</span>
+                        Response within 8 hours
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Status Legend</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-column gap-2">
+                    <div class="p-2 status-open rounded">
+                        <span class="badge bg-secondary me-2">Open</span>
+                        Ticket is waiting to be processed
+                    </div>
+                    <div class="p-2 status-in_process rounded">
+                        <span class="badge bg-primary me-2">In Process</span>
+                        Ticket is being worked on
+                    </div>
+                    <div class="p-2 status-closed rounded">
+                        <span class="badge bg-success me-2">Closed</span>
+                        Ticket has been resolved
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
