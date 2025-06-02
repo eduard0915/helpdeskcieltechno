@@ -43,16 +43,17 @@ def create_ticket(request):
         form = TicketForm(request.POST)
         if form.is_valid():
             ticket = form.save()
-
             # Send confirmation email
             send_ticket_confirmation_email(ticket)
-
-            messages.success(request, f'Your ticket has been submitted successfully. Your ticket ID is {ticket.ticket_id}')
+            messages.success(request, f'Su ticket se ha enviado correctamente. Su ID de ticket es {ticket.ticket_id}')
             return redirect('ticket_detail', ticket_id=ticket.ticket_id)
     else:
         form = TicketForm()
-
-    return render(request, 'tickets/create_ticket.html', {'form': form})
+    context = {
+        'form': form,
+        'title': 'Enviar un Ticket',
+    }
+    return render(request, 'tickets/create_ticket.html', context)
 
 def ticket_detail(request, ticket_id):
     """View for displaying ticket details"""
@@ -97,7 +98,7 @@ def ticket_detail(request, ticket_id):
                 if old_status != Ticket.CLOSED and updated_ticket.status == Ticket.CLOSED:
                     send_ticket_closed_email(updated_ticket)
 
-                messages.success(request, 'Ticket has been updated successfully.')
+                messages.success(request, 'El ticket se ha actualizado correctamente.')
                 return redirect('ticket_detail', ticket_id=ticket_id)
         else:
             update_form = TicketUpdateForm(instance=ticket)
@@ -143,7 +144,7 @@ def manage_tickets(request):
 def my_assigned_tickets(request):
     """View for staff to see tickets assigned to them"""
     if not request.user.is_staff:
-        messages.error(request, 'You do not have permission to access this page.')
+        messages.error(request, 'No tienes permiso para acceder a esta página.')
         return redirect('home')
 
     tickets = Ticket.objects.filter(assigned_to=request.user).order_by('-created_at')
@@ -164,7 +165,7 @@ def check_ticket_status(request):
             ticket = Ticket.objects.get(ticket_id=ticket_id, requester_email=email)
             return redirect('ticket_detail', ticket_id=ticket.ticket_id)
         except Ticket.DoesNotExist:
-            messages.error(request, 'No ticket found with that ID and email combination.')
+            messages.error(request, 'No se encontró ningún ticket con esa combinación de ID y correo electrónico.')
 
     return render(request, 'tickets/check_ticket.html')
 
@@ -198,7 +199,7 @@ def send_ticket_confirmation_email(ticket):
 
 def send_ticket_closed_email(ticket):
     """Send notification email when a ticket is closed"""
-    subject = f'Helpdesk Ticket #{ticket.ticket_id} Closed'
+    subject = f'Su Ticket de soporte técnico # {ticket.ticket_id} ha sido Cerrado'
 
     # Build the ticket URL
     ticket_url = reverse('ticket_detail', kwargs={'ticket_id': ticket.ticket_id})

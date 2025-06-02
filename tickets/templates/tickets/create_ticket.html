@@ -1,12 +1,12 @@
 {% extends 'tickets/base.html' %}
 
-{% block title %}Submit a Ticket{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
 <div class="row mb-4">
     <div class="col-12">
-        <h1 class="display-5 mb-4">Submit a Support Ticket</h1>
-        <p class="lead">Fill out the form below to submit a new support ticket. We'll respond according to the priority level you select.</p>
+        <h1 class="display-5 mb-4">Enviar un Ticket de Soporte</h1>
+        <p class="lead">Complete el formulario a continuación para enviar un nuevo ticket de soporte. Le responderemos según la prioridad que seleccione.</p>
     </div>
 </div>
 
@@ -14,14 +14,14 @@
     <div class="col-md-8">
         <div class="card">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Ticket Information</h5>
+                <h5 class="mb-0">Información del Ticket</h5>
             </div>
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
                     
                     <div class="mb-3">
-                        <label for="{{ form.subject.id_for_label }}" class="form-label">Subject</label>
+                        <label for="{{ form.subject.id_for_label }}" class="form-label">Asunto</label>
                         {{ form.subject }}
                         {% if form.subject.errors %}
                             <div class="text-danger">{{ form.subject.errors }}</div>
@@ -29,35 +29,35 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                        <label for="{{ form.description.id_for_label }}" class="form-label">Descripción</label>
                         {{ form.description }}
                         {% if form.description.errors %}
                             <div class="text-danger">{{ form.description.errors }}</div>
                         {% endif %}
-                        <div class="form-text">Please provide as much detail as possible about your issue.</div>
+                        <div class="form-text">Proporcione tantos detalles como sea posible sobre su problema.</div>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="{{ form.priority.id_for_label }}" class="form-label">Priority</label>
+                        <label for="{{ form.priority.id_for_label }}" class="form-label">Prioridad</label>
                         {{ form.priority }}
                         {% if form.priority.errors %}
                             <div class="text-danger">{{ form.priority.errors }}</div>
                         {% endif %}
                         <div class="form-text">
                             <ul class="mb-0">
-                                <li>Normal: Response within 48 hours</li>
-                                <li>Priority: Response within 24 hours</li>
-                                <li>Urgent: Response within 8 hours</li>
+                                <li>Normal: Respuesta en 48 horas</li>
+                                <li>Prioritario: Respuesta en 24 horas</li>
+                                <li>Urgente: Respuesta en 8 horas</li>
                             </ul>
                         </div>
                     </div>
                     
                     <hr class="my-4">
                     
-                    <h5 class="mb-3">Your Contact Information</h5>
+                    <h5 class="mb-3">Su Información de Contacto</h5>
                     
                     <div class="mb-3">
-                        <label for="{{ form.requester_name.id_for_label }}" class="form-label">Your Name</label>
+                        <label for="{{ form.requester_name.id_for_label }}" class="form-label">Nombre Completo</label>
                         {{ form.requester_name }}
                         {% if form.requester_name.errors %}
                             <div class="text-danger">{{ form.requester_name.errors }}</div>
@@ -65,17 +65,17 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label for="{{ form.requester_email.id_for_label }}" class="form-label">Your Email</label>
+                        <label for="{{ form.requester_email.id_for_label }}" class="form-label">Email</label>
                         {{ form.requester_email }}
                         {% if form.requester_email.errors %}
                             <div class="text-danger">{{ form.requester_email.errors }}</div>
                         {% endif %}
-                        <div class="form-text">We'll send you a confirmation email with your ticket number.</div>
+                        <div class="form-text">Le enviaremos un correo electrónico de confirmación con su número de ticket.</div>
                     </div>
                     
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-paper-plane me-2"></i> Submit Ticket
+                            <i class="fas fa-paper-plane me-2"></i> Enviar Ticket
                         </button>
                     </div>
                 </form>
@@ -86,21 +86,21 @@
     <div class="col-md-4">
         <div class="card mb-4">
             <div class="card-header bg-info text-white">
-                <h5 class="mb-0">Response Time Guidelines</h5>
+                <h5 class="mb-0">Pautas de Tiempo de Respuesta</h5>
             </div>
             <div class="card-body">
                 <ul class="list-group">
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Normal Priority
-                        <span class="badge bg-info rounded-pill">48 hours</span>
+                        Prioridad Normal
+                        <span class="badge bg-info rounded-pill">48 Horas</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Priority
-                        <span class="badge bg-warning rounded-pill">24 hours</span>
+                        Prioritario
+                        <span class="badge bg-warning rounded-pill">24 Horas</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Urgent
-                        <span class="badge bg-danger rounded-pill">8 hours</span>
+                        Urgente
+                        <span class="badge bg-danger rounded-pill">8 Horas</span>
                     </li>
                 </ul>
             </div>
@@ -108,12 +108,12 @@
         
         <div class="card">
             <div class="card-header bg-secondary text-white">
-                <h5 class="mb-0">Already Submitted a Ticket?</h5>
+                <h5 class="mb-0">¿Ya enviaste un ticket?</h5>
             </div>
             <div class="card-body">
-                <p>If you've already submitted a ticket and want to check its status, you can use our ticket lookup tool.</p>
+                <p>Si ya ha enviado un ticket y desea comprobar su estado, puede utilizar nuestra herramienta de búsqueda de tickets.</p>
                 <a href="{% url 'check_ticket' %}" class="btn btn-outline-secondary w-100">
-                    <i class="fas fa-search me-2"></i> Check Ticket Status
+                    <i class="fas fa-search me-2"></i> Comprobar el Estado del Ticket
                 </a>
             </div>
         </div>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ticket Confirmation</title>
+    <title>Ticket Confirmado</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,6 +13,7 @@
             margin: 0 auto;
             padding: 20px;
         }
+
         .header {
             background-color: #0d6efd;
             color: white;
@@ -20,18 +21,21 @@
             text-align: center;
             border-radius: 5px 5px 0 0;
         }
+
         .content {
             padding: 20px;
             border: 1px solid #ddd;
             border-top: none;
             border-radius: 0 0 5px 5px;
         }
+
         .ticket-id {
             font-size: 24px;
             font-weight: bold;
             color: #0d6efd;
             margin: 20px 0;
         }
+
         .priority {
             display: inline-block;
             padding: 5px 10px;
@@ -39,24 +43,29 @@
             font-weight: bold;
             margin-bottom: 10px;
         }
+
         .priority-normal {
             background-color: #cfe2ff;
             color: #0d6efd;
         }
+
         .priority-priority {
             background-color: #fff3cd;
             color: #ffc107;
         }
+
         .priority-urgent {
             background-color: #f8d7da;
             color: #dc3545;
         }
+
         .details {
             background-color: #f8f9fa;
             padding: 15px;
             border-radius: 5px;
             margin: 20px 0;
         }
+
         .button {
             display: inline-block;
             background-color: #0d6efd;
@@ -66,6 +75,7 @@
             border-radius: 5px;
             margin-top: 20px;
         }
+
         .footer {
             margin-top: 30px;
             font-size: 12px;
@@ -75,45 +85,48 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Helpdesk Ticket Confirmation</h1>
+<div class="header">
+    <h1>Helpdesk Ticket Confirmado</h1>
+</div>
+<div class="content">
+    <p>Dear {{ ticket.requester_name }},</p>
+
+    <p>Gracias por enviar una solicitud de soporte. Hemos recibido su solicitud y le responderemos según su
+        prioridad.</p>
+
+    <div class="ticket-id">
+        Ticket #{{ ticket.ticket_id }}
     </div>
-    <div class="content">
-        <p>Dear {{ ticket.requester_name }},</p>
-        
-        <p>Thank you for submitting a support ticket. We have received your request and will respond according to the priority level.</p>
-        
-        <div class="ticket-id">
-            Ticket #{{ ticket.ticket_id }}
-        </div>
-        
-        <div class="priority priority-{{ ticket.priority }}">
-            {{ ticket.get_priority_display }}
-        </div>
-        
-        <p>Expected response time: <strong>{{ ticket.get_response_time_requirement }} hours</strong></p>
-        
-        <div class="details">
-            <h3>Ticket Details:</h3>
-            <p><strong>Subject:</strong> {{ ticket.subject }}</p>
-            <p><strong>Description:</strong> {{ ticket.description|linebreaks }}</p>
-            <p><strong>Submitted:</strong> {{ ticket.created_at|date:"F j, Y, g:i a" }}</p>
-        </div>
-        
-        <p>You can check the status of your ticket at any time by visiting the link below or by using the ticket ID and your email address on our website.</p>
-        
-        <a href="{{ ticket_url }}" class="button">View Ticket Status</a>
-        
-        <p>If you have any additional information to add to this ticket, you can reply to this email or add a comment through the ticket page.</p>
-        
-        <p>Thank you for your patience.</p>
-        
-        <p>Best regards,<br>
-        The Helpdesk Support Team</p>
+
+    <div class="priority priority-{{ ticket.priority }}">
+        {{ ticket.get_priority_display }}
     </div>
-    <div class="footer">
-        <p>This is an automated message. Please do not reply directly to this email.</p>
-        <p>&copy; {% now "Y" %} Helpdesk Support System. All rights reserved.</p>
+
+    <p>Expected response time: <strong>{{ ticket.get_response_time_requirement }} hours</strong></p>
+
+    <div class="details">
+        <h3>Ticket Details:</h3>
+        <p><strong>Subject:</strong> {{ ticket.subject }}</p>
+        <p><strong>Description:</strong> {{ ticket.description|linebreaks }}</p>
+        <p><strong>Submitted:</strong> {{ ticket.created_at|date:"F j, Y, g:i a" }}</p>
     </div>
+
+    <p>Puede verificar el estado de su ticket en cualquier momento visitando el enlace a continuación o utilizando el ID
+        del ticket y su dirección de correo electrónico en nuestro sitio web.</p>
+
+    <a href="{{ ticket_url }}" class="button">Ver estado de su Ticket</a>
+
+    <p>Si tiene información adicional para agregar a este ticket, puede responder a este correo electrónico o agregar un
+        comentario a través de la página del ticket.</p>
+
+    <p>Gracias por su paciencia.</p>
+
+    <p>Atentamente,<br>
+        Equipo de Soporte Helpdesk de CielTechno SAS</p>
+</div>
+<div class="footer">
+    <p>Este es un mensaje automático. Por favor, no responda directamente a este correo electrónico.</p>
+    <p>&copy; {% now "Y" %} Sistema de Soporte Helpdesk de CielTechno SAS. All rights reserved.</p>
+</div>
 </body>
 </html>
