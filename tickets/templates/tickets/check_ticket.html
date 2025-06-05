@@ -1,12 +1,13 @@
 {% extends 'tickets/base.html' %}
 
-{% block title %}Check Ticket Status{% endblock %}
+{% block title %}Comprobar el Estado del Ticket{% endblock %}
 
 {% block content %}
 <div class="row mb-4">
     <div class="col-12">
-        <h1 class="display-5 mb-4">Check Ticket Status</h1>
-        <p class="lead">Enter your ticket ID and email address to check the status of your support request.</p>
+        <h1 class="display-5 mb-4">Comprobar el Estado del Ticket</h1>
+        <p class="lead">Ingrese su ID de ticket y dirección de correo electrónico para verificar el estado de su
+            solicitud de soporte.</p>
     </div>
 </div>
 
@@ -14,7 +15,7 @@
     <div class="col-md-6 mx-auto">
         <div class="card">
             <div class="card-header bg-secondary text-white">
-                <h5 class="mb-0">Ticket Lookup</h5>
+                <h5 class="mb-0">Búsqueda de Tickets</h5>
             </div>
             <div class="card-body">
                 <form method="post">
@@ -23,18 +24,20 @@
                     <div class="mb-3">
                         <label for="ticket_id" class="form-label">Ticket ID</label>
                         <input type="text" class="form-control" id="ticket_id" name="ticket_id" required>
-                        <div class="form-text">Enter the ticket ID you received in your confirmation email.</div>
+                        <div class="form-text">Introduce el ID del ticket que recibiste en tu correo electrónico de
+                            confirmación.</div>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email Address</label>
+                        <label for="email" class="form-label">Email</label>
                         <input type="email" class="form-control" id="email" name="email" required>
-                        <div class="form-text">Enter the email address you used when submitting the ticket.</div>
+                        <div class="form-text">Introduzca la dirección de correo electrónico que utilizó al enviar
+                            el ticket.</div>
                     </div>
                     
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-search me-2"></i> Find My Ticket
+                            <i class="fas fa-search me-2"></i> Encontrar mi Ticket
                         </button>
                     </div>
                 </form>
@@ -43,15 +46,17 @@
         
         <div class="card mt-4">
             <div class="card-header bg-info text-white">
-                <h5 class="mb-0">Don't Have Your Ticket ID?</h5>
+                <h5 class="mb-0">¿No tienes el ID de tu Ticket?</h5>
             </div>
             <div class="card-body">
-                <p>If you've lost your ticket ID, please check your email for a confirmation message from our support system.</p>
-                <p>The subject line will be "Helpdesk Ticket # Received" and will contain your ticket ID.</p>
-                <p>If you can't find the email, you can submit a new ticket and reference your previous issue.</p>
+                <p>Si ha perdido el ID de su ticket, revise su correo electrónico para obtener un mensaje de
+                    confirmación de nuestro sistema de soporte.</p>
+                <p>La línea de asunto será "Helpdesk Ticket # Recibido" y contendrá el ID de su ticket.</p>
+                <p>Si no puede encontrar el correo electrónico, puede enviar un nuevo ticket y hacer referencia a su
+                    problema anterior.</p>
                 <div class="d-grid gap-2">
                     <a href="{% url 'create_ticket' %}" class="btn btn-outline-primary">
-                        <i class="fas fa-plus-circle me-2"></i> Submit New Ticket
+                        <i class="fas fa-plus-circle me-2"></i> Envíe un nuevo Ticket
                     </a>
                 </div>
             </div>

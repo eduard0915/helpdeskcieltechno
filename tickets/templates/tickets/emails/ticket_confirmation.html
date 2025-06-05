@@ -102,13 +102,13 @@
         {{ ticket.get_priority_display }}
     </div>
 
-    <p>Expected response time: <strong>{{ ticket.get_response_time_requirement }} hours</strong></p>
+    <p>Tiempo de Respuesta Esperado: <strong>{{ ticket.get_response_time_requirement }} horas</strong></p>
 
     <div class="details">
-        <h3>Ticket Details:</h3>
-        <p><strong>Subject:</strong> {{ ticket.subject }}</p>
-        <p><strong>Description:</strong> {{ ticket.description|linebreaks }}</p>
-        <p><strong>Submitted:</strong> {{ ticket.created_at|date:"F j, Y, g:i a" }}</p>
+        <h3>Detalles del Ticket:</h3>
+        <p><strong>Asunto:</strong> {{ ticket.subject }}</p>
+        <p><strong>Descripciónn:</strong> {{ ticket.description|linebreaks }}</p>
+        <p><strong>Fecha de Envío:</strong> {{ ticket.created_at|date:"F j, Y, g:i a" }}</p>
     </div>
 
     <p>Puede verificar el estado de su ticket en cualquier momento visitando el enlace a continuación o utilizando el ID
