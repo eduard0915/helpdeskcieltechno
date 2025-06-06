@@ -6,7 +6,7 @@
 <div class="row mb-4">
     <div class="col-12">
         <h1 class="display-5 mb-4">Helpdesk Dashboard</h1>
-        <p class="lead">Welcome to the Helpdesk Support System. Submit a ticket to get help with your technical issues.</p>
+        <p class="lead">Bienvenido al sistema de soporte técnico. Envíe un ticket para obtener ayuda con sus problemas técnicos.</p>
     </div>
 </div>
 
@@ -14,36 +14,36 @@
 <div class="row mb-5">
     <div class="col-md-3">
         <div class="card text-white bg-secondary mb-3">
-            <div class="card-header">Open Tickets</div>
+            <div class="card-header">Tickets Abiertos</div>
             <div class="card-body">
                 <h1 class="card-title display-4">{{ counts.open }}</h1>
-                <p class="card-text">Tickets waiting for assignment</p>
+                <p class="card-text">Entradas en espera de asignación</p>
                 {% if user.is_staff %}
-                <a href="{% url 'manage_tickets' %}?status=open" class="btn btn-light btn-sm">View All</a>
+                <a href="{% url 'manage_tickets' %}?status=open" class="btn btn-light btn-sm">Ver</a>
                 {% endif %}
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card text-white bg-primary mb-3">
-            <div class="card-header">In Process Tickets</div>
+            <div class="card-header">Tickets En Proceso</div>
             <div class="card-body">
                 <h1 class="card-title display-4">{{ counts.in_process }}</h1>
-                <p class="card-text">Tickets currently being worked on</p>
+                <p class="card-text">Tickets en que se está trabajando</p>
                 {% if user.is_staff %}
-                <a href="{% url 'manage_tickets' %}?status=in_process" class="btn btn-light btn-sm">View All</a>
+                <a href="{% url 'manage_tickets' %}?status=in_process" class="btn btn-light btn-sm">Ver</a>
                 {% endif %}
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card text-white bg-success mb-3">
-            <div class="card-header">Closed Tickets</div>
+            <div class="card-header">Tickets Cerrados</div>
             <div class="card-body">
                 <h1 class="card-title display-4">{{ counts.closed }}</h1>
-                <p class="card-text">Tickets that have been resolved</p>
+                <p class="card-text">Tickets que han sido resueltos</p>
                 {% if user.is_staff %}
-                <a href="{% url 'manage_tickets' %}?status=closed" class="btn btn-light btn-sm">View All</a>
+                <a href="{% url 'manage_tickets' %}?status=closed" class="btn btn-light btn-sm">Ver</a>
                 {% endif %}
             </div>
         </div>
@@ -53,9 +53,9 @@
             <div class="card-header">Total Tickets</div>
             <div class="card-body">
                 <h1 class="card-title display-4">{{ counts.total }}</h1>
-                <p class="card-text">Total tickets in the system</p>
+                <p class="card-text">Total tickets en el sistema</p>
                 {% if user.is_staff %}
-                <a href="{% url 'manage_tickets' %}" class="btn btn-light btn-sm">View All</a>
+                <a href="{% url 'manage_tickets' %}" class="btn btn-light btn-sm">Ver</a>
                 {% endif %}
             </div>
         </div>
@@ -67,15 +67,15 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Quick Actions</h5>
+                <h5 class="mb-0">Acciones rápidas</h5>
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
                     <a href="{% url 'create_ticket' %}" class="btn btn-primary">
-                        <i class="fas fa-plus-circle me-2"></i> Submit New Ticket
+                        <i class="fas fa-plus-circle me-2"></i> Enviar nuevo Ticket
                     </a>
                     <a href="{% url 'check_ticket' %}" class="btn btn-outline-secondary">
-                        <i class="fas fa-search me-2"></i> Check Ticket Status
+                        <i class="fas fa-search me-2"></i> Checkear estado de Ticket
                     </a>
                 </div>
             </div>
@@ -85,21 +85,21 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-header bg-info text-white">
-                <h5 class="mb-0">Response Time Guidelines</h5>
+                <h5 class="mb-0">Pautas de Tiempo de Respuesta</h5>
             </div>
             <div class="card-body">
                 <ul class="list-group">
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Normal Priority
-                        <span class="badge bg-info rounded-pill">48 hours</span>
+                        Normal
+                        <span class="badge bg-info rounded-pill">48 horas</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Priority
-                        <span class="badge bg-warning rounded-pill">24 hours</span>
+                        Prioritario
+                        <span class="badge bg-warning rounded-pill">24 horas</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Urgent
-                        <span class="badge bg-danger rounded-pill">8 hours</span>
+                        Urgente
+                        <span class="badge bg-danger rounded-pill">8 horas</span>
                     </li>
                 </ul>
             </div>
@@ -111,7 +111,7 @@
 {% if recent_tickets %}
 <div class="row">
     <div class="col-12">
-        <h3 class="mb-4">Recent Tickets</h3>
+        <h3 class="mb-4">Tickets Recientes</h3>
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead class="table-dark">
