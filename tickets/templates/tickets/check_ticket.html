@@ -1,4 +1,4 @@
-{% extends 'tickets/base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Comprobar el Estado del Ticket{% endblock %}
 
@@ -20,21 +20,21 @@
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
-                    
+
                     <div class="mb-3">
                         <label for="ticket_id" class="form-label">Ticket ID</label>
                         <input type="text" class="form-control" id="ticket_id" name="ticket_id" required>
                         <div class="form-text">Introduce el ID del ticket que recibiste en tu correo electrónico de
                             confirmación.</div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
                         <input type="email" class="form-control" id="email" name="email" required>
                         <div class="form-text">Introduzca la dirección de correo electrónico que utilizó al enviar
                             el ticket.</div>
                     </div>
-                    
+
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-search me-2"></i> Encontrar mi Ticket
@@ -43,7 +43,7 @@
                 </form>
             </div>
         </div>
-        
+
         <div class="card mt-4">
             <div class="card-header bg-info text-white">
                 <h5 class="mb-0">¿No tienes el ID de tu Ticket?</h5>

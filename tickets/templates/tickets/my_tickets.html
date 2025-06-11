@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="display-5 mb-4">Mis Tickets</h1>
+        <p class="lead">Aquí puede ver el historial de todos sus tickets y su estado actual.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Historial de Tickets</h5>
+            </div>
+            <div class="card-body">
+                {% if tickets %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Asunto</th>
+                                    <th>Estado</th>
+                                    <th>Prioridad</th>
+                                    <th>Fecha de Creación</th>
+                                    <th>Última Actualización</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ticket in tickets %}
+                                <tr>
+                                    <td>{{ ticket.ticket_id|truncatechars:8 }}</td>
+                                    <td>{{ ticket.subject }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ ticket.get_status_color }}">
+                                            {{ ticket.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ ticket.get_priority_color }}">
+                                            {{ ticket.get_priority_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ ticket.created_at|date:"M d, Y H:i" }}</td>
+                                    <td>{{ ticket.updated_at|date:"M d, Y H:i" }}</td>
+                                    <td>
+                                        <a href="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-eye"></i> Ver
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i> No tiene tickets registrados todavía.
+                    </div>
+                    <a href="{% url 'create_ticket' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i> Crear un Nuevo Ticket
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

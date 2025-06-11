@@ -1,4 +1,4 @@
-{% extends 'tickets/base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}{{ title }}{% endblock %}
 
@@ -17,9 +17,9 @@
                 <h5 class="mb-0">Información del Ticket</h5>
             </div>
             <div class="card-body">
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    
+
                     <div class="mb-3">
                         <label for="{{ form.subject.id_for_label }}" class="form-label">Asunto</label>
                         {{ form.subject }}
@@ -27,7 +27,7 @@
                             <div class="text-danger">{{ form.subject.errors }}</div>
                         {% endif %}
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="{{ form.description.id_for_label }}" class="form-label">Descripción</label>
                         {{ form.description }}
@@ -36,7 +36,16 @@
                         {% endif %}
                         <div class="form-text">Proporcione tantos detalles como sea posible sobre su problema.</div>
                     </div>
-                    
+
+                    <div class="mb-3">
+                        <label for="{{ form.attachment.id_for_label }}" class="form-label">Adjuntar Archivo</label>
+                        {{ form.attachment }}
+                        {% if form.attachment.errors %}
+                            <div class="text-danger">{{ form.attachment.errors }}</div>
+                        {% endif %}
+                        <div class="form-text">Puede adjuntar archivos como fotos, PDFs, documentos, etc. (opcional)</div>
+                    </div>
+
                     <div class="mb-3">
                         <label for="{{ form.priority.id_for_label }}" class="form-label">Prioridad</label>
                         {{ form.priority }}
@@ -51,11 +60,11 @@
                             </ul>
                         </div>
                     </div>
-                    
+
                     <hr class="my-4">
-                    
+
                     <h5 class="mb-3">Su Información de Contacto</h5>
-                    
+
                     <div class="mb-3">
                         <label for="{{ form.requester_name.id_for_label }}" class="form-label">Nombre Completo</label>
                         {{ form.requester_name }}
@@ -63,7 +72,7 @@
                             <div class="text-danger">{{ form.requester_name.errors }}</div>
                         {% endif %}
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="{{ form.requester_email.id_for_label }}" class="form-label">Email</label>
                         {{ form.requester_email }}
@@ -72,7 +81,7 @@
                         {% endif %}
                         <div class="form-text">Le enviaremos un correo electrónico de confirmación con su número de ticket.</div>
                     </div>
-                    
+
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-paper-plane me-2"></i> Enviar Ticket
@@ -82,7 +91,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-4">
         <div class="card mb-4">
             <div class="card-header bg-info text-white">
@@ -105,7 +114,7 @@
                 </ul>
             </div>
         </div>
-        
+
         <div class="card">
             <div class="card-header bg-secondary text-white">
                 <h5 class="mb-0">¿Ya enviaste un ticket?</h5>

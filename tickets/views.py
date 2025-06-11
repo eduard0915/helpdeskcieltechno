@@ -40,7 +40,7 @@ def home(request):
 def create_ticket(request):
     """View for creating a new ticket"""
     if request.method == 'POST':
-        form = TicketForm(request.POST)
+        form = TicketForm(request.POST, request.FILES)
         if form.is_valid():
             ticket = form.save()
             # Send confirmation email
@@ -62,7 +62,7 @@ def ticket_detail(request, ticket_id):
 
     # Comment form
     if request.method == 'POST' and 'comment_submit' in request.POST:
-        comment_form = TicketCommentForm(request.POST)
+        comment_form = TicketCommentForm(request.POST, user=request.user)
         if comment_form.is_valid():
             comment = comment_form.save(commit=False)
             comment.ticket = ticket
@@ -74,11 +74,22 @@ def ticket_detail(request, ticket_id):
             else:
                 comment.author_name = 'Anonymous'
 
+            # Save the comment
             comment.save()
-            messages.success(request, 'Your comment has been added.')
+
+            # If this is a progress update by a staff member, send notification
+            if comment.is_progress_update and request.user.is_staff:
+                try:
+                    send_progress_update_email(ticket, comment)
+                    messages.success(request, 'Progress update added and notification sent to the client.')
+                except Exception as e:
+                    messages.warning(request, f'Progress update added but notification could not be sent: {str(e)}')
+            else:
+                messages.success(request, 'Your comment has been added.')
+
             return redirect('ticket_detail', ticket_id=ticket_id)
     else:
-        comment_form = TicketCommentForm()
+        comment_form = TicketCommentForm(user=request.user)
 
     context = {
         'ticket': ticket,
@@ -169,7 +180,48 @@ def check_ticket_status(request):
 
     return render(request, 'tickets/check_ticket.html')
 
+@login_required
+def my_tickets(request):
+    """View for clients to see their ticket history"""
+    # Get tickets for the current user's email
+    tickets = Ticket.objects.filter(requester_email=request.user.email).order_by('-created_at')
+
+    context = {
+        'tickets': tickets,
+        'title': 'Mis Tickets',
+    }
+
+    return render(request, 'tickets/my_tickets.html', context)
+
 # Email functions
+def send_progress_update_email(ticket, comment):
+    """Send notification email when a progress update is added to a ticket"""
+    subject = f'Actualización en su Ticket #{ticket.ticket_id}'
+
+    # Build the ticket URL
+    ticket_url = reverse('ticket_detail', kwargs={'ticket_id': ticket.ticket_id})
+    absolute_url = f"{settings.SITE_URL}{ticket_url}" if hasattr(settings, 'SITE_URL') else ticket_url
+
+    # Create HTML message
+    html_message = render_to_string('tickets/emails/ticket_update.html', {
+        'ticket': ticket,
+        'comment': comment,
+        'ticket_url': absolute_url,
+    })
+
+    # Create plain text message
+    plain_message = strip_tags(html_message)
+
+    # Send email
+    send_mail(
+        subject,
+        plain_message,
+        settings.DEFAULT_FROM_EMAIL,
+        [ticket.requester_email],
+        html_message=html_message,
+        fail_silently=False,
+    )
+
 def send_ticket_confirmation_email(ticket):
     """Send confirmation email when a ticket is created"""
     subject = f'Helpdesk Ticket #{ticket.ticket_id} Received'

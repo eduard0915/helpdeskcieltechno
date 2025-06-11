@@ -1,4 +1,4 @@
-{% extends 'tickets/base.html' %}
+{% extends 'tickets/../../../../templates/base.html' %}
 
 {% block title %}Login{% endblock %}
 
@@ -19,13 +19,13 @@
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
-                    
+
                     {% if form.errors %}
                     <div class="alert alert-danger">
                         <i class="fas fa-exclamation-circle me-2"></i> Tu nombre de usuario y contraseña no coinciden. Inténtalo de nuevo.
                     </div>
                     {% endif %}
-                    
+
                     {% if next %}
                         {% if user.is_authenticated %}
                         <div class="alert alert-warning">
@@ -37,23 +37,23 @@
                         </div>
                         {% endif %}
                     {% endif %}
-                    
+
                     <div class="mb-3">
                         <label for="id_username" class="form-label">Usuario</label>
                         <input type="text" name="username" class="form-control" id="id_username" required autofocus>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="id_password" class="form-label">Contraseña</label>
                         <input type="password" name="password" class="form-control" id="id_password" required>
                     </div>
-                    
+
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-sign-in-alt me-2"></i> Iniciar Sesión
                         </button>
                     </div>
-                    
+
                     <input type="hidden" name="next" value="{{ next }}">
                 </form>
             </div>
@@ -65,8 +65,11 @@
                 <h5 class="mb-0">Necesita Help?</h5>
             </div>
             <div class="card-body">
-                <p>Si es un usuario que desea enviar un ticket de soporte, no necesita iniciar sesión.</p>
+                <p>Si es un usuario que desea enviar un ticket de soporte, puede registrarse o enviar un ticket sin iniciar sesión.</p>
                 <div class="d-grid gap-2">
+                    <a href="{% url 'register' %}" class="btn btn-outline-success">
+                        <i class="fas fa-user-plus me-2"></i> Registrarse como Cliente
+                    </a>
                     <a href="{% url 'create_ticket' %}" class="btn btn-outline-primary">
                         <i class="fas fa-plus-circle me-2"></i> Enviar un Ticket
                     </a>

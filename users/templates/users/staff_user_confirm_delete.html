@@ -1,0 +1,38 @@
+{% extends 'tickets/../../../templates/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<header class="mb-8">
+    <h2 class="text-4xl font-bold text-slate-700 mb-2">{{ title }}</h2>
+    <p class="text-slate-600 text-lg">Confirme la eliminación del usuario.</p>
+</header>
+
+<div class="bg-white p-8 rounded-xl shadow-lg max-w-3xl mx-auto">
+    <div class="text-center mb-6">
+        <span class="material-icons text-red-500 text-6xl">warning</span>
+        <h3 class="text-2xl font-bold text-gray-800 mt-4">¿Está seguro?</h3>
+        <p class="text-gray-600 mt-2">
+            Está a punto de eliminar al usuario <strong>{{ user.username }}</strong>. Esta acción no se puede deshacer.
+        </p>
+    </div>
+    
+    <div class="bg-gray-50 p-4 rounded-lg mb-6">
+        <h4 class="text-lg font-medium text-gray-700 mb-2">Información del usuario:</h4>
+        <ul class="space-y-2 text-gray-600">
+            <li><strong>Nombre:</strong> {{ user.first_name }} {{ user.last_name }}</li>
+            <li><strong>Email:</strong> {{ user.email }}</li>
+            <li><strong>Es Staff:</strong> {% if user.is_staff %}Sí{% else %}No{% endif %}</li>
+        </ul>
+    </div>
+    
+    <form method="post" class="flex justify-between items-center">
+        {% csrf_token %}
+        <a href="{% url 'staff_user_list' %}" class="text-sky-600 hover:text-sky-800">Cancelar</a>
+        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors shadow-md hover:shadow-lg">
+            <span class="material-icons">delete</span>
+            <span>Eliminar</span>
+        </button>
+    </form>
+</div>
+{% endblock %}

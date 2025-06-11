@@ -6,10 +6,11 @@ class TicketForm(forms.ModelForm):
     """Form for creating a new ticket"""
     class Meta:
         model = Ticket
-        fields = ['subject', 'description', 'priority', 'requester_name', 'requester_email']
+        fields = ['subject', 'description', 'attachment', 'priority', 'requester_name', 'requester_email']
         widgets = {
             'subject': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
+            'attachment': forms.FileInput(attrs={'class': 'form-control'}),
             'priority': forms.Select(attrs={'class': 'form-control'}),
             'requester_name': forms.TextInput(attrs={'class': 'form-control'}),
             'requester_email': forms.EmailInput(attrs={'class': 'form-control'}),
@@ -25,7 +26,7 @@ class TicketUpdateForm(forms.ModelForm):
             'priority': forms.Select(attrs={'class': 'form-control'}),
             'assigned_to': forms.Select(attrs={'class': 'form-control'}),
         }
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Only show staff users as assignees
@@ -36,10 +37,22 @@ class TicketCommentForm(forms.ModelForm):
     """Form for adding comments to a ticket"""
     class Meta:
         model = TicketComment
-        fields = ['content']
+        fields = ['content', 'is_progress_update']
         widgets = {
             'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Add a comment...'}),
+            'is_progress_update': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        # Get the user from kwargs
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        # Only show progress update option to staff users
+        if user and not user.is_staff:
+            self.fields.pop('is_progress_update')
+        else:
+            self.fields['is_progress_update'].label = "Mark as progress update (will notify the client)"
 
 class TicketSearchForm(forms.Form):
     """Form for searching tickets"""

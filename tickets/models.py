@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 import uuid
+import os
 
 class Ticket(models.Model):
     # Priority levels
@@ -26,10 +27,15 @@ class Ticket(models.Model):
         (CLOSED, 'Closed'),
     ]
 
+    def attachment_path(instance, filename):
+        # File will be uploaded to MEDIA_ROOT/tickets/<ticket_id>/<filename>
+        return f'tickets/{instance.ticket_id}/{filename}'
+
     # Ticket fields
-    ticket_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    ticket_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     subject = models.CharField(max_length=200)
     description = models.TextField()
+    attachment = models.FileField(upload_to=attachment_path, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     closed_at = models.DateTimeField(null=True, blank=True)
@@ -91,11 +97,14 @@ class Ticket(models.Model):
 
 class TicketComment(models.Model):
     """Model for comments/updates on tickets"""
+    comment_uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     author_name = models.CharField(max_length=100)  # For non-user commenters
     content = models.TextField()
+    is_progress_update = models.BooleanField(default=False, help_text="Whether this comment is a progress update")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Comment on {self.ticket} by {self.author or self.author_name}"
+        comment_type = "Progress update" if self.is_progress_update else "Comment"
+        return f"{comment_type} on {self.ticket} by {self.author or self.author_name}"

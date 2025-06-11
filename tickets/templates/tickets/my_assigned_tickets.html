@@ -1,4 +1,4 @@
-{% extends 'tickets/base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}My Assigned Tickets{% endblock %}
 
@@ -62,7 +62,7 @@
                                     </button>
                                     {% endif %}
                                 </form>
-                                
+
                                 <form method="post" action="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="d-inline">
                                     {% csrf_token %}
                                     <input type="hidden" name="update_submit" value="1">
@@ -115,7 +115,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-6">
         <div class="card">
             <div class="card-header bg-dark text-white">

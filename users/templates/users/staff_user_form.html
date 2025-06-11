@@ -1,0 +1,101 @@
+{% extends 'tickets/../../../templates/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<header class="mb-8">
+    <h2 class="text-4xl font-bold text-slate-700 mb-2">{{ title }}</h2>
+    <p class="text-slate-600 text-lg">
+        {% if user %}
+        Actualice la información del usuario {{ user.username }}.
+        {% else %}
+        Cree un nuevo usuario con acceso al sistema de soporte técnico.
+        {% endif %}
+    </p>
+</header>
+
+<div class="bg-white p-8 rounded-xl shadow-lg max-w-3xl mx-auto">
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+        
+        {% if form.errors %}
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <span class="material-icons text-red-500">error_outline</span>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-red-800 font-medium">Por favor corrija los errores a continuación:</h3>
+                    <div class="text-red-700">
+                        {{ form.errors }}
+                        {{ profile_form.errors }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Nombre de Usuario</label>
+                {{ form.username }}
+            </div>
+            
+            <div>
+                <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                {{ form.email }}
+            </div>
+            
+            <div>
+                <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                {{ form.first_name }}
+            </div>
+            
+            <div>
+                <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Apellido</label>
+                {{ form.last_name }}
+            </div>
+            
+            <div>
+                <label for="{{ profile_form.phone_number.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                {{ profile_form.phone_number }}
+            </div>
+            
+            <div>
+                <label for="{{ profile_form.company.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Empresa</label>
+                {{ profile_form.company }}
+            </div>
+            
+            <div class="md:col-span-2">
+                <div class="flex items-center">
+                    {{ form.is_staff }}
+                    <label for="{{ form.is_staff.id_for_label }}" class="ml-2 block text-sm font-medium text-gray-700">Es Staff</label>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">Marque esta casilla si el usuario debe tener acceso de administrador.</p>
+            </div>
+            
+            {% if not user %}
+            <div>
+                <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+                {{ form.password1 }}
+                <p class="text-xs text-gray-500 mt-1">{{ form.password1.help_text }}</p>
+            </div>
+            
+            <div>
+                <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Confirmar Contraseña</label>
+                {{ form.password2 }}
+                <p class="text-xs text-gray-500 mt-1">{{ form.password2.help_text }}</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="flex justify-between items-center mt-8">
+            <a href="{% url 'staff_user_list' %}" class="text-sky-600 hover:text-sky-800">Volver a la lista</a>
+            <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors shadow-md hover:shadow-lg">
+                <span class="material-icons">save</span>
+                <span>Guardar</span>
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

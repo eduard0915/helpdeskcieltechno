@@ -111,15 +111,33 @@
 {#</nav>#}
 <nav class="bg-slate-800 text-white p-4 shadow-md">
     <div class="container mx-auto flex justify-between items-center">
-        <h1 class="text-xl font-semibold">Helpdesk CielTechno</h1>
+        <div class="flex items-center">
+            {% if company and company.logo %}
+                <img src="{{ company.logo.url }}" alt="{{ company.name }}" class="h-8 mr-2">
+            {% elif company and company.name %}
+                <h1 class="text-xl font-semibold">{{ company.name }}</h1>
+            {% else %}
+                <h1 class="text-xl font-semibold">Helpdesk System</h1>
+            {% endif %}
+        </div>
         <div class="flex items-center space-x-6">
-            <a class="hover:text-sky-400 transition-colors" href="{% url 'home' %}">Dashboard</a>
-            <a class="hover:text-sky-400 transition-colors" href="{% url 'create_ticket' %}">Enviar Ticket</a>
-            <a class="hover:text-sky-400 transition-colors" href="{% url 'check_ticket' %}">Checkear Estado de
-                Ticket</a>
+{#            <a class="hover:text-sky-400 transition-colors" href="{% url 'home' %}">Dashboard</a>#}
+{#            <a class="hover:text-sky-400 transition-colors" href="{% url 'create_ticket' %}">Enviar Ticket</a>#}
+{#            <a class="hover:text-sky-400 transition-colors" href="{% url 'check_ticket' %}">Checkear Estado de#}
+{#                Ticket</a>#}
+            {% if user.is_authenticated and not user.is_staff %}
+            <a class="hover:text-sky-400 transition-colors" href="{% url 'my_tickets' %}">Mis Tickets</a>
+            {% endif %}
+            {% if user.is_staff %}
             <a class="hover:text-sky-400 transition-colors" href="{% url 'manage_tickets' %}">Gestion de Ticket</a>
             <a class="hover:text-sky-400 transition-colors" href="{% url 'my_assigned_tickets' %}">Mis Tickets
                 Asignados</a>
+            <a class="hover:text-sky-400 transition-colors" href="{% url 'staff_user_list' %}">Gestión de Usuarios</a>
+            <a class="hover:text-sky-400 transition-colors" href="{% url 'company_detail' %}">Gestión de Empresa</a>
+            {% endif %}
+            {% if user.is_superuser %}
+            <a class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors text-sm" href="{% url 'company_create' %}">Crear Empresa</a>
+            {% endif %}
             {% if user.is_authenticated %}
                 <span class="nav-link">Welcome, {{ user.username }}</span>
                 <a class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-md transition-colors text-sm"
@@ -160,19 +178,26 @@
                     <li><a href="{% url 'home' %}" class="text-white">Home</a></li>
                     <li><a href="{% url 'create_ticket' %}" class="text-white">Enviar Ticket</a></li>
                     <li><a href="{% url 'check_ticket' %}" class="text-white">Verificar Estado de Ticket</a></li>
+                    {% if user.is_authenticated and not user.is_staff %}
+                    <li><a href="{% url 'my_tickets' %}" class="text-white">Mis Tickets</a></li>
+                    {% endif %}
                 </ul>
             </div>
             <div class="col-md-3">
                 <h5>Contact</h5>
                 <address>
-                    <i class="fas fa-envelope me-2"></i> soporte@cieltechno.com<br>
-                    <i class="fas fa-phone me-2"></i> +57 3166231887
+                    {% if company and company.email %}
+                        <i class="fas fa-envelope me-2"></i> {{ company.email }}<br>
+                    {% endif %}
+                    {% if company and company.phone %}
+                        <i class="fas fa-phone me-2"></i> {{ company.phone }}
+                    {% endif %}
                 </address>
             </div>
         </div>
         <hr>
         <div class="text-center">
-            <p>&copy; {% now "Y" %} Sistema de Soporte Helpdesk de CielTechno SAS. Todos los derechos reservados.</p>
+            <p>&copy; {% now "Y" %} Sistema de Soporte Helpdesk {% if company and company.name %}de {{ company.name }}{% endif %}. Todos los derechos reservados.</p>
         </div>
     </div>
 </footer>

@@ -6,6 +6,7 @@ class TicketCommentInline(admin.TabularInline):
     model = TicketComment
     extra = 0
     readonly_fields = ('created_at',)
+    fields = ('content', 'author', 'author_name', 'is_progress_update', 'created_at')
 
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
@@ -59,10 +60,22 @@ class TicketAdmin(admin.ModelAdmin):
 
 @admin.register(TicketComment)
 class TicketCommentAdmin(admin.ModelAdmin):
-    list_display = ('ticket', 'author_display', 'created_at')
-    list_filter = ('created_at', 'author')
+    list_display = ('ticket', 'author_display', 'is_progress_update', 'created_at')
+    list_filter = ('created_at', 'author', 'is_progress_update')
     search_fields = ('content', 'author_name', 'ticket__subject')
     readonly_fields = ('created_at',)
+    fieldsets = (
+        ('Comment Information', {
+            'fields': ('ticket', 'content', 'is_progress_update')
+        }),
+        ('Author Information', {
+            'fields': ('author', 'author_name')
+        }),
+        ('Metadata', {
+            'fields': ('created_at',),
+            'classes': ('collapse',)
+        }),
+    )
 
     def author_display(self, obj):
         return obj.author.username if obj.author else obj.author_name

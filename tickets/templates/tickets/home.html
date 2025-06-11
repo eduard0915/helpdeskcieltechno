@@ -1,4 +1,4 @@
-{% extends 'tickets/base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Helpdesk Dashboard{% endblock %}
 
@@ -8,64 +8,6 @@
         <p class="text-slate-600 text-lg">Bienvenido al sistema de soporte técnico. Envíe un ticket para obtener ayuda
             con sus problemas técnicos.</p>
     </header>
-{#<div class="row mb-4">#}
-{#    <div class="col-12">#}
-{#        <h1 class="display-5 mb-4">Helpdesk Dashboard</h1>#}
-{#        <p class="lead">Bienvenido al sistema de soporte técnico. Envíe un ticket para obtener ayuda con sus problemas técnicos.</p>#}
-{#    </div>#}
-{#</div>#}
-
-<!-- Ticket Status Cards -->
-{#<div class="row mb-5">#}
-{#    <div class="col-md-3">#}
-{#        <div class="card text-white bg-secondary mb-3">#}
-{#            <div class="card-header">Tickets Abiertos</div>#}
-{#            <div class="card-body">#}
-{#                <h1 class="card-title display-4">{{ counts.open }}</h1>#}
-{#                <p class="card-text">Entradas en espera de asignación</p>#}
-{#                {% if user.is_staff %}#}
-{#                <a href="{% url 'manage_tickets' %}?status=open" class="btn btn-light btn-sm">Ver</a>#}
-{#                {% endif %}#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{#    <div class="col-md-3">#}
-{#        <div class="card text-white bg-primary mb-3">#}
-{#            <div class="card-header">Tickets En Proceso</div>#}
-{#            <div class="card-body">#}
-{#                <h1 class="card-title display-4">{{ counts.in_process }}</h1>#}
-{#                <p class="card-text">Tickets en que se está trabajando</p>#}
-{#                {% if user.is_staff %}#}
-{#                <a href="{% url 'manage_tickets' %}?status=in_process" class="btn btn-light btn-sm">Ver</a>#}
-{#                {% endif %}#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{#    <div class="col-md-3">#}
-{#        <div class="card text-white bg-success mb-3">#}
-{#            <div class="card-header">Tickets Cerrados</div>#}
-{#            <div class="card-body">#}
-{#                <h1 class="card-title display-4">{{ counts.closed }}</h1>#}
-{#                <p class="card-text">Tickets que han sido resueltos</p>#}
-{#                {% if user.is_staff %}#}
-{#                <a href="{% url 'manage_tickets' %}?status=closed" class="btn btn-light btn-sm">Ver</a>#}
-{#                {% endif %}#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{#    <div class="col-md-3">#}
-{#        <div class="card text-white bg-dark mb-3">#}
-{#            <div class="card-header">Total Tickets</div>#}
-{#            <div class="card-body">#}
-{#                <h1 class="card-title display-4">{{ counts.total }}</h1>#}
-{#                <p class="card-text">Total tickets en el sistema</p>#}
-{#                {% if user.is_staff %}#}
-{#                <a href="{% url 'manage_tickets' %}" class="btn btn-light btn-sm">Ver</a>#}
-{#                {% endif %}#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{#</div>#}
     <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="bg-white p-6 rounded-xl shadow-lg">
             <div class="flex items-center justify-between mb-4">
@@ -114,51 +56,6 @@
     </section>
 
 <!-- Quick Actions -->
-{#<div class="row mb-5">#}
-{#    <div class="col-md-6">#}
-{#        <div class="card">#}
-{#            <div class="card-header bg-primary text-white">#}
-{#                <h5 class="mb-0">Acciones rápidas</h5>#}
-{#            </div>#}
-{#            <div class="card-body">#}
-{#                <div class="d-grid gap-2">#}
-{#                    <a href="{% url 'create_ticket' %}" class="btn btn-primary">#}
-{#                        <i class="fas fa-plus-circle me-2"></i> Enviar nuevo Ticket#}
-{#                    </a>#}
-{#                    <a href="{% url 'check_ticket' %}" class="btn btn-outline-secondary">#}
-{#                        <i class="fas fa-search me-2"></i> Checkear estado de Ticket#}
-{#                    </a>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{#    #}
-{#    <div class="col-md-6">#}
-{#        <div class="card">#}
-{#            <div class="card-header bg-info text-white">#}
-{#                <h5 class="mb-0">Pautas de Tiempo de Respuesta</h5>#}
-{#            </div>#}
-{#            <div class="card-body">#}
-{#                <ul class="list-group">#}
-{#                    <li class="list-group-item d-flex justify-content-between align-items-center">#}
-{#                        Normal#}
-{#                        <span class="badge bg-info rounded-pill">48 horas</span>#}
-{#                    </li>#}
-{#                    <li class="list-group-item d-flex justify-content-between align-items-center">#}
-{#                        Prioritario#}
-{#                        <span class="badge bg-warning rounded-pill">24 horas</span>#}
-{#                    </li>#}
-{#                    <li class="list-group-item d-flex justify-content-between align-items-center">#}
-{#                        Urgente#}
-{#                        <span class="badge bg-danger rounded-pill">8 horas</span>#}
-{#                    </li>#}
-{#                </ul>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{#</div>#}
-
-
     <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="bg-white p-6 rounded-xl shadow-lg">
             <h3 class="text-xl font-semibold text-sky-600 mb-6 pb-3 border-b border-gray-200">Acciones rápidas</h3>
@@ -170,11 +67,6 @@
                 <span class="material-icons">search</span>
                 <span>Checkear estado de Ticket</span>
             </a>
-{#            <div class="relative">#}
-{#                <input class="w-full border border-gray-300 rounded-lg py-3 px-4 pl-10 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition-shadow"#}
-{#                       placeholder="Checkear estado de Ticket" type="text"/>#}
-{#                <span class="material-icons absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">search</span>#}
-{#            </div>#}
         </div>
         <div class="bg-white p-6 rounded-xl shadow-lg">
             <h3 class="text-xl font-semibold text-sky-600 mb-6 pb-3 border-b border-gray-200">Pautas de Tiempo de
