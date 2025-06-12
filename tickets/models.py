@@ -11,9 +11,9 @@ class Ticket(models.Model):
     URGENT = 'urgent'
 
     PRIORITY_CHOICES = [
-        (NORMAL, 'Normal (48 hours)'),
-        (PRIORITY, 'Priority (24 hours)'),
-        (URGENT, 'Urgent (8 hours)'),
+        (NORMAL, 'Normal (48 horas)'),
+        (PRIORITY, 'Prioritario (24 horas)'),
+        (URGENT, 'Urgente (8 horas)'),
     ]
 
     # Status options
@@ -22,9 +22,9 @@ class Ticket(models.Model):
     CLOSED = 'closed'
 
     STATUS_CHOICES = [
-        (OPEN, 'Open'),
-        (IN_PROCESS, 'In Process'),
-        (CLOSED, 'Closed'),
+        (OPEN, 'Abierto'),
+        (IN_PROCESS, 'En Proceso'),
+        (CLOSED, 'Cerrado'),
     ]
 
     def attachment_path(instance, filename):
@@ -102,9 +102,9 @@ class TicketComment(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     author_name = models.CharField(max_length=100)  # For non-user commenters
     content = models.TextField()
-    is_progress_update = models.BooleanField(default=False, help_text="Whether this comment is a progress update")
+    is_progress_update = models.BooleanField(default=False, help_text="Si este comentario es una actualización de progreso")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        comment_type = "Progress update" if self.is_progress_update else "Comment"
+        comment_type = "Actualización del progreso" if self.is_progress_update else "Comentario"
         return f"{comment_type} on {self.ticket} by {self.author or self.author_name}"

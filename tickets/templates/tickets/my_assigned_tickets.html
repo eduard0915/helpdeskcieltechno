@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}My Assigned Tickets{% endblock %}
+{% block title %}Mis Tickets Asignados{% endblock %}
 
 {% block content %}
 <div class="row mb-4">
     <div class="col-12">
-        <h1 class="display-5 mb-4">My Assigned Tickets</h1>
-        <p class="lead">View and manage tickets assigned to you.</p>
+        <h1 class="display-5 mb-4">Mis Tickets Asignados</h1>
+        <p class="lead">Ver y administrar los Tickets que le fueron asignados.</p>
     </div>
 </div>
 
@@ -19,12 +19,12 @@
                 <thead class="table-dark">
                     <tr>
                         <th>ID</th>
-                        <th>Subject</th>
-                        <th>Requester</th>
-                        <th>Priority</th>
-                        <th>Status</th>
-                        <th>Created</th>
-                        <th>Actions</th>
+                        <th>Asunto</th>
+                        <th>Solicitante</th>
+                        <th>Prioridad</th>
+                        <th>Estado</th>
+                        <th>Creado</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,7 +47,7 @@
                         <td>
                             <div class="btn-group" role="group">
                                 <a href="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-eye"></i> View
+                                    <i class="fas fa-eye"></i> Ver
                                 </a>
                                 {% if ticket.status != 'closed' %}
                                 <form method="post" action="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="d-inline">
@@ -58,7 +58,7 @@
                                     <input type="hidden" name="assigned_to" value="{{ user.id }}">
                                     {% if ticket.status == 'open' %}
                                     <button type="submit" class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-play"></i> Start Working
+                                        <i class="fas fa-play"></i> Iniciar Gestión
                                     </button>
                                     {% endif %}
                                 </form>
@@ -70,7 +70,7 @@
                                     <input type="hidden" name="priority" value="{{ ticket.priority }}">
                                     <input type="hidden" name="assigned_to" value="{{ user.id }}">
                                     <button type="submit" class="btn btn-sm btn-outline-success">
-                                        <i class="fas fa-check"></i> Close Ticket
+                                        <i class="fas fa-check"></i> Cerrar Ticket
                                     </button>
                                 </form>
                                 {% endif %}
@@ -83,8 +83,8 @@
         </div>
         {% else %}
         <div class="alert alert-info">
-            <i class="fas fa-info-circle me-2"></i> You don't have any tickets assigned to you.
-            <a href="{% url 'manage_tickets' %}" class="alert-link">View all tickets</a> to find tickets to work on.
+            <i class="fas fa-info-circle me-2"></i> No tienes ningún ticket asignado.
+            <a href="{% url 'manage_tickets' %}" class="alert-link">Ver todos los tickets</a> para encontrar tickets a gestionar.
         </div>
         {% endif %}
     </div>
@@ -95,21 +95,21 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-header bg-dark text-white">
-                <h5 class="mb-0">Priority Legend</h5>
+                <h5 class="mb-0">Prioridad</h5>
             </div>
             <div class="card-body">
                 <div class="d-flex flex-column gap-2">
                     <div class="p-2 priority-normal rounded">
                         <span class="badge bg-info me-2">Normal</span>
-                        Response within 48 hours
+                        Respuesta en 48 horas
                     </div>
                     <div class="p-2 priority-priority rounded">
-                        <span class="badge bg-warning me-2">Priority</span>
-                        Response within 24 hours
+                        <span class="badge bg-warning me-2">Prioritario</span>
+                        Respuesta en 24 horas
                     </div>
                     <div class="p-2 priority-urgent rounded">
-                        <span class="badge bg-danger me-2">Urgent</span>
-                        Response within 8 hours
+                        <span class="badge bg-danger me-2">Urgente</span>
+                        Respuesta en 8 horas
                     </div>
                 </div>
             </div>
@@ -119,21 +119,21 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-header bg-dark text-white">
-                <h5 class="mb-0">Status Legend</h5>
+                <h5 class="mb-0">Estado</h5>
             </div>
             <div class="card-body">
                 <div class="d-flex flex-column gap-2">
                     <div class="p-2 status-open rounded">
-                        <span class="badge bg-secondary me-2">Open</span>
-                        Ticket is waiting to be processed
+                        <span class="badge bg-secondary me-2">Abierto</span>
+                        El ticket está esperando a ser procesado
                     </div>
                     <div class="p-2 status-in_process rounded">
-                        <span class="badge bg-primary me-2">In Process</span>
-                        Ticket is being worked on
+                        <span class="badge bg-primary me-2">En Proceso</span>
+                        Se está trabajando en el ticket
                     </div>
                     <div class="p-2 status-closed rounded">
-                        <span class="badge bg-success me-2">Closed</span>
-                        Ticket has been resolved
+                        <span class="badge bg-success me-2">Cerrad</span>
+                        El ticket ha sido resuelto
                     </div>
                 </div>
             </div>

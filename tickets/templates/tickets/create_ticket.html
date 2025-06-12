@@ -37,52 +37,51 @@
                         <div class="form-text">Proporcione tantos detalles como sea posible sobre su problema.</div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="{{ form.attachment.id_for_label }}" class="form-label">Adjuntar Archivo</label>
-                        {{ form.attachment }}
-                        {% if form.attachment.errors %}
-                            <div class="text-danger">{{ form.attachment.errors }}</div>
-                        {% endif %}
-                        <div class="form-text">Puede adjuntar archivos como fotos, PDFs, documentos, etc. (opcional)</div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="{{ form.priority.id_for_label }}" class="form-label">Prioridad</label>
-                        {{ form.priority }}
-                        {% if form.priority.errors %}
-                            <div class="text-danger">{{ form.priority.errors }}</div>
-                        {% endif %}
-                        <div class="form-text">
-                            <ul class="mb-0">
-                                <li>Normal: Respuesta en 48 horas</li>
-                                <li>Prioritario: Respuesta en 24 horas</li>
-                                <li>Urgente: Respuesta en 8 horas</li>
-                            </ul>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.attachment.id_for_label }}" class="form-label">Adjuntar Archivo</label>
+                            {{ form.attachment }}
+                            {% if form.attachment.errors %}
+                                <div class="text-danger">{{ form.attachment.errors }}</div>
+                            {% endif %}
+                            <div class="form-text">Puede adjuntar archivos como fotos, PDFs, documentos, etc.
+                                (opcional)
+                            </div>
                         </div>
-                    </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.priority.id_for_label }}" class="form-label">Prioridad</label>
+                            {{ form.priority }}
+                            {% if form.priority.errors %}
+                                <div class="text-danger">{{ form.priority.errors }}</div>
+                            {% endif %}
+                            <div class="form-text">Ver Pautas de Tiempo de Respuesta a la derecha.</div>
+                            </div>
+                        </div>
 
                     <hr class="my-4">
 
                     <h5 class="mb-3">Su Información de Contacto</h5>
 
-                    <div class="mb-3">
-                        <label for="{{ form.requester_name.id_for_label }}" class="form-label">Nombre Completo</label>
-                        {{ form.requester_name }}
-                        {% if form.requester_name.errors %}
-                            <div class="text-danger">{{ form.requester_name.errors }}</div>
-                        {% endif %}
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.requester_name.id_for_label }}" class="form-label">Nombre
+                                Completo</label>
+                            {{ form.requester_name }}
+                            {% if form.requester_name.errors %}
+                                <div class="text-danger">{{ form.requester_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.requester_email.id_for_label }}" class="form-label">Email</label>
+                            {{ form.requester_email }}
+                            {% if form.requester_email.errors %}
+                                <div class="text-danger">{{ form.requester_email.errors }}</div>
+                            {% endif %}
+                            <div class="form-text">Le enviaremos un correo electrónico de confirmación con ID de ticket.</div>
+                        </div>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="{{ form.requester_email.id_for_label }}" class="form-label">Email</label>
-                        {{ form.requester_email }}
-                        {% if form.requester_email.errors %}
-                            <div class="text-danger">{{ form.requester_email.errors }}</div>
-                        {% endif %}
-                        <div class="form-text">Le enviaremos un correo electrónico de confirmación con su número de ticket.</div>
-                    </div>
-
-                    <div class="d-grid gap-2">
+{#                    <div class="d-grid gap-2">#}
+                    <div>
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-paper-plane me-2"></i> Enviar Ticket
                         </button>
@@ -100,7 +99,7 @@
             <div class="card-body">
                 <ul class="list-group">
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Prioridad Normal
+                        Normal
                         <span class="badge bg-info rounded-pill">48 Horas</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
