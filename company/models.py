@@ -14,11 +14,11 @@ def company_logo_path(instance, filename):
 class Company(models.Model):
     """Model for storing company information"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=100, verbose_name="Company Name")
-    logo = models.ImageField(upload_to=company_logo_path, null=True, blank=True, verbose_name="Company Logo")
-    email = models.EmailField(max_length=100, null=True, blank=True, verbose_name="Contact Email")
-    phone = models.CharField(max_length=20, null=True, blank=True, verbose_name="Contact Phone")
-    address = models.TextField(null=True, blank=True, verbose_name="Company Address")
+    name = models.CharField(max_length=100, verbose_name="Nombre de la Empresa")
+    logo = models.ImageField(upload_to=company_logo_path, null=True, blank=True, verbose_name="Logo de la Empresa")
+    email = models.EmailField(max_length=100, null=True, blank=True, verbose_name="Email de Contacto")
+    phone = models.CharField(max_length=20, null=True, blank=True, verbose_name="Telefono de Contacto")
+    address = models.TextField(null=True, blank=True, verbose_name="Direccion de la Empresa")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

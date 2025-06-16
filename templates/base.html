@@ -76,25 +76,28 @@
             {% endif %}
         </div>
         <div class="flex items-center space-x-6">
-{#            <a class="hover:text-sky-400 transition-colors" href="{% url 'home' %}">Dashboard</a>#}
-{#            <a class="hover:text-sky-400 transition-colors" href="{% url 'create_ticket' %}">Enviar Ticket</a>#}
-{#            <a class="hover:text-sky-400 transition-colors" href="{% url 'check_ticket' %}">Checkear Estado de#}
-{#                Ticket</a>#}
+            {#            <a class="hover:text-sky-400 transition-colors" href="{% url 'home' %}">Dashboard</a>#}
+            {#            <a class="hover:text-sky-400 transition-colors" href="{% url 'create_ticket' %}">Enviar Ticket</a>#}
+            {#            <a class="hover:text-sky-400 transition-colors" href="{% url 'check_ticket' %}">Checkear Estado de#}
+            {#                Ticket</a>#}
             {% if user.is_authenticated and not user.is_staff %}
-            <a class="hover:text-sky-400 transition-colors" href="{% url 'my_tickets' %}">Mis Tickets</a>
+                <a class="hover:text-sky-400 transition-colors" href="{% url 'my_tickets' %}">Mis Tickets</a>
             {% endif %}
             {% if user.is_staff %}
-            <a class="hover:text-sky-400 transition-colors" href="{% url 'manage_tickets' %}">Gestion de Ticket</a>
-            <a class="hover:text-sky-400 transition-colors" href="{% url 'my_assigned_tickets' %}">Mis Tickets
-                Asignados</a>
-            <a class="hover:text-sky-400 transition-colors" href="{% url 'staff_user_list' %}">Gestión de Usuarios</a>
-            <a class="hover:text-sky-400 transition-colors" href="{% url 'company_detail' %}">Gestión de Empresa</a>
+                <a class="hover:text-sky-400 transition-colors" href="{% url 'dashboard' %}">Dashboard</a>
+                <a class="hover:text-sky-400 transition-colors" href="{% url 'manage_tickets' %}">Gestion de Ticket</a>
+                <a class="hover:text-sky-400 transition-colors" href="{% url 'my_assigned_tickets' %}">Mis Tickets
+                    Asignados</a>
+                <a class="hover:text-sky-400 transition-colors" href="{% url 'staff_user_list' %}">Gestión de
+                    Usuarios</a>
+                <a class="hover:text-sky-400 transition-colors" href="{% url 'company_detail' %}">Gestión de Empresa</a>
             {% endif %}
-            {% if user.is_superuser %}
-            <a class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors text-sm" href="{% url 'company_create' %}">Crear Empresa</a>
+            {% if user.is_superuser and not company %}
+                <a class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors text-sm"
+                   href="{% url 'company_create' %}">Crear Empresa</a>
             {% endif %}
             {% if user.is_authenticated %}
-                <span class="nav-link">Welcome, {{ user.username }}</span>
+                <span class="nav-link">Bienvenido, {{ user.username }}</span>
                 <a class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-md transition-colors text-sm"
                    href="{% url 'logout' %}">Cerrar Sesión</a>
             {% else %}
@@ -134,7 +137,7 @@
                     <li><a href="{% url 'create_ticket' %}" class="text-white">Enviar Ticket</a></li>
                     <li><a href="{% url 'check_ticket' %}" class="text-white">Verificar Estado de Ticket</a></li>
                     {% if user.is_authenticated and not user.is_staff %}
-                    <li><a href="{% url 'my_tickets' %}" class="text-white">Mis Tickets</a></li>
+                        <li><a href="{% url 'my_tickets' %}" class="text-white">Mis Tickets</a></li>
                     {% endif %}
                 </ul>
             </div>
@@ -152,7 +155,8 @@
         </div>
         <hr>
         <div class="text-center">
-            <p>&copy; {% now "Y" %} Sistema de Soporte Helpdesk {% if company and company.name %}de {{ company.name }}{% endif %}. Todos los derechos reservados.</p>
+            <p>&copy; {% now "Y" %} Sistema de Soporte Helpdesk {% if company and company.name %}de
+                {{ company.name }}{% endif %}. Todos los derechos reservados.</p>
         </div>
     </div>
 </footer>
