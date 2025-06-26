@@ -60,7 +60,6 @@ class StaffUserCreationForm(BootstrapFormMixin, UserCreationForm):
             # Update the user profile
             user.profile.is_client = not user.is_staff
             user.profile.save()
-
         return user
 
 class StaffUserUpdateForm(BootstrapFormMixin, forms.ModelForm):
@@ -85,5 +84,4 @@ class StaffUserUpdateForm(BootstrapFormMixin, forms.ModelForm):
             # Update the user profile
             user.profile.is_client = not user.is_staff
             user.profile.save()
-
         return user

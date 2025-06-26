@@ -97,18 +97,18 @@
                 <thead class="table-dark">
                     <tr>
                         <th>ID</th>
-                        <th>Subject</th>
-                        <th>Requester</th>
-                        <th>Priority</th>
-                        <th>Status</th>
-                        <th>Created</th>
-                        <th>Actions</th>
+                        <th>Asunto</th>
+                        <th>Solicitado por</th>
+                        <th>Prioridad</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for ticket in recent_tickets %}
                     <tr class="priority-{{ ticket.priority }} status-{{ ticket.status }}">
-                        <td>{{ ticket.ticket_id|truncatechars:8 }}</td>
+                        <td>{{ ticket.ticket_id }}</td>
                         <td>{{ ticket.subject|truncatechars:30 }}</td>
                         <td>{{ ticket.requester_name }}</td>
                         <td>

@@ -39,7 +39,7 @@ class TicketCommentForm(forms.ModelForm):
         model = TicketComment
         fields = ['content', 'is_progress_update']
         widgets = {
-            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Add a comment...'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Añadir un comentario...'}),
             'is_progress_update': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
@@ -52,13 +52,13 @@ class TicketCommentForm(forms.ModelForm):
         if user and not user.is_staff:
             self.fields.pop('is_progress_update')
         else:
-            self.fields['is_progress_update'].label = "Mark as progress update (will notify the client)"
+            self.fields['is_progress_update'].label = "Marcar como actualización de progreso (notificará al cliente)"
 
 class TicketSearchForm(forms.Form):
     """Form for searching tickets"""
     search = forms.CharField(
         required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Search tickets...'})
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Buscar tickets...'})
     )
     status = forms.ChoiceField(
         required=False,

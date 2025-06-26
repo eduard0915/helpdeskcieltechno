@@ -29,7 +29,7 @@ urlpatterns = [
 
     # Authentication URLs
     path('login/', auth_views.LoginView.as_view(template_name='tickets/auth/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='tickets/auth/logout.html', http_method_names=['get', 'post']), name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='tickets/auth/login.html'), name='logout'),
 ]
 
 # Add static and media file handling in development

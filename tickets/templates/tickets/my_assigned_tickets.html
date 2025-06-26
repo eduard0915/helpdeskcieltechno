@@ -30,7 +30,7 @@
                 <tbody>
                     {% for ticket in tickets %}
                     <tr class="priority-{{ ticket.priority }} status-{{ ticket.status }}">
-                        <td>{{ ticket.ticket_id|truncatechars:8 }}</td>
+                        <td>{{ ticket.ticket_id }}</td>
                         <td>{{ ticket.subject|truncatechars:30 }}</td>
                         <td>{{ ticket.requester_name }}</td>
                         <td>
@@ -132,7 +132,7 @@
                         Se está trabajando en el ticket
                     </div>
                     <div class="p-2 status-closed rounded">
-                        <span class="badge bg-success me-2">Cerrad</span>
+                        <span class="badge bg-success me-2">Cerrado</span>
                         El ticket ha sido resuelto
                     </div>
                 </div>

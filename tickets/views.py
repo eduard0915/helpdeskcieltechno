@@ -1,3 +1,6 @@
+import uuid
+
+from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -57,37 +60,39 @@ def create_ticket(request):
 
 def ticket_detail(request, ticket_id):
     """View for displaying ticket details"""
-    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
-    comments = ticket.comments.order_by('created_at')
+    ticket = Ticket.objects.get(ticket_id=ticket_id)
 
-    # Comment form
+    # Prefetch comments con autor para evitar N+1 queries
+    comments = ticket.comments.select_related('author').order_by('created_at')
+    # comments = TicketComment.objects.filter(ticket=ticket.ticket_id).select_related('author').order_by('created_at')
+
+    # Procesamiento del formulario de comentarios
     if request.method == 'POST' and 'comment_submit' in request.POST:
         comment_form = TicketCommentForm(request.POST, user=request.user)
         if comment_form.is_valid():
             comment = comment_form.save(commit=False)
             comment.ticket = ticket
 
-            # If user is authenticated, associate comment with user
             if request.user.is_authenticated:
                 comment.author = request.user
                 comment.author_name = request.user.get_full_name() or request.user.username
             else:
                 comment.author_name = 'Anonymous'
 
-            # Save the comment
             comment.save()
 
-            # If this is a progress update by a staff member, send notification
             if comment.is_progress_update and request.user.is_staff:
                 try:
                     send_progress_update_email(ticket, comment)
-                    messages.success(request, 'Progress update added and notification sent to the client.')
+                    messages.success(request,
+                                     'Se agregó actualización de progreso y se envió una notificación al cliente.')
                 except Exception as e:
-                    messages.warning(request, f'Progress update added but notification could not be sent: {str(e)}')
+                    messages.warning(request,
+                                     f'Se agregó una actualización de progreso, pero no se pudo enviar la notificación: {str(e)}')
             else:
-                messages.success(request, 'Your comment has been added.')
+                messages.success(request, 'Su comentario ha sido añadido.')
 
-            return redirect('ticket_detail', ticket_id=ticket_id)
+            return redirect('ticket_detail', ticket_id=ticket.ticket_id)
     else:
         comment_form = TicketCommentForm(user=request.user)
 
@@ -97,7 +102,6 @@ def ticket_detail(request, ticket_id):
         'comment_form': comment_form,
     }
 
-    # Add update form for staff
     if request.user.is_authenticated and request.user.is_staff:
         if request.method == 'POST' and 'update_submit' in request.POST:
             update_form = TicketUpdateForm(request.POST, instance=ticket)
@@ -105,12 +109,11 @@ def ticket_detail(request, ticket_id):
                 old_status = ticket.status
                 updated_ticket = update_form.save()
 
-                # If status changed to closed, send notification
                 if old_status != Ticket.CLOSED and updated_ticket.status == Ticket.CLOSED:
                     send_ticket_closed_email(updated_ticket)
 
                 messages.success(request, 'El ticket se ha actualizado correctamente.')
-                return redirect('ticket_detail', ticket_id=ticket_id)
+                return redirect('ticket_detail', ticket_id=ticket.ticket_id)
         else:
             update_form = TicketUpdateForm(instance=ticket)
 
@@ -122,7 +125,7 @@ def ticket_detail(request, ticket_id):
 def manage_tickets(request):
     """View for staff to manage all tickets"""
     if not request.user.is_staff:
-        messages.error(request, 'You do not have permission to access this page.')
+        messages.error(request, 'No tienes permiso para acceder a esta página.')
         return redirect('home')
 
     # Initialize search form

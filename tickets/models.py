@@ -98,7 +98,8 @@ class Ticket(models.Model):
 class TicketComment(models.Model):
     """Model for comments/updates on tickets"""
     comment_uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='comments')
+    ticket = models.ForeignKey(
+        Ticket, on_delete=models.CASCADE, related_name='comments', to_field='ticket_id', db_column='ticket_id')
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     author_name = models.CharField(max_length=100)  # For non-user commenters
     content = models.TextField()
@@ -107,4 +108,4 @@ class TicketComment(models.Model):
 
     def __str__(self):
         comment_type = "Actualización del progreso" if self.is_progress_update else "Comentario"
-        return f"{comment_type} on {self.ticket} by {self.author or self.author_name}"
+        return f"{comment_type} ticket N° {self.ticket} por {self.author or self.author_name}"

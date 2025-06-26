@@ -34,7 +34,7 @@
                             <tbody>
                                 {% for ticket in tickets %}
                                 <tr>
-                                    <td>{{ ticket.ticket_id|truncatechars:8 }}</td>
+                                    <td>{{ ticket.ticket_id }}</td>
                                     <td>{{ ticket.subject }}</td>
                                     <td>
                                         <span class="badge bg-{{ ticket.get_status_color }}">

@@ -41,7 +41,7 @@ def register(request):
     return render(request, 'users/register.html', {
         'form': form,
         'profile_form': profile_form,
-        'title': 'Registro de Usuario'
+        'title': 'Registro de Usuario',
     })
 
 # Staff user management views
@@ -84,7 +84,8 @@ def staff_user_create(request):
     return render(request, 'users/staff_user_form.html', {
         'form': form,
         'profile_form': profile_form,
-        'title': 'Crear Usuario Staff'
+        'title': 'Crear Usuario Staff',
+        'action': 'add'
     })
 
 @login_required
@@ -113,7 +114,8 @@ def staff_user_update(request, pk):
         'form': form,
         'profile_form': profile_form,
         'user': user,
-        'title': 'Actualizar Usuario Staff'
+        'title': 'Actualizar Usuario Staff',
+        'action': 'edit'
     })
 
 @login_required

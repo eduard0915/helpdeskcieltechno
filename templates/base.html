@@ -43,7 +43,7 @@
         }
 
         .status-in_process {
-            background-color: #d1e7dd;
+            background-color: #d6eaf8;
             border-right: 5px solid #0d6efd;
         }
 
@@ -60,6 +60,25 @@
             transform: translateY(-5px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            flex: 1 0 auto;
+        }
+
+        footer {
+            flex-shrink: 0;
+        }
+
     </style>
 </head>
 <body>
@@ -76,10 +95,6 @@
             {% endif %}
         </div>
         <div class="flex items-center space-x-6">
-            {#            <a class="hover:text-sky-400 transition-colors" href="{% url 'home' %}">Dashboard</a>#}
-            {#            <a class="hover:text-sky-400 transition-colors" href="{% url 'create_ticket' %}">Enviar Ticket</a>#}
-            {#            <a class="hover:text-sky-400 transition-colors" href="{% url 'check_ticket' %}">Checkear Estado de#}
-            {#                Ticket</a>#}
             {% if user.is_authenticated and not user.is_staff %}
                 <a class="hover:text-sky-400 transition-colors" href="{% url 'my_tickets' %}">Mis Tickets</a>
             {% endif %}
@@ -98,8 +113,12 @@
             {% endif %}
             {% if user.is_authenticated %}
                 <span class="nav-link">Bienvenido, {{ user.username }}</span>
-                <a class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-md transition-colors text-sm"
-                   href="{% url 'logout' %}">Cerrar Sesión</a>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-md transition-colors text-sm">
+                        Cerrar sesión
+                    </button>
+                </form>
             {% else %}
                 <a class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-md transition-colors text-sm"
                    href="{% url 'login' %}">Iniciar Sesión</a>
