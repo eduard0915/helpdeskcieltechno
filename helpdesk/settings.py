@@ -137,3 +137,12 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('MAIL_PASSWORD')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+ 
+# Email de soporte técnico (configurable por variables de entorno)
+# Ejemplo en .env:
+# SUPPORT_EMAIL=soporte@tu-dominio.com
+SUPPORT_EMAIL = config('SUPPORT_EMAIL', default=None)
+
+# URL pública del sitio para construir enlaces absolutos en correos
+# Ejemplo: https://mi-helpdesk.com
+SITE_URL = config('SITE_URL', default='')

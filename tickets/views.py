@@ -48,6 +48,12 @@ def create_ticket(request):
             ticket = form.save()
             # Send confirmation email
             send_ticket_confirmation_email(ticket)
+            # Send notification to technical support
+            try:
+                send_ticket_to_support_email(ticket)
+            except Exception as e:
+                # No interrumpir el flujo si falla el correo a soporte
+                messages.warning(request, f'El ticket fue creado, pero no se pudo notificar a soporte: {str(e)}')
             messages.success(request, f'Su ticket se ha enviado correctamente. Su ID de ticket es {ticket.ticket_id}')
             return redirect('ticket_detail', ticket_id=ticket.ticket_id)
     else:
@@ -221,6 +227,40 @@ def send_progress_update_email(ticket, comment):
         plain_message,
         settings.DEFAULT_FROM_EMAIL,
         [ticket.requester_email],
+        html_message=html_message,
+        fail_silently=False,
+    )
+
+def send_ticket_to_support_email(ticket):
+    """Envía por correo al soporte técnico la información del ticket recién creado."""
+    support_email = getattr(settings, 'SUPPORT_EMAIL', None)
+    if not support_email:
+        # No hay correo de soporte configurado; salir silenciosamente
+        return
+
+    # Construir URL del ticket
+    ticket_url = reverse('ticket_detail', kwargs={'ticket_id': ticket.ticket_id})
+    absolute_url = f"{settings.SITE_URL}{ticket_url}" if hasattr(settings, 'SITE_URL') else ticket_url
+
+    # Permitir múltiples correos separados por coma
+    if isinstance(support_email, str):
+        recipients = [e.strip() for e in support_email.split(',') if e.strip()]
+    else:
+        recipients = list(support_email)
+
+    subject = f"Nuevo Ticket #{ticket.ticket_id} — {ticket.subject}"
+
+    html_message = render_to_string('tickets/emails/ticket_new_support.html', {
+        'ticket': ticket,
+        'ticket_url': absolute_url,
+    })
+    plain_message = strip_tags(html_message)
+
+    send_mail(
+        subject,
+        plain_message,
+        settings.DEFAULT_FROM_EMAIL,
+        recipients,
         html_message=html_message,
         fail_silently=False,
     )
