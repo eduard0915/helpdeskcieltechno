@@ -100,6 +100,7 @@
             {% endif %}
             {% if user.is_staff %}
                 <a class="hover:text-sky-400 transition-colors" href="{% url 'dashboard' %}">Dashboard</a>
+                <a class="hover:text-sky-400 transition-colors" href="{% url 'tickets_list' %}">Tickets</a>
                 <a class="hover:text-sky-400 transition-colors" href="{% url 'manage_tickets' %}">Gestion de Ticket</a>
                 <a class="hover:text-sky-400 transition-colors" href="{% url 'my_assigned_tickets' %}">Mis Tickets
                     Asignados</a>

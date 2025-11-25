@@ -54,85 +54,188 @@
             {% endif %}
         </div>
     </section>
-
-<!-- Quick Actions -->
-    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    
+    <!-- Average response time by ticket type (with guidelines in parentheses) -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
         <div class="bg-white p-6 rounded-xl shadow-lg">
-            <h3 class="text-xl font-semibold text-sky-600 mb-6 pb-3 border-b border-gray-200">Acciones rápidas</h3>
-            <a href="{% url 'create_ticket' %}" type="button" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors mb-4 shadow-md hover:shadow-lg">
-                <span class="material-icons">add_circle_outline</span>
-                <span>Enviar nuevo Ticket</span>
-            </a>
-            <a href="{% url 'check_ticket' %}" type="button" class="w-full border border-gray-300 rounded-lg py-3 px-4 pl-10 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition-shadow">
-                <span class="material-icons">search</span>
-                <span>Checkear estado de Ticket</span>
-            </a>
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="text-lg font-semibold text-slate-600">Promedio Normal <span class="text-slate-400">(48 horas)</span></h3>
+                <span class="material-icons text-slate-400">schedule</span>
+            </div>
+            <p class="text-3xl font-bold text-slate-800">{{ avg_by_priority.normal }}</p>
+            <p class="text-sm text-slate-500 mt-1">Tiempo desde creación hasta cierre</p>
         </div>
         <div class="bg-white p-6 rounded-xl shadow-lg">
-            <h3 class="text-xl font-semibold text-sky-600 mb-6 pb-3 border-b border-gray-200">Pautas de Tiempo de
-                Respuesta</h3>
-            <ul class="space-y-4">
-                <li class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                    <span class="text-slate-700">Normal</span>
-                    <span class="bg-sky-500 text-white text-xs font-semibold px-3 py-1 rounded-full">48 horas</span>
-                </li>
-                <li class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                    <span class="text-slate-700">Prioritario</span>
-                    <span class="bg-amber-500 text-white text-xs font-semibold px-3 py-1 rounded-full">24 horas</span>
-                </li>
-                <li class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                    <span class="text-slate-700">Urgente</span>
-                    <span class="bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full">8 horas</span>
-                </li>
-            </ul>
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="text-lg font-semibold text-amber-600">Promedio Prioritario <span class="text-amber-400">(24 horas)</span></h3>
+                <span class="material-icons text-amber-400">schedule</span>
+            </div>
+            <p class="text-3xl font-bold text-amber-800">{{ avg_by_priority.priority }}</p>
+            <p class="text-sm text-slate-500 mt-1">Tiempo desde creación hasta cierre</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-lg">
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="text-lg font-semibold text-red-600">Promedio Urgente <span class="text-red-400">(8 horas)</span></h3>
+                <span class="material-icons text-red-400">schedule</span>
+            </div>
+            <p class="text-3xl font-bold text-red-800">{{ avg_by_priority.urgent }}</p>
+            <p class="text-sm text-slate-500 mt-1">Tiempo desde creación hasta cierre</p>
         </div>
     </section>
-<!-- Recent Tickets -->
-{% if recent_tickets %}
-<div class="row">
-    <div class="col-12">
-        <h3 class="mb-4">Tickets Recientes</h3>
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead class="table-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Asunto</th>
-                        <th>Solicitado por</th>
-                        <th>Prioridad</th>
-                        <th>Estado</th>
-                        <th>Fecha</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ticket in recent_tickets %}
-                    <tr class="priority-{{ ticket.priority }} status-{{ ticket.status }}">
-                        <td>{{ ticket.ticket_id }}</td>
-                        <td>{{ ticket.subject|truncatechars:30 }}</td>
-                        <td>{{ ticket.requester_name }}</td>
-                        <td>
-                            <span class="badge bg-{{ ticket.get_priority_color }}">
-                                {{ ticket.get_priority_display }}
-                            </span>
-                        </td>
-                        <td>
-                            <span class="badge bg-{{ ticket.get_status_color }}">
-                                {{ ticket.get_status_display }}
-                            </span>
-                        </td>
-                        <td>{{ ticket.created_at|date:"M d, Y" }}</td>
-                        <td>
-                            <a href="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-eye"></i> View
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+
+    <!-- Gráficas en filas de 2 tarjetas por fila -->
+    <section class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- 1) Creados vs Cerrados -->
+        <div class="bg-white p-6 rounded-xl shadow-lg">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-semibold text-slate-700">Tickets creados vs cerrados (último año)</h3>
+            </div>
+            <div class="relative h-64 md:h-80">
+                <canvas id="chartCreatedClosed" style="width:100% !important;height:100% !important"></canvas>
+            </div>
         </div>
-    </div>
-</div>
-{% endif %}
+
+        <!-- 2) Normal -->
+        <div class="bg-white p-6 rounded-xl shadow-lg">
+            <h4 class="text-md font-semibold text-slate-700 mb-3">Normal</h4>
+            <div class="relative h-64 md:h-80">
+                <canvas id="chartNormal" style="width:100% !important;height:100% !important"></canvas>
+            </div>
+        </div>
+
+        <!-- 3) Prioritario -->
+        <div class="bg-white p-6 rounded-xl shadow-lg">
+            <h4 class="text-md font-semibold text-amber-700 mb-3">Prioritario</h4>
+            <div class="relative h-64 md:h-80">
+                <canvas id="chartPriority" style="width:100% !important;height:100% !important"></canvas>
+            </div>
+        </div>
+
+        <!-- 4) Urgente -->
+        <div class="bg-white p-6 rounded-xl shadow-lg">
+            <h4 class="text-md font-semibold text-red-700 mb-3">Urgente</h4>
+            <div class="relative h-64 md:h-80">
+                <canvas id="chartUrgent" style="width:100% !important;height:100% !important"></canvas>
+            </div>
+        </div>
+
+        <!-- 5) Promedio por mes (horas) -->
+        <div class="bg-white p-6 rounded-xl shadow-lg">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-semibold text-slate-700">Tiempo de respuesta promedio por mes (horas)</h3>
+            </div>
+            <div class="relative h-64 md:h-80">
+                <canvas id="chartAvgResponse" style="width:100% !important;height:100% !important"></canvas>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        (function() {
+            const data = {{ charts_json|safe }};
+
+            // Palette
+            const COLORS = {
+                created: '#0ea5e9', // sky-500
+                closed: '#22c55e',  // green-500
+                normal: '#3b82f6',  // blue-500
+                priority: '#f59e0b',// amber-500
+                urgent: '#ef4444',  // red-500
+            };
+
+            // Opciones globales para responsividad y buena visualización con cualquier cantidad de puntos
+            const baseOptions = {
+                responsive: true,
+                maintainAspectRatio: false, // El alto lo controla el contenedor
+                spanGaps: true,
+                interaction: { mode: 'index', intersect: false },
+                layout: { padding: { top: 8, right: 8, bottom: 8, left: 8 } },
+                elements: {
+                    line: { borderWidth: 2, tension: 0.25 },
+                    point: { radius: 2, hitRadius: 6 }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#475569',
+                            maxRotation: 0,
+                            autoSkip: true,
+                            maxTicksLimit: 12
+                        },
+                        grid: { display: false }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grace: '10%',
+                        ticks: { color: '#475569' }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'top', labels: { color: '#334155' } },
+                    tooltip: { mode: 'index', intersect: false }
+                }
+            };
+
+            // Chart 1: Created vs Closed
+            new Chart(document.getElementById('chartCreatedClosed').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [
+                        { label: 'Creados', data: data.created, borderColor: COLORS.created, backgroundColor: COLORS.created, fill: false },
+                        { label: 'Cerrados', data: data.closed, borderColor: COLORS.closed, backgroundColor: COLORS.closed, fill: false },
+                    ]
+                },
+                options: baseOptions
+            });
+
+            // Helper to make per-priority chart
+            function makePriorityChart(canvasId, prKey, titleColor) {
+                const ctx = document.getElementById(canvasId).getContext('2d');
+                return new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [
+                            { label: 'Creados', data: data.per_priority[prKey].created, borderColor: COLORS.created, backgroundColor: COLORS.created, fill: false },
+                            { label: 'Cerrados', data: data.per_priority[prKey].closed, borderColor: COLORS.closed, backgroundColor: COLORS.closed, fill: false },
+                        ]
+                    },
+                    options: baseOptions
+                });
+            }
+
+            makePriorityChart('chartNormal', 'normal');
+            makePriorityChart('chartPriority', 'priority');
+            makePriorityChart('chartUrgent', 'urgent');
+
+            // Avg response time chart (hours)
+            new Chart(document.getElementById('chartAvgResponse').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [
+                        { label: 'Normal (h)', data: data.avg_hours_per_month.normal, borderColor: COLORS.normal, backgroundColor: COLORS.normal, fill: false },
+                        { label: 'Prioritario (h)', data: data.avg_hours_per_month.priority, borderColor: COLORS.priority, backgroundColor: COLORS.priority, fill: false },
+                        { label: 'Urgente (h)', data: data.avg_hours_per_month.urgent, borderColor: COLORS.urgent, backgroundColor: COLORS.urgent, fill: false },
+                    ]
+                },
+                options: {
+                    ...baseOptions,
+                    scales: {
+                        ...baseOptions.scales,
+                        y: {
+                            ...baseOptions.scales.y,
+                            title: { display: true, text: 'Horas' }
+                        }
+                    }
+                }
+            });
+        })();
+    </script>
 {% endblock %}

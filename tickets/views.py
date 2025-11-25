@@ -4,12 +4,16 @@ from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Count
+from django.db.models import Count, Avg, F, ExpressionWrapper, DurationField
+from django.db.models.functions import Coalesce, TruncMonth
 from django.core.mail import send_mail
+from django.core.paginator import Paginator
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.urls import reverse
+from django.utils import timezone
+import json
 
 from .models import Ticket, TicketComment
 from .forms import TicketForm, TicketUpdateForm, TicketCommentForm, TicketSearchForm
@@ -30,12 +34,174 @@ def home(request):
     for item in status_counts:
         counts[item['status']] = item['count']
 
-    # Get recent tickets
+    # Get recent tickets (to be removed from UI per request, but kept here if needed elsewhere)
     recent_tickets = Ticket.objects.order_by('-created_at')[:5]
+
+    # Average response time by ticket type (priority) for CLOSED tickets
+    # Response time is from created_at to closed_at. Prefer stored resolution_time when available.
+    avg_expr = Coalesce(
+        'resolution_time',
+        ExpressionWrapper(F('closed_at') - F('created_at'), output_field=DurationField())
+    )
+    avg_by_priority_qs = (
+        Ticket.objects.filter(status=Ticket.CLOSED, closed_at__isnull=False)
+        .values('priority')
+        .annotate(avg_duration=Avg(avg_expr))
+    )
+
+    # Prepare a complete mapping for all priorities, even if none closed yet
+    avg_by_priority = {
+        Ticket.NORMAL: None,
+        Ticket.PRIORITY: None,
+        Ticket.URGENT: None,
+    }
+    for row in avg_by_priority_qs:
+        avg_by_priority[row['priority']] = row['avg_duration']
+
+    def format_timedelta(td):
+        if not td:
+            return '—'
+        total_seconds = int(td.total_seconds())
+        if total_seconds < 60:
+            return f"{total_seconds}s"
+        hours = total_seconds // 3600
+        minutes = (total_seconds % 3600) // 60
+        days = hours // 24
+        hours = hours % 24
+        if days > 0:
+            return f"{days} d {hours} h {minutes} min"
+        return f"{hours} h {minutes} min"
+
+    avg_by_priority_display = {
+        'normal': format_timedelta(avg_by_priority[Ticket.NORMAL]),
+        'priority': format_timedelta(avg_by_priority[Ticket.PRIORITY]),
+        'urgent': format_timedelta(avg_by_priority[Ticket.URGENT]),
+    }
+
+    # Build datasets for charts (last 12 full months including current month)
+    now = timezone.now()
+    # Calculate the first day of current month, then go back 11 months
+    first_of_this_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    months = []  # datetime objects representing month starts
+    for i in range(11, -1, -1):
+        # Compute month start i months ago
+        year = first_of_this_month.year
+        month = first_of_this_month.month - i
+        while month <= 0:
+            month += 12
+            year -= 1
+        months.append(first_of_this_month.replace(year=year, month=month))
+
+    # Labels in Spanish short month names
+    month_names = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+    chart_labels = [f"{month_names[m.month-1]} {m.year}" for m in months]
+
+    # Helper to align aggregated data by TruncMonth key
+    def align_counts(qs, key='count'):
+        mapping = {row['m'].date(): row[key] for row in qs}
+        result = []
+        for m in months:
+            result.append(int(mapping.get(m.date(), 0)))
+        return result
+
+    # Created per month
+    created_qs = (
+        Ticket.objects
+        .filter(created_at__gte=months[0])
+        .annotate(m=TruncMonth('created_at'))
+        .values('m')
+        .annotate(count=Count('ticket_id'))
+        .order_by('m')
+    )
+    created_counts = align_counts(created_qs)
+
+    # Closed per month
+    closed_qs = (
+        Ticket.objects
+        .filter(closed_at__isnull=False, closed_at__gte=months[0])
+        .annotate(m=TruncMonth('closed_at'))
+        .values('m')
+        .annotate(count=Count('ticket_id'))
+        .order_by('m')
+    )
+    closed_counts = align_counts(closed_qs)
+
+    # Per priority created vs closed
+    per_priority = {}
+    for prio_key in [Ticket.NORMAL, Ticket.PRIORITY, Ticket.URGENT]:
+        pr_created_qs = (
+            Ticket.objects
+            .filter(priority=prio_key, created_at__gte=months[0])
+            .annotate(m=TruncMonth('created_at'))
+            .values('m')
+            .annotate(count=Count('ticket_id'))
+            .order_by('m')
+        )
+        pr_closed_qs = (
+            Ticket.objects
+            .filter(priority=prio_key, closed_at__isnull=False, closed_at__gte=months[0])
+            .annotate(m=TruncMonth('closed_at'))
+            .values('m')
+            .annotate(count=Count('ticket_id'))
+            .order_by('m')
+        )
+        per_priority[prio_key] = {
+            'created': align_counts(pr_created_qs),
+            'closed': align_counts(pr_closed_qs),
+        }
+
+    # Average response time per month per priority (use closed_at month)
+    avg_expr = Coalesce(
+        'resolution_time',
+        ExpressionWrapper(F('closed_at') - F('created_at'), output_field=DurationField())
+    )
+    avg_by_month_priority_qs = (
+        Ticket.objects
+        .filter(status=Ticket.CLOSED, closed_at__isnull=False, closed_at__gte=months[0])
+        .annotate(m=TruncMonth('closed_at'))
+        .values('m', 'priority')
+        .annotate(avg_duration=Avg(avg_expr))
+    )
+    # Build nested mapping {(month_date, priority): hours_float}
+    avg_map = {}
+    for row in avg_by_month_priority_qs:
+        td = row['avg_duration']
+        hours = float(td.total_seconds()) / 3600.0 if td else 0.0
+        avg_map[(row['m'].date(), row['priority'])] = round(hours, 2)
+
+    avg_response_per_month = {
+        Ticket.NORMAL: [],
+        Ticket.PRIORITY: [],
+        Ticket.URGENT: [],
+    }
+    for m in months:
+        d = m.date()
+        for pr in avg_response_per_month.keys():
+            avg_response_per_month[pr].append(avg_map.get((d, pr), 0.0))
+
+    # Prepare JSON-safe payloads for charts
+    charts_payload = {
+        'labels': chart_labels,
+        'created': created_counts,
+        'closed': closed_counts,
+        'per_priority': {
+            'normal': per_priority[Ticket.NORMAL],
+            'priority': per_priority[Ticket.PRIORITY],
+            'urgent': per_priority[Ticket.URGENT],
+        },
+        'avg_hours_per_month': {
+            'normal': avg_response_per_month[Ticket.NORMAL],
+            'priority': avg_response_per_month[Ticket.PRIORITY],
+            'urgent': avg_response_per_month[Ticket.URGENT],
+        },
+    }
+    charts_json = json.dumps(charts_payload)
 
     context = {
         'counts': counts,
         'recent_tickets': recent_tickets,
+        'avg_by_priority': avg_by_priority_display,
+        'charts_json': charts_json,
     }
 
     return render(request, 'tickets/home.html', context)
@@ -201,6 +367,29 @@ def my_tickets(request):
     }
 
     return render(request, 'tickets/my_tickets.html', context)
+
+
+@login_required
+def tickets_list(request):
+    """Listado general de tickets para el personal (con paginación y botón de detalle)."""
+    if not request.user.is_staff:
+        messages.error(request, 'No tienes permiso para acceder a esta página.')
+        return redirect('home')
+
+    tickets_qs = Ticket.objects.all().order_by('-created_at')
+
+    # Paginación
+    page_number = request.GET.get('page') or 1
+    paginator = Paginator(tickets_qs, 20)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'tickets': page_obj.object_list,
+        'title': 'Listado de Tickets',
+    }
+
+    return render(request, 'tickets/tickets_list.html', context)
 
 # Email functions
 def send_progress_update_email(ticket, comment):
