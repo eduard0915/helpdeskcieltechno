@@ -1,0 +1,123 @@
+:root{
+  --bg-main:#f0f4f8;
+  --bg-card:#ffffff;
+  --primary:#0d1b2a;
+  --accent:#1b9aaa;
+  --accent-light:#8ecae6;
+  --text:#020c1b;
+  --muted:#415a77;
+  --header-h:58px;
+}
+
+body{
+  background:var(--bg-main);
+  color:var(--text);
+  font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  padding-top:var(--header-h);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* HEADER */
+.top-header{
+  height:var(--header-h);
+  background:var(--primary);
+  color:#fff;
+  position:fixed;
+  top:0;left:0;right:0;
+  z-index:1030;
+  display:flex;
+  align-items:center;
+  padding:0 1.25rem;
+  box-shadow:0 2px 6px rgba(0,0,0,.18);
+}
+
+.brand{font-size:1.15rem;font-weight:600;letter-spacing:.5px;}
+
+/* BOTONES HEADER */
+.btn-header{
+  font-size:.9rem;
+  padding:.35rem .7rem;
+  margin-left:.25rem;
+}
+
+/* CARDS & UI COMPONENTS */
+.ui-card{
+  border:none;
+  border-radius:.85rem;
+  background:var(--bg-card);
+  box-shadow:0 5px 14px rgba(11,19,43,.07);
+  overflow:hidden;
+}
+
+.ui-header{
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  color:#fff;
+  border-radius:.85rem .85rem 0 0;
+  padding:.8rem 1rem;
+}
+
+.ui-header h6{font-size:.9rem;margin:0;}
+
+.btn-primary{
+  background:var(--accent);
+  border:none;
+  border-radius:.45rem;
+  font-size:.8rem;
+}
+
+.btn-primary:hover{background:#147a8b}
+
+.btn-outline-primary{
+  color:var(--accent);
+  border-color:var(--accent);
+  border-radius:.45rem;
+  font-size:.8rem;
+}
+
+.btn-outline-primary:hover{
+  background:var(--accent);border-color:var(--accent);color:#fff;
+}
+
+.form-control, .form-select{
+  border-radius:.4rem;
+  border:1px solid #c1d1e9;
+  font-size:.85rem;
+}
+
+.form-control:focus, .form-select:focus{
+  border-color:var(--accent-light);
+  box-shadow:0 0 0 .12rem rgba(139,202,230,.35);
+}
+
+.icon-bg{
+  background:var(--accent);
+  color:#fff;
+  border-radius:.4rem 0 0 .4rem;
+}
+
+small{color:var(--muted);font-size:.75rem;}
+
+/* LAYOUT */
+footer {
+    flex-shrink: 0;
+}
+
+.main-content {
+    flex: 1 0 auto;
+}
+
+/* BOTÓN FLOTANTE CAPTURA (si se usa) */
+#btnJpg{
+  position:fixed;
+  bottom:1rem;right:1rem;
+  z-index:1040;
+  font-size:.7rem;
+}
+
+/* RESPONSIVE */
+@media (max-width:576px){
+  .ui-header{padding:.6rem .8rem;}
+  .card-body.p-3{padding:.5rem !important;}
+}

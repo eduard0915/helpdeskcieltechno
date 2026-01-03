@@ -22,6 +22,13 @@ class UserRegistrationForm(BootstrapFormMixin, UserCreationForm):
         model = User
         fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2')
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'placeholder': 'Ej. jperez ó cedula de ciudadanía'})
+        self.fields['email'].widget.attrs.update({'placeholder': 'Ej. juan@ejemplo.com'})
+        self.fields['first_name'].widget.attrs.update({'placeholder': 'Ej. Juan'})
+        self.fields['last_name'].widget.attrs.update({'placeholder': 'Ej. Pérez'})
+
     def save(self, commit=True):
         user = super().save(commit=False)
         user.email = self.cleaned_data['email']
@@ -37,6 +44,11 @@ class UserProfileForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ('phone_number', 'company')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['phone_number'].widget.attrs.update({'placeholder': 'Ej. +57 600 000 000'})
+        self.fields['company'].widget.attrs.update({'placeholder': 'Ej. Mi Empresa S.A.'})
 
 class StaffUserCreationForm(BootstrapFormMixin, UserCreationForm):
     email = forms.EmailField(required=True)

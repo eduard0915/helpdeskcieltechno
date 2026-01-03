@@ -4,37 +4,37 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="text-2xl font-bold text-slate-700">{{ title|default:"Listado de Tickets" }}</h2>
-    <div>
-        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-sm">Dashboard</a>
+    <h2 class="fw-bold text-dark mb-0">{{ title|default:"Listado de Tickets" }}</h2>
+    <div class="d-flex gap-2">
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-speedometer2 me-1"></i> Dashboard
+        </a>
     </div>
-    
-    
 </div>
 
-<div class="card shadow-sm">
+<div class="ui-card">
     <div class="card-body p-0 overflow-x-auto">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
+        <table class="table table-hover align-middle mb-0 small">
+            <thead class="bg-light text-muted fw-bold">
                 <tr>
-                    <th>Ticket</th>
+                    <th class="ps-4">Ticket</th>
                     <th>Asunto</th>
                     <th>Solicitante</th>
                     <th>Prioridad</th>
                     <th>Estado</th>
                     <th>Creado</th>
                     <th>Asignado a</th>
-                    <th class="text-end">Acciones</th>
+                    <th class="text-end pe-4">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% if tickets %}
                     {% for t in tickets %}
                         <tr>
-                            <td><code>{{ t.ticket_id }}</code></td>
+                            <td class="ps-4"><code>{{ t.ticket_id }}</code></td>
                             <td class="fw-semibold">{{ t.subject }}</td>
                             <td>
-                                <div class="small">{{ t.requester_name }}</div>
+                                <div>{{ t.requester_name }}</div>
                                 <div class="text-muted small">{{ t.requester_email }}</div>
                             </td>
                             <td>
@@ -43,16 +43,21 @@
                             <td>
                                 <span class="badge bg-{{ t.get_status_color }}">{{ t.get_status_display }}</span>
                             </td>
-                            <td class="text-nowrap">{{ t.created_at|date:"Y-m-d H:i" }}</td>
+                            <td class="text-nowrap">{{ t.created_at|date:"d/m/Y H:i" }}</td>
                             <td class="text-nowrap">{{ t.assigned_to.username|default:"—" }}</td>
-                            <td class="text-end">
-                                <a href="{% url 'ticket_detail' t.ticket_id %}" class="btn btn-sm btn-primary">Ver detalles</a>
+                            <td class="text-end pe-4">
+                                <a href="{% url 'ticket_detail' t.ticket_id %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i>
+                                </a>
                             </td>
                         </tr>
                     {% endfor %}
                 {% else %}
                     <tr>
-                        <td colspan="8" class="text-center py-4 text-muted">No hay tickets para mostrar.</td>
+                        <td colspan="8" class="text-center py-5 text-muted">
+                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                            No hay tickets para mostrar.
+                        </td>
                     </tr>
                 {% endif %}
             </tbody>
@@ -60,10 +65,10 @@
     </div>
 
     {% if page_obj and page_obj.paginator.num_pages > 1 %}
-    <div class="card-footer d-flex justify-content-between align-items-center">
+    <div class="px-4 py-3 bg-light border-top d-flex justify-content-between align-items-center">
         <div class="text-muted small">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</div>
         <nav>
-            <ul class="pagination mb-0">
+            <ul class="pagination pagination-sm mb-0">
                 <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
                     <a class="page-link" href="?page=1">Primera</a>
                 </li>

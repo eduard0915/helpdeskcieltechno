@@ -8,12 +8,12 @@ class TicketForm(forms.ModelForm):
         model = Ticket
         fields = ['subject', 'description', 'attachment', 'priority', 'requester_name', 'requester_email']
         widgets = {
-            'subject': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
+            'subject': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej. No puedo acceder a mi cuenta'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 5, 'placeholder': 'Ej. Al intentar iniciar sesión, el sistema muestra un error de conexión...'}),
             'attachment': forms.FileInput(attrs={'class': 'form-control'}),
             'priority': forms.Select(attrs={'class': 'form-control'}),
-            'requester_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'requester_email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'requester_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej. Juan Pérez'}),
+            'requester_email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Ej. juan@ejemplo.com'}),
         }
 
 class TicketUpdateForm(forms.ModelForm):

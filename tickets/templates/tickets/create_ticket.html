@@ -3,127 +3,88 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-12">
-        <h1 class="display-5 mb-4">Enviar un Ticket de Soporte</h1>
-        <p class="lead">Complete el formulario a continuación para enviar un nuevo ticket de soporte. Le responderemos según la prioridad que seleccione.</p>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Información del Ticket</h5>
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="ui-card">
+            <div class="ui-header text-center">
+                <h5 class="mb-0">Enviar un Ticket de Soporte Técnico</h5>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
+{#                <p class="text-muted text-center mb-4">Complete el formulario a continuación para enviar un nuevo ticket de soporte.</p>#}
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
 
                     <div class="mb-3">
-                        <label for="{{ form.subject.id_for_label }}" class="form-label">Asunto</label>
+                        <label for="{{ form.subject.id_for_label }}" class="form-label fw-semibold">Asunto</label>
                         {{ form.subject }}
                         {% if form.subject.errors %}
-                            <div class="text-danger">{{ form.subject.errors }}</div>
+                            <div class="text-danger small">{{ form.subject.errors }}</div>
                         {% endif %}
+                        <div class="form-text">Resumen breve del problema.</div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="{{ form.description.id_for_label }}" class="form-label">Descripción</label>
+                        <label for="{{ form.description.id_for_label }}" class="form-label fw-semibold">Descripción</label>
                         {{ form.description }}
                         {% if form.description.errors %}
-                            <div class="text-danger">{{ form.description.errors }}</div>
+                            <div class="text-danger small">{{ form.description.errors }}</div>
                         {% endif %}
                         <div class="form-text">Proporcione tantos detalles como sea posible sobre su problema.</div>
                     </div>
 
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="{{ form.attachment.id_for_label }}" class="form-label">Adjuntar Archivo</label>
-                            {{ form.attachment }}
-                            {% if form.attachment.errors %}
-                                <div class="text-danger">{{ form.attachment.errors }}</div>
-                            {% endif %}
-                            <div class="form-text">Puede adjuntar archivos como fotos, PDFs, documentos, etc.
-                                (opcional)
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="{{ form.priority.id_for_label }}" class="form-label">Prioridad</label>
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label for="{{ form.priority.id_for_label }}" class="form-label fw-semibold">Prioridad</label>
                             {{ form.priority }}
                             {% if form.priority.errors %}
-                                <div class="text-danger">{{ form.priority.errors }}</div>
+                                <div class="text-danger small">{{ form.priority.errors }}</div>
                             {% endif %}
-                            <div class="form-text">Ver Pautas de Tiempo de Respuesta a la derecha.</div>
+                            <div class="form-text">
+                                <span class="badge bg-secondary">Normal: 48h</span>
+                                <span class="badge bg-warning text-dark">Prioritario: 24h</span>
+                                <span class="badge bg-danger">Urgente: 8h</span>
                             </div>
                         </div>
-
-                    <hr class="my-4">
-
-                    <h5 class="mb-3">Su Información de Contacto</h5>
-
-                    <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="{{ form.requester_name.id_for_label }}" class="form-label">Nombre
-                                Completo</label>
-                            {{ form.requester_name }}
-                            {% if form.requester_name.errors %}
-                                <div class="text-danger">{{ form.requester_name.errors }}</div>
+                            <label for="{{ form.attachment.id_for_label }}" class="form-label fw-semibold">Adjuntar Archivo</label>
+                            {{ form.attachment }}
+                            {% if form.attachment.errors %}
+                                <div class="text-danger small">{{ form.attachment.errors }}</div>
                             {% endif %}
-                        </div>
-                        <div class="col-md-6">
-                            <label for="{{ form.requester_email.id_for_label }}" class="form-label">Email</label>
-                            {{ form.requester_email }}
-                            {% if form.requester_email.errors %}
-                                <div class="text-danger">{{ form.requester_email.errors }}</div>
-                            {% endif %}
-                            <div class="form-text">Le enviaremos un correo electrónico de confirmación con ID de ticket.</div>
+                            <div class="form-text">Opcional: imágenes, PDFs, etc.</div>
                         </div>
                     </div>
-{#                    <div class="d-grid gap-2">#}
-                    <div>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-paper-plane me-2"></i> Enviar Ticket
+
+                    <h6 class="fw-bold mb-3 border-bottom pb-2">Tu Información de Contacto</h6>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.requester_name.id_for_label }}" class="form-label fw-semibold">Nombre Completo</label>
+                            {{ form.requester_name }}
+                            {% if form.requester_name.errors %}
+                                <div class="text-danger small">{{ form.requester_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.requester_email.id_for_label }}" class="form-label fw-semibold">Correo Electrónico</label>
+                            {{ form.requester_email }}
+                            {% if form.requester_email.errors %}
+                                <div class="text-danger small">{{ form.requester_email.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary py-2 fw-bold">
+                            <i class="bi bi-send-fill me-2"></i> Enviar Ticket
                         </button>
                     </div>
                 </form>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-4">
-        <div class="card mb-4">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0">Pautas de Tiempo de Respuesta</h5>
-            </div>
-            <div class="card-body">
-                <ul class="list-group">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Normal
-                        <span class="badge bg-info rounded-pill">48 Horas</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Prioritario
-                        <span class="badge bg-warning rounded-pill">24 Horas</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Urgente
-                        <span class="badge bg-danger rounded-pill">8 Horas</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header bg-secondary text-white">
-                <h5 class="mb-0">¿Ya enviaste un ticket?</h5>
-            </div>
-            <div class="card-body">
-                <p>Si ya ha enviado un ticket y desea comprobar su estado, puede utilizar nuestra herramienta de búsqueda de tickets.</p>
-                <a href="{% url 'check_ticket' %}" class="btn btn-outline-secondary w-100">
-                    <i class="fas fa-search me-2"></i> Comprobar el Estado del Ticket
-                </a>
-            </div>
+        <div class="text-center mt-4">
+            <p class="text-muted">¿Ya enviaste un ticket? <a href="{% url 'check_ticket' %}" class="text-decoration-none fw-bold">Consultar Estado</a></p>
         </div>
     </div>
 </div>

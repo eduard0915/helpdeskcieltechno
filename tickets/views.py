@@ -18,6 +18,10 @@ import json
 from .models import Ticket, TicketComment
 from .forms import TicketForm, TicketUpdateForm, TicketCommentForm, TicketSearchForm
 
+def landing(request):
+    """Página de inicio (landing page) con diseño de dos columnas"""
+    return render(request, 'tickets/home.html')
+
 def home(request):
     """Home page with dashboard showing ticket counts by status"""
     # Get counts for each status
@@ -204,7 +208,7 @@ def home(request):
         'charts_json': charts_json,
     }
 
-    return render(request, 'tickets/home.html', context)
+    return render(request, 'tickets/dashboard.html', context)
 
 def create_ticket(request):
     """View for creating a new ticket"""

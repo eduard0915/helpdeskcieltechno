@@ -3,60 +3,52 @@
 {% block title %}Comprobar el Estado del Ticket{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-12">
-        <h1 class="display-5 mb-4">Comprobar el Estado del Ticket</h1>
-        <p class="lead">Ingrese su ID de ticket y dirección de correo electrónico para verificar el estado de su
-            solicitud de soporte.</p>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6 mx-auto">
-        <div class="card">
-            <div class="card-header bg-secondary text-white">
-                <h5 class="mb-0">Búsqueda de Tickets</h5>
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="ui-card">
+            <div class="ui-header text-center">
+                <h5 class="mb-0"><i class="bi bi-search me-2"></i>Consultar Estado del Ticket</h5>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
+                <p class="text-muted text-center mb-4">Ingrese su ID de ticket y correo electrónico para verificar el estado de su solicitud.</p>
+                
                 <form method="post">
                     {% csrf_token %}
 
                     <div class="mb-3">
-                        <label for="ticket_id" class="form-label">Ticket ID</label>
-                        <input type="text" class="form-control" id="ticket_id" name="ticket_id" required>
-                        <div class="form-text">Introduce el ID del ticket que recibiste en tu correo electrónico de
-                            confirmación.</div>
+                        <label for="ticket_id" class="form-label fw-semibold">ID de Ticket</label>
+                        <div class="input-group">
+                            <span class="input-group-text icon-bg"><i class="bi bi-tag-fill"></i></span>
+                            <input type="text" class="form-control" id="ticket_id" name="ticket_id" placeholder="Ej: 31588004987" required>
+                        </div>
+                        <div class="form-text small">Lo encontrarás en tu correo de confirmación.</div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
-                        <div class="form-text">Introduzca la dirección de correo electrónico que utilizó al enviar
-                            el ticket.</div>
+                    <div class="mb-4">
+                        <label for="email" class="form-label fw-semibold">Correo Electrónico</label>
+                        <div class="input-group">
+                            <span class="input-group-text icon-bg"><i class="bi bi-envelope-fill"></i></span>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="tu@email.com" required>
+                        </div>
+                        <div class="form-text small">El mismo que usaste al crear el ticket.</div>
                     </div>
 
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-search me-2"></i> Encontrar mi Ticket
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary py-2 fw-bold">
+                            <i class="bi bi-search me-2"></i> Verificar Estado
                         </button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <div class="card mt-4">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0">¿No tienes el ID de tu Ticket?</h5>
-            </div>
-            <div class="card-body">
-                <p>Si ha perdido el ID de su ticket, revise su correo electrónico para obtener un mensaje de
-                    confirmación de nuestro sistema de soporte.</p>
-                <p>La línea de asunto será "Helpdesk Ticket # Recibido" y contendrá el ID de su ticket.</p>
-                <p>Si no puede encontrar el correo electrónico, puede enviar un nuevo ticket y hacer referencia a su
-                    problema anterior.</p>
-                <div class="d-grid gap-2">
-                    <a href="{% url 'create_ticket' %}" class="btn btn-outline-primary">
-                        <i class="fas fa-plus-circle me-2"></i> Envíe un nuevo Ticket
+        <div class="ui-card mt-4 border-start border-4 border-info">
+            <div class="card-body p-4">
+                <h6 class="fw-bold mb-2"><i class="bi bi-question-circle me-2"></i>¿No tienes el ID de tu Ticket?</h6>
+                <p class="text-muted small mb-3">Revisa tu bandeja de entrada (y la carpeta de spam) buscando el correo con el asunto "Helpdesk Ticket # Recibido".</p>
+                <div class="d-grid">
+                    <a href="{% url 'create_ticket' %}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-plus-circle me-2"></i> Enviar un nuevo Ticket
                     </a>
                 </div>
             </div>

@@ -3,35 +3,31 @@
 {% block title %}Mis Tickets Asignados{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-12">
-        <h1 class="display-5 mb-4">Mis Tickets Asignados</h1>
-        <p class="lead">Ver y administrar los Tickets que le fueron asignados.</p>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-dark mb-0">Mis Tickets Asignados</h2>
 </div>
 
 <!-- Tickets Table -->
-<div class="row">
-    <div class="col-12">
+<div class="ui-card mb-5">
+    <div class="card-body p-0 overflow-x-auto">
         {% if tickets %}
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead class="table-dark">
+            <table class="table table-hover align-middle mb-0 small">
+                <thead class="bg-light text-muted fw-bold">
                     <tr>
-                        <th>ID</th>
+                        <th class="ps-4">ID</th>
                         <th>Asunto</th>
                         <th>Solicitante</th>
                         <th>Prioridad</th>
                         <th>Estado</th>
                         <th>Creado</th>
-                        <th>Acciones</th>
+                        <th class="text-end pe-4">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for ticket in tickets %}
-                    <tr class="priority-{{ ticket.priority }} status-{{ ticket.status }}">
-                        <td>{{ ticket.ticket_id }}</td>
-                        <td>{{ ticket.subject|truncatechars:30 }}</td>
+                    <tr>
+                        <td class="ps-4"><code>{{ ticket.ticket_id }}</code></td>
+                        <td class="fw-semibold">{{ ticket.subject|truncatechars:40 }}</td>
                         <td>{{ ticket.requester_name }}</td>
                         <td>
                             <span class="badge bg-{{ ticket.get_priority_color }}">
@@ -43,36 +39,35 @@
                                 {{ ticket.get_status_display }}
                             </span>
                         </td>
-                        <td>{{ ticket.created_at|date:"M d, Y" }}</td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <a href="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-eye"></i> Ver
+                        <td class="text-nowrap">{{ ticket.created_at|date:"d/m/Y" }}</td>
+                        <td class="text-end pe-4">
+                            <div class="btn-group">
+                                <a href="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="btn btn-sm btn-outline-primary" title="Ver Detalles">
+                                    <i class="bi bi-eye"></i>
                                 </a>
                                 {% if ticket.status != 'closed' %}
-                                <form method="post" action="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="d-inline">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="update_submit" value="1">
-                                    <input type="hidden" name="status" value="in_process">
-                                    <input type="hidden" name="priority" value="{{ ticket.priority }}">
-                                    <input type="hidden" name="assigned_to" value="{{ user.id }}">
                                     {% if ticket.status == 'open' %}
-                                    <button type="submit" class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-play"></i> Iniciar Gestión
-                                    </button>
+                                    <form method="post" action="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="update_submit" value="1">
+                                        <input type="hidden" name="status" value="in_process">
+                                        <input type="hidden" name="priority" value="{{ ticket.priority }}">
+                                        <input type="hidden" name="assigned_to" value="{{ user.id }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary ms-1" title="Iniciar Gestión">
+                                            <i class="bi bi-play-fill"></i>
+                                        </button>
+                                    </form>
                                     {% endif %}
-                                </form>
-
-                                <form method="post" action="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="d-inline">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="update_submit" value="1">
-                                    <input type="hidden" name="status" value="closed">
-                                    <input type="hidden" name="priority" value="{{ ticket.priority }}">
-                                    <input type="hidden" name="assigned_to" value="{{ user.id }}">
-                                    <button type="submit" class="btn btn-sm btn-outline-success">
-                                        <i class="fas fa-check"></i> Cerrar Ticket
-                                    </button>
-                                </form>
+                                    <form method="post" action="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="update_submit" value="1">
+                                        <input type="hidden" name="status" value="closed">
+                                        <input type="hidden" name="priority" value="{{ ticket.priority }}">
+                                        <input type="hidden" name="assigned_to" value="{{ user.id }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-success ms-1" title="Cerrar Ticket">
+                                            <i class="bi bi-check-lg"></i>
+                                        </button>
+                                    </form>
                                 {% endif %}
                             </div>
                         </td>
@@ -80,36 +75,38 @@
                     {% endfor %}
                 </tbody>
             </table>
-        </div>
         {% else %}
-        <div class="alert alert-info">
-            <i class="fas fa-info-circle me-2"></i> No tienes ningún ticket asignado.
-            <a href="{% url 'manage_tickets' %}" class="alert-link">Ver todos los tickets</a> para encontrar tickets a gestionar.
-        </div>
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                No tienes ningún ticket asignado.
+                <div class="mt-3">
+                    <a href="{% url 'manage_tickets' %}" class="btn btn-sm btn-outline-primary">Ver todos los tickets</a>
+                </div>
+            </div>
         {% endif %}
     </div>
 </div>
 
 <!-- Priority and Status Legend -->
-<div class="row mt-4">
+<div class="row g-4">
     <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-dark text-white">
-                <h5 class="mb-0">Prioridad</h5>
+        <div class="ui-card h-100">
+            <div class="ui-header">
+                <h6 class="mb-0">Prioridad</h6>
             </div>
-            <div class="card-body">
-                <div class="d-flex flex-column gap-2">
-                    <div class="p-2 priority-normal rounded">
-                        <span class="badge bg-info me-2">Normal</span>
-                        Respuesta en 48 horas
+            <div class="card-body p-4">
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-secondary me-3" style="width: 80px;">Normal</span>
+                        <small class="text-muted">Respuesta en 48 horas</small>
                     </div>
-                    <div class="p-2 priority-priority rounded">
-                        <span class="badge bg-warning me-2">Prioritario</span>
-                        Respuesta en 24 horas
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-warning text-dark me-3" style="width: 80px;">Prioritario</span>
+                        <small class="text-muted">Respuesta en 24 horas</small>
                     </div>
-                    <div class="p-2 priority-urgent rounded">
-                        <span class="badge bg-danger me-2">Urgente</span>
-                        Respuesta en 8 horas
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-danger me-3" style="width: 80px;">Urgente</span>
+                        <small class="text-muted">Respuesta en 8 horas</small>
                     </div>
                 </div>
             </div>
@@ -117,23 +114,23 @@
     </div>
 
     <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-dark text-white">
-                <h5 class="mb-0">Estado</h5>
+        <div class="ui-card h-100">
+            <div class="ui-header">
+                <h6 class="mb-0">Estado</h6>
             </div>
-            <div class="card-body">
-                <div class="d-flex flex-column gap-2">
-                    <div class="p-2 status-open rounded">
-                        <span class="badge bg-secondary me-2">Abierto</span>
-                        El ticket está esperando a ser procesado
+            <div class="card-body p-4">
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-secondary me-3" style="width: 80px;">Abierto</span>
+                        <small class="text-muted">Esperando procesamiento</small>
                     </div>
-                    <div class="p-2 status-in_process rounded">
-                        <span class="badge bg-primary me-2">En Proceso</span>
-                        Se está trabajando en el ticket
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-primary me-3" style="width: 80px;">En Proceso</span>
+                        <small class="text-muted">Se está trabajando en el ticket</small>
                     </div>
-                    <div class="p-2 status-closed rounded">
-                        <span class="badge bg-success me-2">Cerrado</span>
-                        El ticket ha sido resuelto
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-success me-3" style="width: 80px;">Cerrado</span>
+                        <small class="text-muted">El ticket ha sido resuelto</small>
                     </div>
                 </div>
             </div>

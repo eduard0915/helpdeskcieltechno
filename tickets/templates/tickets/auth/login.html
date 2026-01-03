@@ -3,6 +3,7 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
+
 <div class="row mb-4">
     <div class="col-12">
         <h1 class="display-5 mb-4">Staff Login</h1>
@@ -12,28 +13,28 @@
 
 <div class="row">
     <div class="col-md-4 mx-auto">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
+        <div class="ui-card">
+            <div class="ui-header">
                 <h5 class="mb-0">Login</h5>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <form method="post">
                     {% csrf_token %}
 
                     {% if form.errors %}
                     <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-circle me-2"></i> Tu nombre de usuario y contraseña no coinciden. Inténtalo de nuevo.
+                        <i class="bi bi-exclamation-circle me-2"></i> Tu nombre de usuario y contraseña no coinciden. Inténtalo de nuevo.
                     </div>
                     {% endif %}
 
                     {% if next %}
                         {% if user.is_authenticated %}
                         <div class="alert alert-warning">
-                            <i class="fas fa-exclamation-triangle me-2"></i> Tu cuenta no tiene acceso a esta página. Para continuar, inicia sesión con una cuenta con acceso.
+                            <i class="bi bi-exclamation-triangle me-2"></i> Tu cuenta no tiene acceso a esta página. Para continuar, inicia sesión con una cuenta con acceso.
                         </div>
                         {% else %}
                         <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i> Inicie sesión para ver esta página.
+                            <i class="bi bi-info-circle me-2"></i> Inicie sesión para ver esta página.
                         </div>
                         {% endif %}
                     {% endif %}
@@ -50,7 +51,7 @@
 
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-sign-in-alt me-2"></i> Iniciar Sesión
+                            <i class="bi bi-box-arrow-in-right me-2"></i> Iniciar Sesión
                         </button>
                     </div>
 
@@ -60,21 +61,21 @@
         </div>
     </div>
      <div class="col-md-6 mx-auto">
-        <div class="card">
-            <div class="card-header bg-info text-white">
+        <div class="ui-card">
+            <div class="ui-header">
                 <h5 class="mb-0">Necesita Help?</h5>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <p>Si es un usuario que desea enviar un ticket de soporte, puede registrarse o enviar un ticket sin iniciar sesión.</p>
                 <div class="d-grid gap-2">
-                    <a href="{% url 'register' %}" class="btn btn-outline-success">
-                        <i class="fas fa-user-plus me-2"></i> Registrarse como Cliente
+                    <a href="{% url 'register' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-person-plus me-2"></i> Registrarse como Cliente
                     </a>
                     <a href="{% url 'create_ticket' %}" class="btn btn-outline-primary">
-                        <i class="fas fa-plus-circle me-2"></i> Enviar un Ticket
+                        <i class="bi bi-plus-circle me-2"></i> Enviar un Ticket
                     </a>
-                    <a href="{% url 'check_ticket' %}" class="btn btn-outline-secondary">
-                        <i class="fas fa-search me-2"></i> Checkar Estado de Ticket
+                    <a href="{% url 'check_ticket' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-search me-2"></i> Checkar Estado de Ticket
                     </a>
                 </div>
             </div>
