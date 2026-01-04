@@ -48,6 +48,7 @@
         {% if user.is_staff %}
             <a href="{% url 'home' %}" class="btn btn-outline-light btn-header d-none d-lg-inline-block">Home</a>
             <a href="{% url 'dashboard' %}" class="btn btn-outline-light btn-header d-none d-lg-inline-block">Dashboard</a>
+            <a href="{% url 'staff_user_list' %}" class="btn btn-outline-light btn-header d-none d-lg-inline-block">Staff</a>
             <a href="{% url 'tickets_list' %}" class="btn btn-outline-light btn-header d-none d-lg-inline-block">Tickets</a>
             <a href="{% url 'manage_tickets' %}" class="btn btn-outline-light btn-header d-none d-lg-inline-block">Gestión</a>
         {% endif %}
