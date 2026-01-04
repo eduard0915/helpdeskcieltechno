@@ -13,6 +13,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.urls import reverse
 from django.utils import timezone
+from django.contrib.auth import views as auth_views
 import json
 
 from .models import Ticket, TicketComment
@@ -21,6 +22,12 @@ from .forms import TicketForm, TicketUpdateForm, TicketCommentForm, TicketSearch
 def landing(request):
     """Página de inicio (landing page) con diseño de dos columnas"""
     return render(request, 'tickets/home.html')
+
+class CustomLoginView(auth_views.LoginView):
+    def get_success_url(self):
+        if self.request.user.is_staff:
+            return reverse('manage_tickets')
+        return reverse('my_tickets')
 
 def home(request):
     """Home page with dashboard showing ticket counts by status"""
@@ -213,9 +220,15 @@ def home(request):
 def create_ticket(request):
     """View for creating a new ticket"""
     if request.method == 'POST':
-        form = TicketForm(request.POST, request.FILES)
+        form = TicketForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
-            ticket = form.save()
+            ticket = form.save(commit=False)
+            if request.user.is_authenticated:
+                if not ticket.requester_name:
+                    ticket.requester_name = request.user.get_full_name() or request.user.username
+                if not ticket.requester_email:
+                    ticket.requester_email = request.user.email
+            ticket.save()
             # Send confirmation email
             send_ticket_confirmation_email(ticket)
             # Send notification to technical support
@@ -227,7 +240,7 @@ def create_ticket(request):
             messages.success(request, f'Su ticket se ha enviado correctamente. Su ID de ticket es {ticket.ticket_id}')
             return redirect('ticket_detail', ticket_id=ticket.ticket_id)
     else:
-        form = TicketForm()
+        form = TicketForm(user=request.user)
     context = {
         'form': form,
         'title': 'Enviar un Ticket',

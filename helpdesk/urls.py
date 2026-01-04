@@ -19,6 +19,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
+from tickets import views as ticket_views
 from django.views.defaults import page_not_found, server_error, bad_request
 
 urlpatterns = [
@@ -28,7 +29,7 @@ urlpatterns = [
     path('company/', include('company.urls')),
 
     # Authentication URLs
-    path('login/', auth_views.LoginView.as_view(template_name='tickets/auth/login.html'), name='login'),
+    path('login/', ticket_views.CustomLoginView.as_view(template_name='tickets/auth/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='tickets/auth/login.html'), name='logout'),
 ]
 

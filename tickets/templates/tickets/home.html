@@ -41,13 +41,13 @@
                 </div>
               </div>
 
-              <h6 class="fw-semibold mb-3 border-bottom pb-2">Tu información</h6>
-              <div class="row g-2 mb-4">
+              <h6 class="fw-semibold mb-3 border-bottom pb-2" {% if user.is_authenticated %}style="display: none;"{% endif %}>Tu información</h6>
+              <div class="row g-2 mb-4" {% if user.is_authenticated %}style="display: none;"{% endif %}>
                 <div class="col-md-6">
-                  <input type="text" name="requester_name" class="form-control" placeholder="Nombre completo" required>
+                  <input type="text" name="requester_name" class="form-control" placeholder="Nombre completo" {% if not user.is_authenticated %}required{% else %}value="{{ user.get_full_name|default:user.username }}"{% endif %}>
                 </div>
                 <div class="col-md-6">
-                  <input type="email" name="requester_email" class="form-control" placeholder="Correo electrónico" required>
+                  <input type="email" name="requester_email" class="form-control" placeholder="Correo electrónico" {% if not user.is_authenticated %}required{% else %}value="{{ user.email }}"{% endif %}>
                 </div>
               </div>
 
@@ -102,19 +102,19 @@
   </div>
 </div>
 
-{% if user.is_staff %}
-<div class="container mt-5">
-    <div class="ui-card p-4 border-top border-4 border-primary">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h5 class="fw-bold mb-1">Panel de Control (Staff)</h5>
-                <p class="text-muted mb-0 small">Accede a las estadísticas detalladas y gestión de tickets.</p>
-            </div>
-            <a href="{% url 'dashboard' %}" class="btn btn-primary">
-                <i class="bi bi-speedometer2 me-2"></i>Ir al Dashboard
-            </a>
-        </div>
-    </div>
-</div>
-{% endif %}
+{#    {% if user.is_staff %}#}
+{#        <div class="container mt-5">#}
+{#            <div class="ui-card p-4 border-top border-4 border-primary">#}
+{#                <div class="d-flex justify-content-between align-items-center">#}
+{#                    <div>#}
+{#                        <h5 class="fw-bold mb-1">Panel de Control (Staff)</h5>#}
+{#                        <p class="text-muted mb-0 small">Accede a las estadísticas detalladas y gestión de tickets.</p>#}
+{#                    </div>#}
+{#                    <a href="{% url 'dashboard' %}" class="btn btn-primary">#}
+{#                        <i class="bi bi-speedometer2 me-2"></i>Ir al Dashboard#}
+{#                    </a>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    {% endif %}#}
 {% endblock %}

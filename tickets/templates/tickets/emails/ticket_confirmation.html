@@ -107,14 +107,14 @@
     <div class="details">
         <h3>Detalles del Ticket:</h3>
         <p><strong>Asunto:</strong> {{ ticket.subject }}</p>
-        <p><strong>Descripciónn:</strong> {{ ticket.description|linebreaks }}</p>
+        <p><strong>Descripción:</strong> {{ ticket.description|linebreaks }}</p>
         <p><strong>Fecha de Envío:</strong> {{ ticket.created_at|date:"F j, Y, g:i a" }}</p>
     </div>
 
-    <p>Puede verificar el estado de su ticket en cualquier momento visitando el enlace a continuación o utilizando el ID
+    <p>Puede verificar el estado de su ticket en cualquier momento visitando el enlace a continuación o utilizando el N°
         del ticket y su dirección de correo electrónico en nuestro sitio web.</p>
 
-    <a href="{{ ticket_url }}" class="button">Ver estado de su Ticket</a>
+    <a href="{{ ticket_url }}" class="btn btn-primary">Ver estado de su Ticket</a>
 
     <p>Si tiene información adicional para agregar a este ticket, puede responder a este correo electrónico o agregar un
         comentario a través de la página del ticket.</p>

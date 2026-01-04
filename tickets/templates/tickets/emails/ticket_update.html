@@ -94,12 +94,12 @@
 </head>
 <body>
 <div class="header">
-    <h1>Actualización en su Ticket de Soporte</h1>
+    <h1>Actualización Gestión de su Ticket</h1>
 </div>
 <div class="content">
     <p>Hola {{ ticket.requester_name }},</p>
 
-    <p>Se ha registrado un avance en su ticket de soporte:</p>
+    <p>Se ha registrado un avance en su ticket de soporte técnico:</p>
 
     <div class="ticket-id">
         Ticket #{{ ticket.ticket_id }}
@@ -122,7 +122,7 @@
 
     <p>Para ver los detalles completos de su ticket, haga clic en el siguiente enlace:</p>
 
-    <a href="{{ ticket_url }}" class="button">Ver detalles del Ticket</a>
+    <a href="{{ ticket_url }}" class="btn btn-primary">Ver detalles del Ticket</a>
 
     <p>Gracias por su paciencia.</p>
 

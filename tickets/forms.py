@@ -16,6 +16,13 @@ class TicketForm(forms.ModelForm):
             'requester_email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Ej. juan@ejemplo.com'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if self.user and self.user.is_authenticated:
+            self.fields['requester_name'].required = False
+            self.fields['requester_email'].required = False
+
 class TicketUpdateForm(forms.ModelForm):
     """Form for updating an existing ticket (admin/staff only)"""
     class Meta:
@@ -30,7 +37,7 @@ class TicketUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Only show staff users as assignees
-        self.fields['assigned_to'].queryset = User.objects.filter(is_staff=True)
+        self.fields['assigned_to'].queryset = User.objects.filter(is_staff=True, is_superuser=False).order_by('username')
         self.fields['assigned_to'].required = False
 
 class TicketCommentForm(forms.ModelForm):
