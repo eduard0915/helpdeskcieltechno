@@ -249,11 +249,10 @@ def create_ticket(request):
 
 def ticket_detail(request, ticket_id):
     """View for displaying ticket details"""
-    ticket = Ticket.objects.get(ticket_id=ticket_id)
+    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
 
     # Prefetch comments con autor para evitar N+1 queries
     comments = ticket.comments.select_related('author').order_by('created_at')
-    # comments = TicketComment.objects.filter(ticket=ticket.ticket_id).select_related('author').order_by('created_at')
 
     # Procesamiento del formulario de comentarios
     if request.method == 'POST' and 'comment_submit' in request.POST:
@@ -270,16 +269,17 @@ def ticket_detail(request, ticket_id):
 
             comment.save()
 
-            if comment.is_progress_update and request.user.is_staff:
-                try:
-                    send_progress_update_email(ticket, comment)
+            # Enviar notificación por correo al cliente
+            try:
+                send_progress_update_email(ticket, comment)
+                if comment.is_progress_update and request.user.is_staff:
                     messages.success(request,
                                      'Se agregó actualización de progreso y se envió una notificación al cliente.')
-                except Exception as e:
-                    messages.warning(request,
-                                     f'Se agregó una actualización de progreso, pero no se pudo enviar la notificación: {str(e)}')
-            else:
-                messages.success(request, 'Su comentario ha sido añadido.')
+                else:
+                    messages.success(request, 'Su comentario ha sido añadido y se ha notificado al cliente.')
+            except Exception as e:
+                messages.warning(request,
+                                 f'Su comentario ha sido añadido, pero no se pudo enviar la notificación: {str(e)}')
 
             return redirect('ticket_detail', ticket_id=ticket.ticket_id)
     else:
@@ -293,15 +293,26 @@ def ticket_detail(request, ticket_id):
 
     if request.user.is_authenticated and request.user.is_staff:
         if request.method == 'POST' and 'update_submit' in request.POST:
+            # Capturar el estado antes de que el formulario actualice la instancia
+            old_status = ticket.status
+            old_status_display = ticket.get_status_display()
+            
             update_form = TicketUpdateForm(request.POST, instance=ticket)
             if update_form.is_valid():
-                old_status = ticket.status
                 updated_ticket = update_form.save()
 
-                if old_status != Ticket.CLOSED and updated_ticket.status == Ticket.CLOSED:
-                    send_ticket_closed_email(updated_ticket)
-
-                messages.success(request, 'El ticket se ha actualizado correctamente.')
+                if old_status != updated_ticket.status:
+                    try:
+                        if updated_ticket.status == Ticket.CLOSED:
+                            send_ticket_closed_email(updated_ticket)
+                        else:
+                            send_status_change_email(updated_ticket, old_status_display, updated_ticket.get_status_display())
+                        messages.success(request, f'El ticket se ha actualizado correctamente y se ha notificado el cambio de estado ({updated_ticket.get_status_display()}).')
+                    except Exception as e:
+                        messages.warning(request, f'El ticket se ha actualizado, pero no se pudo enviar la notificación de cambio de estado: {str(e)}')
+                else:
+                    messages.success(request, 'El ticket se ha actualizado correctamente.')
+                
                 return redirect('ticket_detail', ticket_id=ticket.ticket_id)
         else:
             update_form = TicketUpdateForm(instance=ticket)
@@ -411,7 +422,7 @@ def tickets_list(request):
 # Email functions
 def send_progress_update_email(ticket, comment):
     """Send notification email when a progress update is added to a ticket"""
-    subject = f'Actualización en su Ticket #{ticket.ticket_id}'
+    subject = f'Actualización en su Ticket N° {ticket.ticket_id}'
 
     # Build the ticket URL
     ticket_url = reverse('ticket_detail', kwargs={'ticket_id': ticket.ticket_id})
@@ -454,7 +465,7 @@ def send_ticket_to_support_email(ticket):
     else:
         recipients = list(support_email)
 
-    subject = f"Nuevo Ticket #{ticket.ticket_id} — {ticket.subject}"
+    subject = f"Nuevo Ticket N° {ticket.ticket_id} — {ticket.subject}"
 
     html_message = render_to_string('tickets/emails/ticket_new_support.html', {
         'ticket': ticket,
@@ -473,7 +484,7 @@ def send_ticket_to_support_email(ticket):
 
 def send_ticket_confirmation_email(ticket):
     """Send confirmation email when a ticket is created"""
-    subject = f'Helpdesk Ticket #{ticket.ticket_id} Received'
+    subject = f'Helpdesk Ticket N° {ticket.ticket_id} Recibido'
 
     # Build the ticket URL
     ticket_url = reverse('ticket_detail', kwargs={'ticket_id': ticket.ticket_id})
@@ -498,19 +509,65 @@ def send_ticket_confirmation_email(ticket):
         fail_silently=False,
     )
 
-def send_ticket_closed_email(ticket):
-    """Send notification email when a ticket is closed"""
-    subject = f'Su Ticket de soporte técnico # {ticket.ticket_id} ha sido Cerrado'
+def send_status_change_email(ticket, old_status, new_status):
+    """Send notification email when a ticket status is changed"""
+    subject = f'Cambio de Estado en su Ticket N° {ticket.ticket_id}'
 
     # Build the ticket URL
     ticket_url = reverse('ticket_detail', kwargs={'ticket_id': ticket.ticket_id})
     absolute_url = f"{settings.SITE_URL}{ticket_url}" if hasattr(settings, 'SITE_URL') else ticket_url
 
     # Create HTML message
+    html_message = render_to_string('tickets/emails/ticket_status_change.html', {
+        'ticket': ticket,
+        'old_status': old_status,
+        'new_status': new_status,
+        'ticket_url': absolute_url,
+    })
+
+    # Create plain text message
+    plain_message = strip_tags(html_message)
+
+    # Send email
+    send_mail(
+        subject,
+        plain_message,
+        settings.DEFAULT_FROM_EMAIL,
+        [ticket.requester_email],
+        html_message=html_message,
+        fail_silently=False,
+    )
+
+def send_ticket_closed_email(ticket):
+    """Send notification email when a ticket is closed"""
+    subject = f'Su Ticket N° {ticket.ticket_id} ha sido Cerrado'
+
+    # Build the ticket URL
+    ticket_url = reverse('ticket_detail', kwargs={'ticket_id': ticket.ticket_id})
+    absolute_url = f"{settings.SITE_URL}{ticket_url}" if hasattr(settings, 'SITE_URL') else ticket_url
+
+    # Calculate friendly resolution time
+    res_time = ""
+    if ticket.resolution_time:
+        days = ticket.resolution_time.days
+        hours = ticket.resolution_time.seconds // 3600
+        minutes = (ticket.resolution_time.seconds % 3600) // 60
+        
+        parts = []
+        if days > 0:
+            parts.append(f"{days} día{'s' if days != 1 else ''}")
+        if hours > 0:
+            parts.append(f"{hours} hora{'s' if hours != 1 else ''}")
+        if minutes > 0 or not parts:
+            parts.append(f"{minutes} minuto{'s' if minutes != 1 else ''}")
+        
+        res_time = ", ".join(parts)
+
+    # Create HTML message
     html_message = render_to_string('tickets/emails/ticket_closed.html', {
         'ticket': ticket,
         'ticket_url': absolute_url,
-        'resolution_time': ticket.resolution_time,
+        'resolution_time_str': res_time,
     })
 
     # Create plain text message

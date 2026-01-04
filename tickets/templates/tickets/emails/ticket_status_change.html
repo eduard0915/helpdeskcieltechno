@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Actualización de Ticket</title>
+    <title>Cambio de Estado del Ticket</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,7 +13,6 @@
             margin: 0 auto;
             padding: 20px;
         }
-
         .header {
             background-color: #0d6efd;
             color: white;
@@ -21,59 +20,25 @@
             text-align: center;
             border-radius: 5px 5px 0 0;
         }
-
         .content {
             padding: 20px;
             border: 1px solid #ddd;
             border-top: none;
             border-radius: 0 0 5px 5px;
         }
-
         .ticket-id {
             font-size: 24px;
             font-weight: bold;
             color: #0d6efd;
             margin: 20px 0;
         }
-
-        .status {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 3px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .status-open {
-            background-color: #e2e3e5;
-            color: #6c757d;
-        }
-
-        .status-in_process {
-            background-color: #d1e7dd;
-            color: #0d6efd;
-        }
-
-        .status-closed {
-            background-color: #d1e7dd;
-            color: #198754;
-        }
-
-        .update-box {
+        .status-box {
             background-color: #f8f9fa;
             padding: 15px;
             border-radius: 5px;
             margin: 20px 0;
             border-left: 4px solid #0d6efd;
         }
-
-        .details {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
-        }
-
         a.button {
             display: inline-block;
             background-color: #0d6efd;
@@ -83,7 +48,6 @@
             border-radius: 5px;
             margin-top: 20px;
         }
-
         .footer {
             margin-top: 30px;
             font-size: 12px;
@@ -94,44 +58,37 @@
 </head>
 <body>
 <div class="header">
-    <h1>Actualización Gestión de su Ticket</h1>
+    <h1>Actualización de Estado de su Ticket</h1>
 </div>
 <div class="content">
     <p>Hola {{ ticket.requester_name }},</p>
 
-    <p>Se ha registrado un avance en su ticket de soporte técnico:</p>
+    <p>El estado de su ticket de soporte técnico ha sido actualizado:</p>
 
     <div class="ticket-id">
-        Ticket #{{ ticket.ticket_id }}
+        Ticket N° {{ ticket.ticket_id }}
     </div>
 
-    <div class="details">
-        <h3>Detalles del Ticket:</h3>
+    <div class="status-box">
         <p><strong>Asunto:</strong> {{ ticket.subject }}</p>
-        <p><strong>Estado actual:</strong> 
-            <span class="status status-{{ ticket.status }}">{{ ticket.get_status_display }}</span>
-        </p>
-    </div>
-
-    <div class="update-box">
-        <h3>Actualización:</h3>
-        <p>{{ comment.content|linebreaks }}</p>
-        <p><strong>Actualizado por:</strong> {{ comment.author.get_full_name|default:comment.author_name }}</p>
-        <p><strong>Fecha de actualización:</strong> {{ comment.created_at|date:"d/m/Y H:i" }}</p>
+        <p><strong>Estado anterior:</strong> {{ old_status }}</p>
+        <p><strong>Nuevo estado:</strong> <strong>{{ ticket.get_status_display }}</strong></p>
     </div>
 
     <p>Para ver los detalles completos de su ticket, haga clic en el siguiente enlace:</p>
 
-    <a href="{{ ticket_url }}" class="button">Ver detalles del Ticket</a>
+    <a href="{{ ticket_url }}" class="button" target="_blank">
+        Ver detalles del Ticket
+    </a>
 
     <p>Gracias por su paciencia.</p>
 
     <p>Atentamente,<br>
-        Equipo de Soporte Helpdesk</p>
+        Equipo de Soporte TI-Helpdesk</p>
 </div>
 <div class="footer">
     <p>Este es un mensaje automático. Por favor, no responda directamente a este correo electrónico.</p>
-    <p>&copy; {% now "Y" %} Sistema de Soporte Helpdesk. Todos los derechos reservados.</p>
+    <p>&copy; {% now "Y" %} Sistema de Soporte TI-Helpdesk. Todos los derechos reservados.</p>
 </div>
 </body>
 </html>

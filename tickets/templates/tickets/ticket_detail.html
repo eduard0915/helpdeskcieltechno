@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Ticket # {{ ticket.ticket_id }}{% endblock %}
+{% block title %}Ticket N° {{ ticket.ticket_id }}{% endblock %}
 
 {% block content %}
     <div class="row mb-4">
@@ -11,7 +11,7 @@
                     {% if user.is_staff %}
                         <li class="breadcrumb-item"><a href="{% url 'manage_tickets' %}">Gestión de Tickets</a></li>
                     {% endif %}
-                    <li class="breadcrumb-item active">Ticket # {{ ticket.ticket_id }}</li>
+                    <li class="breadcrumb-item active">Ticket N° {{ ticket.ticket_id }}</li>
                 </ol>
             </nav>
         </div>
@@ -24,7 +24,7 @@
                     <h5 class="mb-0">
                         <span class="badge bg-light text-dark me-2">{{ ticket.get_priority_display }}</span>
                         <span class="badge border border-white me-2">{{ ticket.get_status_display }}</span>
-                        Ticket # {{ ticket.ticket_id }}
+                        Ticket N° {{ ticket.ticket_id }}
                     </h5>
                 </div>
                 <div class="card-body p-4">
