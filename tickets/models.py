@@ -65,6 +65,25 @@ class Ticket(models.Model):
 
         super().save(*args, **kwargs)
 
+    def get_resolution_time_display(self):
+        """Returns a friendly string for resolution time"""
+        if not self.resolution_time:
+            return None
+        
+        days = self.resolution_time.days
+        hours = self.resolution_time.seconds // 3600
+        minutes = (self.resolution_time.seconds % 3600) // 60
+        
+        parts = []
+        if days > 0:
+            parts.append(f"{days} día{'s' if days != 1 else ''}")
+        if hours > 0:
+            parts.append(f"{hours} hora{'s' if hours != 1 else ''}")
+        if minutes > 0 or not parts:
+            parts.append(f"{minutes} minuto{'s' if minutes != 1 else ''}")
+        
+        return ", ".join(parts)
+
     def __str__(self):
         return f"Ticket #{self.ticket_id} - {self.subject}"
 

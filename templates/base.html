@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>{% block title %}Helpdesk System{% endblock %}</title>
+  <title>{% block title %}TI-Helpdesk System{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {% load static %}
   <!-- Bootstrap 5 -->
@@ -87,7 +87,7 @@
 <!-- Footer ligero -->
 <footer class="text-center py-4 bg-white border-top text-muted" style="font-size:.8rem">
     <div class="container">
-        <p class="mb-1">Sistema de Soporte Helpdesk &copy; {% now "Y" %} {% if company %}{{ company.name }}{% else %}CielTechno SAS{% endif %}</p>
+        <p class="mb-1">Sistema de Soporte TI-Helpdesk&copy; {% now "Y" %}, un servicio de CielTechno SAS</p>
         {% if company %}
             <p class="mb-0">
                 {% if company.email %}<i class="bi bi-envelope me-1"></i> {{ company.email }} {% endif %}

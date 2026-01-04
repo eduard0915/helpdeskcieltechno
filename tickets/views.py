@@ -546,28 +546,11 @@ def send_ticket_closed_email(ticket):
     ticket_url = reverse('ticket_detail', kwargs={'ticket_id': ticket.ticket_id})
     absolute_url = f"{settings.SITE_URL}{ticket_url}" if hasattr(settings, 'SITE_URL') else ticket_url
 
-    # Calculate friendly resolution time
-    res_time = ""
-    if ticket.resolution_time:
-        days = ticket.resolution_time.days
-        hours = ticket.resolution_time.seconds // 3600
-        minutes = (ticket.resolution_time.seconds % 3600) // 60
-        
-        parts = []
-        if days > 0:
-            parts.append(f"{days} día{'s' if days != 1 else ''}")
-        if hours > 0:
-            parts.append(f"{hours} hora{'s' if hours != 1 else ''}")
-        if minutes > 0 or not parts:
-            parts.append(f"{minutes} minuto{'s' if minutes != 1 else ''}")
-        
-        res_time = ", ".join(parts)
-
     # Create HTML message
     html_message = render_to_string('tickets/emails/ticket_closed.html', {
         'ticket': ticket,
         'ticket_url': absolute_url,
-        'resolution_time_str': res_time,
+        'resolution_time_str': ticket.get_resolution_time_display(),
     })
 
     # Create plain text message
