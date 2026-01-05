@@ -5,7 +5,9 @@ dj-database-url==3.1.0
 Django==5.2.8
 django-decouple==2.1
 django-storages==1.14.6
+gunicorn==23.0.0
 jmespath==1.0.1
+packaging==25.0
 pillow==12.1.0
 psycopg2-binary==2.9.11
 python-dateutil==2.9.0.post0
