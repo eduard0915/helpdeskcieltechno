@@ -1,13 +1,15 @@
 steps:
   - name: gcr.io/cloud-builders/docker
     entrypoint: 'bash'
-    args: ['-c', 'docker build --no-cache --build-arg SECRET_KEY=$$SECRET_KEY --build-arg DATABASE_URL=$$DATABASE_URL --build-arg MEDIA_URL=$$MEDIA_URL -t us-east4-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA . -f Dockerfile']
+    args: ['-c', 'docker build --no-cache --build-arg SECRET_KEY=$$SECRET_KEY --build-arg DATABASE_URL=$$DATABASE_URL --build-arg MEDIA_URL=$$MEDIA_URL -t us-east4-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA . -f Dockerfile']
+#    args: ['-c', 'docker build --no-cache --build-arg SECRET_KEY=$$SECRET_KEY --build-arg DATABASE_URL=$$DATABASE_URL --build-arg MEDIA_URL=$$MEDIA_URL -t us-east4-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA . -f Dockerfile']
     secretEnv: [ 'SECRET_KEY', 'DATABASE_URL',  'MEDIA_URL']
     id: Build
   - name: gcr.io/cloud-builders/docker
     args:
       - push
-      - 'us-east4-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+      - 'us-east4-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+#      - 'us-east4-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
     id: Push
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
     args:
@@ -16,7 +18,8 @@ steps:
       - update
       - $_SERVICE_NAME
       - '--platform=managed'
-      - '--image=us-east4-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+      - '--image=us-east4-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+#      - '--image=us-east4-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
       - >-
         --labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID,$_LABELS
       - '--region=$_DEPLOY_REGION'
@@ -24,7 +27,8 @@ steps:
     id: Deploy
     entrypoint: gcloud
 images:
-  - 'us-east4-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+  - 'us-east4-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+#  - 'us-east4-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
 options:
   substitutionOption: ALLOW_LOOSE
   logging: CLOUD_LOGGING_ONLY

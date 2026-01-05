@@ -146,3 +146,35 @@ SUPPORT_EMAIL = config('SUPPORT_EMAIL', default=None)
 # URL pública del sitio para construir enlaces absolutos en correos
 # Ejemplo: https://mi-helpdesk.com
 SITE_URL = config('SITE_URL', default='')
+
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = config('BUCKET')
+AWS_S3_REGION_NAME = config('REGION_NAME')
+REGION_NAME = config('REGION_NAME')
+AWS_S3_CUSTOM_DOMAIN = config('AWS_S3_CUSTOM_DOMAIN')
+
+STORAGES = {
+    "default": {
+        "BACKEND": "helpdesk.storages.MediaStore",
+        "LOCATION": "media",
+        "OPTIONS": {
+            "location": "media",
+            "file_overwrite": False,
+            "custom_domain": AWS_S3_CUSTOM_DOMAIN,
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "OPTIONS": {
+            "location": "static",
+        },
+    },
+}
+
+# access with url from cloud run service
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000/',
+    'http://localhost:8000/',
+    'https://*.run.app',
+]
