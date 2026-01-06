@@ -58,4 +58,4 @@ RUN python3 manage.py collectstatic --noinput || true
 
 # Run the web service on container startup
 CMD python3 manage.py migrate --noinput && \
-    exec gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 0 config.wsgi:application
+    exec gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 0 helpdesk.wsgi:application
