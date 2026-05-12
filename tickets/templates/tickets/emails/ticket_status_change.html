@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambio de Estado del Ticket</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #0d6efd;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+        }
+        .ticket-id {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0d6efd;
+            margin: 20px 0;
+        }
+        .status-box {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #0d6efd;
+        }
+        a.button {
+            display: inline-block;
+            background-color: #0d6efd;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #6c757d;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Actualización de Estado de su Ticket</h1>
+</div>
+<div class="content">
+    <p>Hola {{ ticket.requester_name }},</p>
+
+    <p>El estado de su ticket de soporte técnico ha sido actualizado:</p>
+
+    <div class="ticket-id">
+        Ticket N° {{ ticket.ticket_id }}
+    </div>
+
+    <div class="status-box">
+        <p><strong>Asunto:</strong> {{ ticket.subject }}</p>
+        <p><strong>Estado anterior:</strong> {{ old_status }}</p>
+        <p><strong>Nuevo estado:</strong> <strong>{{ ticket.get_status_display }}</strong></p>
+    </div>
+
+    <p>Para ver los detalles completos de su ticket, haga clic en el siguiente enlace:</p>
+
+    <a href="{{ ticket_url }}" class="button" target="_blank">
+        Ver detalles del Ticket
+    </a>
+
+    <p>Gracias por su paciencia.</p>
+
+    <p>Atentamente,<br>
+        Equipo de Soporte TI-Helpdesk</p>
+</div>
+<div class="footer">
+    <p>Este es un mensaje automático. Por favor, no responda directamente a este correo electrónico.</p>
+    <p>&copy; {% now "Y" %} Sistema de Soporte TI-Helpdesk. Todos los derechos reservados.</p>
+</div>
+</body>
+</html>

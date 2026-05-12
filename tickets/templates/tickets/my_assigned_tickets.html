@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}Mis Tickets Asignados{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-dark mb-0">Mis Tickets Asignados</h2>
+</div>
+
+<!-- Tickets Table -->
+<div class="ui-card mb-5">
+    <div class="card-body p-0 overflow-x-auto">
+        {% if tickets %}
+            <table class="table table-hover align-middle mb-0 small">
+                <thead class="bg-light text-muted fw-bold">
+                    <tr>
+                        <th class="ps-4">ID</th>
+                        <th>Asunto</th>
+                        <th>Solicitante</th>
+                        <th>Prioridad</th>
+                        <th>Estado</th>
+                        <th>Creado</th>
+                        <th class="text-end pe-4">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticket in tickets %}
+                    <tr>
+                        <td class="ps-4"><code>{{ ticket.ticket_id }}</code></td>
+                        <td class="fw-semibold">{{ ticket.subject|truncatechars:40 }}</td>
+                        <td>{{ ticket.requester_name }}</td>
+                        <td>
+                            <span class="badge bg-{{ ticket.get_priority_color }}">
+                                {{ ticket.get_priority_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-{{ ticket.get_status_color }}">
+                                {{ ticket.get_status_display }}
+                            </span>
+                        </td>
+                        <td class="text-nowrap">{{ ticket.created_at|date:"d/m/Y" }}</td>
+                        <td class="text-end pe-4">
+                            <div class="btn-group">
+                                <a href="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="btn btn-sm btn-outline-primary" title="Ver Detalles">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                {% if ticket.status != 'closed' %}
+                                    {% if ticket.status == 'open' %}
+                                    <form method="post" action="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="update_submit" value="1">
+                                        <input type="hidden" name="status" value="in_process">
+                                        <input type="hidden" name="priority" value="{{ ticket.priority }}">
+                                        <input type="hidden" name="assigned_to" value="{{ user.id }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary ms-1" title="Iniciar Gestión">
+                                            <i class="bi bi-play-fill"></i>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                    <form method="post" action="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="update_submit" value="1">
+                                        <input type="hidden" name="status" value="closed">
+                                        <input type="hidden" name="priority" value="{{ ticket.priority }}">
+                                        <input type="hidden" name="assigned_to" value="{{ user.id }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-success ms-1" title="Cerrar Ticket">
+                                            <i class="bi bi-check-lg"></i>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                No tienes ningún ticket asignado.
+                <div class="mt-3">
+                    <a href="{% url 'manage_tickets' %}" class="btn btn-sm btn-outline-primary">Ver todos los tickets</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Priority and Status Legend -->
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="ui-card h-100">
+            <div class="ui-header">
+                <h6 class="mb-0">Prioridad</h6>
+            </div>
+            <div class="card-body p-4">
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-secondary me-3" style="width: 80px;">Normal</span>
+                        <small class="text-muted">Respuesta en 48 horas</small>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-warning text-dark me-3" style="width: 80px;">Prioritario</span>
+                        <small class="text-muted">Respuesta en 24 horas</small>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-danger me-3" style="width: 80px;">Urgente</span>
+                        <small class="text-muted">Respuesta en 8 horas</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="ui-card h-100">
+            <div class="ui-header">
+                <h6 class="mb-0">Estado</h6>
+            </div>
+            <div class="card-body p-4">
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-secondary me-3" style="width: 80px;">Abierto</span>
+                        <small class="text-muted">Esperando procesamiento</small>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-primary me-3" style="width: 80px;">En Proceso</span>
+                        <small class="text-muted">Se está trabajando en el ticket</small>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-success me-3" style="width: 80px;">Cerrado</span>
+                        <small class="text-muted">El ticket ha sido resuelto</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

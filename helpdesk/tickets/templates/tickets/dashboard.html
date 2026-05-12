@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | TI-Helpdesk{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-5">
+    <!-- Resumen de Tickets -->
+    <div class="col-md-3">
+        <div class="ui-card h-100 p-4 border-start border-4 border-secondary shadow-sm">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <h6 class="text-muted mb-0">Tickets Abiertos</h6>
+                <i class="bi bi-inbox text-secondary fs-4"></i>
+            </div>
+            <h2 class="fw-bold mb-1">{{ counts.open }}</h2>
+            <p class="text-muted small mb-0">En espera de asignación</p>
+            {% if user.is_staff %}
+                <a href="{% url 'tickets_list' %}?status=open" class="btn btn-sm btn-link p-0 mt-2 text-decoration-none">Ver detalles</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="ui-card h-100 p-4 border-start border-4 border-primary shadow-sm">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <h6 class="text-primary mb-0">En Proceso</h6>
+                <i class="bi bi-hourglass-split text-primary fs-4"></i>
+            </div>
+            <h2 class="fw-bold mb-1 text-primary">{{ counts.in_process }}</h2>
+            <p class="text-muted small mb-0">Trabajando actualmente</p>
+            {% if user.is_staff %}
+                <a href="{% url 'tickets_list' %}?status=in_process" class="btn btn-sm btn-link p-0 mt-2 text-decoration-none">Ver detalles</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="ui-card h-100 p-4 border-start border-4 border-success shadow-sm">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <h6 class="text-success mb-0">Cerrados</h6>
+                <i class="bi bi-check-circle text-success fs-4"></i>
+            </div>
+            <h2 class="fw-bold mb-1 text-success">{{ counts.closed }}</h2>
+            <p class="text-muted small mb-0">Resueltos satisfactoriamente</p>
+            {% if user.is_staff %}
+                <a href="{% url 'tickets_list' %}?status=closed" class="btn btn-sm btn-link p-0 mt-2 text-decoration-none">Ver detalles</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="ui-card h-100 p-4 border-start border-4 border-dark shadow-sm bg-dark text-white">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <h6 class="text-light mb-0">Total Tickets</h6>
+                <i class="bi bi-bar-chart text-light fs-4"></i>
+            </div>
+            <h2 class="fw-bold mb-1">{{ counts.total }}</h2>
+            <p class="text-light small mb-0 opacity-75">Histórico total</p>
+            {% if user.is_staff %}
+                <a href="{% url 'tickets_list' %}" class="btn btn-sm btn-link link-light p-0 mt-2 text-decoration-none">Ver todo</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <!-- Promedios de Respuesta -->
+    <div class="col-md-4">
+        <div class="ui-card p-4 shadow-sm border-0 h-100 border-start border-4 border-secondary">
+            <div class="d-flex align-items-center mb-3">
+                <div class="p-2 rounded me-3 bg-secondary text-white">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+                <div>
+                    <h6 class="mb-0 fw-bold small">Promedio Normal</h6>
+                    <small class="text-muted" style="font-size: .6rem;">(Meta: 48 horas)</small>
+                </div>
+            </div>
+            <h3 class="fw-bold text-dark mb-0">{{ avg_by_priority.normal }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="ui-card p-4 shadow-sm border-0 h-100 border-start border-4 border-warning">
+            <div class="d-flex align-items-center mb-3">
+                <div class="p-2 rounded me-3 bg-warning text-dark">
+                    <i class="bi bi-lightning-charge"></i>
+                </div>
+                <div>
+                    <h6 class="mb-0 fw-bold small">Promedio Prioritario</h6>
+                    <small class="text-muted" style="font-size: .6rem;">(Meta: 24 horas)</small>
+                </div>
+            </div>
+            <h3 class="fw-bold text-warning mb-0">{{ avg_by_priority.priority }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="ui-card p-4 shadow-sm border-0 h-100 border-start border-4 border-danger">
+            <div class="d-flex align-items-center mb-3">
+                <div class="p-2 rounded me-3 bg-danger text-white">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+                <div>
+                    <h6 class="mb-0 fw-bold small">Promedio Urgente</h6>
+                    <small class="text-muted" style="font-size: .6rem;">(Meta: 8 horas)</small>
+                </div>
+            </div>
+            <h3 class="fw-bold text-danger mb-0">{{ avg_by_priority.urgent }}</h3>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Gráficas -->
+    <div class="col-lg-6">
+        <div class="ui-card p-4 shadow-sm h-100 border-top border-4 border-info">
+            <h6 class="fw-bold mb-4 text-secondary small"><i class="bi bi-graph-up me-2"></i>Tickets Creados vs Cerrados</h6>
+            <div class="chart-container">
+                <canvas id="chartCreatedClosed"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="ui-card p-4 shadow-sm h-100 border-top border-4 border-primary">
+            <h6 class="fw-bold mb-4 text-secondary small"><i class="bi bi-clock me-2"></i>Tiempo de Respuesta (Horas)</h6>
+            <div class="chart-container">
+                <canvas id="chartAvgResponse"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="ui-card p-4 shadow-sm">
+            <h6 class="fw-bold mb-4 text-muted">Prioridad Normal</h6>
+            <div class="chart-container" style="height: 200px;">
+                <canvas id="chartNormal"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="ui-card p-4 shadow-sm">
+            <h6 class="fw-bold mb-4 text-warning">Prioridad Prioritario</h6>
+            <div class="chart-container" style="height: 200px;">
+                <canvas id="chartPriority"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="ui-card p-4 shadow-sm">
+            <h6 class="fw-bold mb-4 text-danger">Prioridad Urgente</h6>
+            <div class="chart-container" style="height: 200px;">
+                <canvas id="chartUrgent"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if not user.is_staff %}
+<div class="row mt-5">
+    <div class="col-md-6 mb-4">
+        <div class="ui-card shadow-sm overflow-hidden border-top border-4 border-primary">
+            <div class="bg-light px-4 py-3 border-bottom">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-plus-circle me-2"></i>¿Necesitas ayuda técnica?</h6>
+            </div>
+            <div class="card-body p-4 text-center">
+                <p class="text-muted mb-4 small">Crea un nuevo ticket de soporte y nuestro equipo te atenderá a la brevedad.</p>
+                <a href="{% url 'create_ticket' %}" class="btn btn-primary px-4 py-2">
+                    <i class="bi bi-send-fill me-2"></i>Enviar Nuevo Ticket
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="ui-card shadow-sm overflow-hidden border-top border-4 border-secondary">
+            <div class="bg-light px-4 py-3 border-bottom">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-search me-2"></i>Consultar Estado</h6>
+            </div>
+            <div class="card-body p-4 text-center">
+                <p class="text-muted mb-4 small">Ingresa el ID de tu ticket para conocer su estado actual y avances.</p>
+                <a href="{% url 'check_ticket' %}" class="btn btn-outline-primary px-4 py-2">
+                    <i class="bi bi-tag-fill me-2"></i>Verificar Ticket
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    (function() {
+        const data = {{ charts_json|safe }};
+
+        const COLORS = {
+            created: '#1b9aaa', 
+            closed: '#22c55e',  
+            normal: '#415a77',  
+            priority: '#f59e0b',
+            urgent: '#ef4444',  
+        };
+
+        const baseOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
+                tooltip: { backgroundColor: 'rgba(13, 27, 42, 0.9)' }
+            },
+            scales: {
+                x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+                y: { beginAtZero: true, ticks: { font: { size: 10 } } }
+            }
+        };
+
+        // Chart 1: Created vs Closed
+        new Chart(document.getElementById('chartCreatedClosed').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: data.labels,
+                datasets: [
+                    { label: 'Creados', data: data.created, borderColor: COLORS.created, backgroundColor: COLORS.created, tension: 0.3, fill: false },
+                    { label: 'Cerrados', data: data.closed, borderColor: COLORS.closed, backgroundColor: COLORS.closed, tension: 0.3, fill: false },
+                ]
+            },
+            options: baseOptions
+        });
+
+        // Avg response time
+        new Chart(document.getElementById('chartAvgResponse').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: data.labels,
+                datasets: [
+                    { label: 'Normal (h)', data: data.avg_hours_per_month.normal, borderColor: COLORS.normal, backgroundColor: COLORS.normal, tension: 0.3 },
+                    { label: 'Prioritario (h)', data: data.avg_hours_per_month.priority, borderColor: COLORS.priority, backgroundColor: COLORS.priority, tension: 0.3 },
+                    { label: 'Urgente (h)', data: data.avg_hours_per_month.urgent, borderColor: COLORS.urgent, backgroundColor: COLORS.urgent, tension: 0.3 },
+                ]
+            },
+            options: baseOptions
+        });
+
+        function makeMiniChart(canvasId, prKey, color) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            return new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [
+                        { label: 'Creados', data: data.per_priority[prKey].created, borderColor: COLORS.created, backgroundColor: COLORS.created, tension: 0.3, pointRadius: 0 },
+                        { label: 'Cerrados', data: data.per_priority[prKey].closed, borderColor: color, backgroundColor: color, tension: 0.3, pointRadius: 0 },
+                    ]
+                },
+                options: {
+                    ...baseOptions,
+                    plugins: { ...baseOptions.plugins, legend: { display: false } }
+                }
+            });
+        }
+
+        makeMiniChart('chartNormal', 'normal', COLORS.normal);
+        makeMiniChart('chartPriority', 'priority', COLORS.priority);
+        makeMiniChart('chartUrgent', 'urgent', COLORS.urgent);
+    })();
+</script>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio | TI-Helpdesk{% endblock %}
+
+{% block content %}
+<div id="capture">
+  <div class="container">
+    <div class="row g-4">
+
+      <!-- Columna: Enviar Ticket -->
+      <div class="col-lg-6">
+        <div class="ui-card h-100">
+          <div class="ui-header text-center">
+            <h6 class="mb-0">Complete el Formulario para Recibir Asistencia Técnica</h6>
+          </div>
+          <div class="card-body p-4">
+            <form action="{% url 'create_ticket' %}" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label class="form-label fw-semibold mb-1">Asunto</label>
+                <input type="text" name="subject" class="form-control" placeholder="Resumen breve del problema" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold mb-1">Descripción</label>
+                <textarea name="description" class="form-control" rows="3" placeholder="Detalles..." required></textarea>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-md-6 mb-3 mb-md-0">
+                  <label class="form-label fw-semibold mb-1">Prioridad</label>
+                  <select name="priority" class="form-select" required>
+                    <option value="normal">Normal (48 h)</option>
+                    <option value="priority">Prioritario (24 h)</option>
+                    <option value="urgent">Urgente (8 h)</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold mb-1">Adjuntar archivo</label>
+                  <input name="attachment" class="form-control" type="file">
+                  <small class="d-block mt-1">Opcional: imágenes, PDFs, etc.</small>
+                </div>
+              </div>
+
+              <h6 class="fw-semibold mb-3 border-bottom pb-2" {% if user.is_authenticated %}style="display: none;"{% endif %}>Tu información</h6>
+              <div class="row g-2 mb-4" {% if user.is_authenticated %}style="display: none;"{% endif %}>
+                <div class="col-md-6">
+                  <input type="text" name="requester_name" class="form-control" placeholder="Nombre completo" {% if not user.is_authenticated %}required{% else %}value="{{ user.get_full_name|default:user.username }}"{% endif %}>
+                </div>
+                <div class="col-md-6">
+                  <input type="email" name="requester_email" class="form-control" placeholder="Correo electrónico" {% if not user.is_authenticated %}required{% else %}value="{{ user.email }}"{% endif %}>
+                </div>
+              </div>
+
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary py-2">
+                  <i class="bi bi-send-fill me-2"></i>Enviar Ticket
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna: Consultar Ticket -->
+      <div class="col-lg-6">
+        <div class="ui-card h-100">
+          <div class="ui-header text-center">
+            <h6 class="mb-0"><i class="bi bi-search me-2"></i>Consultar Estado de un Ticket</h6>
+          </div>
+          <div class="card-body p-4 d-flex flex-column justify-content-center">
+            <p class="text-center text-muted mb-4" style="font-size:.85rem">¿Ya enviaste un ticket?<br>Ingresa los datos para conocer su estado.</p>
+            <form action="{% url 'check_ticket' %}" method="post">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label class="form-label fw-semibold mb-1">ID de ticket</label>
+                <div class="input-group">
+                  <span class="input-group-text icon-bg"><i class="bi bi-tag-fill"></i></span>
+                  <input type="text" name="ticket_id" class="form-control" placeholder="Ej: 3d553757-7579-4f86-8a36-03fdef5ce390" required>
+                </div>
+              </div>
+              <div class="mb-4">
+                <label class="form-label fw-semibold mb-1">Correo electrónico</label>
+                <div class="input-group">
+                  <span class="input-group-text icon-bg"><i class="bi bi-envelope-fill"></i></span>
+                  <input type="email" name="email" class="form-control" placeholder="tu@email.com" required>
+                </div>
+              </div>
+              <div class="d-grid">
+                <button type="submit" class="btn btn-outline-primary py-2">
+                  <i class="bi bi-search me-2"></i>Verificar Estado
+                </button>
+              </div>
+            </form>
+            <div class="mt-auto text-center pt-4">
+              <small class="text-muted"><i class="bi bi-info-circle me-1"></i>El ID lo encontrarás en el correo de confirmación.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{#    {% if user.is_staff %}#}
+{#        <div class="container mt-5">#}
+{#            <div class="ui-card p-4 border-top border-4 border-primary">#}
+{#                <div class="d-flex justify-content-between align-items-center">#}
+{#                    <div>#}
+{#                        <h5 class="fw-bold mb-1">Panel de Control (Staff)</h5>#}
+{#                        <p class="text-muted mb-0 small">Accede a las estadísticas detalladas y gestión de tickets.</p>#}
+{#                    </div>#}
+{#                    <a href="{% url 'dashboard' %}" class="btn btn-primary">#}
+{#                        <i class="bi bi-speedometer2 me-2"></i>Ir al Dashboard#}
+{#                    </a>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    {% endif %}#}
+{% endblock %}

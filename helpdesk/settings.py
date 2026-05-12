@@ -1,0 +1,180 @@
+import os
+from pathlib import Path
+
+import dj_database_url
+from decouple import config
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = config('SECRET_KEY')
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = config('DEBUG')
+
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.run.app']
+
+# Application definition
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'tickets',
+    'users',
+    'company',
+]
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Archivos estáticos
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+ROOT_URLCONF = 'helpdesk.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                'company.context_processors.company_info',
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = 'helpdesk.wsgi.application'
+
+
+# Database
+# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+
+DATABASES = {
+    'dev': dj_database_url.config(
+        default=config('DATABASE_TEST')
+    ),
+    'production': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
+}
+
+DATABASES['default'] = DATABASES['dev' if DEBUG else 'production']
+
+db_from_env = dj_database_url.config()
+DATABASES['default'].update(db_from_env)
+
+CONN_MAX_AGE = 600
+CONN_HEALTH_CHECKS = True
+
+
+# Password validation
+# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+LANGUAGE_CODE = 'es-col'
+
+TIME_ZONE = 'America/Bogota'
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = True
+
+STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+LOGIN_REDIRECT_URL = '/dashboard/'
+
+LOGOUT_REDIRECT_URL = '/login/'
+
+LOGIN_URL = '/login/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+MEDIA_URL = config('MEDIA_URL')
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('MAIL_PASSWORD')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+ 
+# Email de soporte técnico (configurable por variables de entorno)
+# Ejemplo en .env:
+# SUPPORT_EMAIL=soporte@tu-dominio.com
+SUPPORT_EMAIL = config('SUPPORT_EMAIL', default=None)
+
+# URL pública del sitio para construir enlaces absolutos en correos
+# Ejemplo: https://mi-helpdesk.com
+SITE_URL = config('SITE_URL', default='')
+
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = config('BUCKET')
+AWS_S3_REGION_NAME = config('REGION_NAME')
+REGION_NAME = config('REGION_NAME')
+AWS_S3_CUSTOM_DOMAIN = config('AWS_S3_CUSTOM_DOMAIN')
+
+STORAGES = {
+    "default": {
+        "BACKEND": "helpdesk.storages.MediaStore",
+        "LOCATION": "media",
+        "OPTIONS": {
+            "location": "media",
+            "file_overwrite": False,
+            "custom_domain": AWS_S3_CUSTOM_DOMAIN,
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "OPTIONS": {
+            "location": "static",
+        },
+    },
+}
+
+# access with url from cloud run service
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000/',
+    'http://localhost:8000/',
+    'https://*.run.app',
+]

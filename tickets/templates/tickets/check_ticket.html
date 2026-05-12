@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Comprobar el Estado del Ticket{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="ui-card">
+            <div class="ui-header text-center">
+                <h5 class="mb-0"><i class="bi bi-search me-2"></i>Consultar Estado del Ticket</h5>
+            </div>
+            <div class="card-body p-4">
+                <p class="text-muted text-center mb-4">Ingrese su ID de ticket y correo electrónico para verificar el estado de su solicitud.</p>
+                
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="ticket_id" class="form-label fw-semibold">ID de Ticket</label>
+                        <div class="input-group">
+                            <span class="input-group-text icon-bg"><i class="bi bi-tag-fill"></i></span>
+                            <input type="text" class="form-control" id="ticket_id" name="ticket_id" placeholder="Ej: 31588004987" required>
+                        </div>
+                        <div class="form-text small">Lo encontrarás en tu correo de confirmación.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="email" class="form-label fw-semibold">Correo Electrónico</label>
+                        <div class="input-group">
+                            <span class="input-group-text icon-bg"><i class="bi bi-envelope-fill"></i></span>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="tu@email.com" required>
+                        </div>
+                        <div class="form-text small">El mismo que usaste al crear el ticket.</div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary py-2 fw-bold">
+                            <i class="bi bi-search me-2"></i> Verificar Estado
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="ui-card mt-4 border-start border-4 border-info">
+            <div class="card-body p-4">
+                <h6 class="fw-bold mb-2"><i class="bi bi-question-circle me-2"></i>¿No tienes el ID de tu Ticket?</h6>
+                <p class="text-muted small mb-3">Revisa tu bandeja de entrada (y la carpeta de spam) buscando el correo con el asunto "Helpdesk Ticket # Recibido".</p>
+                <div class="d-grid">
+                    <a href="{% url 'create_ticket' %}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-plus-circle me-2"></i> Enviar un nuevo Ticket
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
