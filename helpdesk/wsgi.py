@@ -1,5 +1,5 @@
 """
-WSGI config for helpdesk project.
+WSGI config for helpdes project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

@@ -1,5 +1,5 @@
 """
-ASGI config for helpdesk project.
+ASGI config for helpdes project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 

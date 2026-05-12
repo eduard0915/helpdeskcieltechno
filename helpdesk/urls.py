@@ -1,5 +1,5 @@
 """
-URL configuration for helpdesk project.
+URL configuration for helpdes project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.2/topics/http/urls/
@@ -31,6 +31,12 @@ urlpatterns = [
     # Authentication URLs
     path('login/', ticket_views.CustomLoginView.as_view(template_name='tickets/auth/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='tickets/auth/login.html'), name='logout'),
+
+    # Password Reset URLs
+    path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 ]
 
 # Add static and media file handling in development
