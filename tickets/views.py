@@ -237,7 +237,7 @@ def create_ticket(request):
             except Exception as e:
                 # No interrumpir el flujo si falla el correo a soporte
                 messages.warning(request, f'El ticket fue creado, pero no se pudo notificar a soporte: {str(e)}')
-            messages.success(request, f'Su ticket se ha enviado correctamente. Su ID de ticket es {ticket.ticket_id}')
+            messages.success(request, f'Su ticket se ha enviado correctamente. Su ID de ticket es {ticket.short_id}')
             return redirect('ticket_detail', ticket_id=ticket.ticket_id)
     else:
         form = TicketForm(user=request.user)
@@ -372,13 +372,21 @@ def my_assigned_tickets(request):
 def check_ticket_status(request):
     """View for users to check the status of their ticket"""
     if request.method == 'POST':
-        ticket_id = request.POST.get('ticket_id')
-        email = request.POST.get('email')
+        ticket_id_input = request.POST.get('ticket_id', '').strip()
+        email = request.POST.get('email', '').strip()
 
         try:
-            ticket = Ticket.objects.get(ticket_id=ticket_id, requester_email=email)
+            # Primero intentar búsqueda por UUID completo
+            if len(ticket_id_input) > 12:
+                ticket = Ticket.objects.get(ticket_id=ticket_id_input, requester_email=email)
+            else:
+                # Si tiene 12 o menos caracteres, buscar por los últimos 12 caracteres del ticket_id
+                # El ticket_id es un UUID, que en DB se guarda como tal. 
+                # Usamos __endswith para buscar el final del string representado.
+                ticket = Ticket.objects.get(ticket_id__endswith=ticket_id_input, requester_email=email)
+            
             return redirect('ticket_detail', ticket_id=ticket.ticket_id)
-        except Ticket.DoesNotExist:
+        except (Ticket.DoesNotExist, ValueError):
             messages.error(request, 'No se encontró ningún ticket con esa combinación de ID y correo electrónico.')
 
     return render(request, 'tickets/check_ticket.html')
@@ -422,7 +430,7 @@ def tickets_list(request):
 # Email functions
 def send_progress_update_email(ticket, comment):
     """Send notification email when a progress update is added to a ticket"""
-    subject = f'Actualización en su Ticket N° {ticket.ticket_id}'
+    subject = f'Actualización en su Ticket N° {ticket.short_id}'
 
     # Build the ticket URL
     ticket_url = reverse('ticket_detail', kwargs={'ticket_id': ticket.ticket_id})
@@ -465,7 +473,7 @@ def send_ticket_to_support_email(ticket):
     else:
         recipients = list(support_email)
 
-    subject = f"Nuevo Ticket N° {ticket.ticket_id} — {ticket.subject}"
+    subject = f"Nuevo Ticket N° {ticket.short_id} — {ticket.subject}"
 
     html_message = render_to_string('tickets/emails/ticket_new_support.html', {
         'ticket': ticket,
@@ -484,7 +492,7 @@ def send_ticket_to_support_email(ticket):
 
 def send_ticket_confirmation_email(ticket):
     """Send confirmation email when a ticket is created"""
-    subject = f'Helpdesk Ticket N° {ticket.ticket_id} Recibido'
+    subject = f'Helpdesk Ticket N° {ticket.short_id} Recibido'
 
     # Build the ticket URL
     ticket_url = reverse('ticket_detail', kwargs={'ticket_id': ticket.ticket_id})
@@ -511,7 +519,7 @@ def send_ticket_confirmation_email(ticket):
 
 def send_status_change_email(ticket, old_status, new_status):
     """Send notification email when a ticket status is changed"""
-    subject = f'Cambio de Estado en su Ticket N° {ticket.ticket_id}'
+    subject = f'Cambio de Estado en su Ticket N° {ticket.short_id}'
 
     # Build the ticket URL
     ticket_url = reverse('ticket_detail', kwargs={'ticket_id': ticket.ticket_id})
@@ -540,7 +548,7 @@ def send_status_change_email(ticket, old_status, new_status):
 
 def send_ticket_closed_email(ticket):
     """Send notification email when a ticket is closed"""
-    subject = f'Su Ticket N° {ticket.ticket_id} ha sido Cerrado'
+    subject = f'Su Ticket N° {ticket.short_id} ha sido Cerrado'
 
     # Build the ticket URL
     ticket_url = reverse('ticket_detail', kwargs={'ticket_id': ticket.ticket_id})

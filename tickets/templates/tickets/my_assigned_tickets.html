@@ -26,7 +26,7 @@
                 <tbody>
                     {% for ticket in tickets %}
                     <tr>
-                        <td class="ps-4"><code>{{ ticket.ticket_id }}</code></td>
+                        <td class="ps-4"><code>{{ ticket.short_id }}</code></td>
                         <td class="fw-semibold">{{ ticket.subject|truncatechars:40 }}</td>
                         <td>{{ ticket.requester_name }}</td>
                         <td>

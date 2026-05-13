@@ -95,7 +95,7 @@
         prioridad.</p>
 
     <div class="ticket-id">
-        Ticket #{{ ticket.ticket_id }}
+        Ticket #{{ ticket.short_id }}
     </div>
 
     <div class="priority priority-{{ ticket.priority }}">
@@ -109,6 +109,9 @@
         <p><strong>Asunto:</strong> {{ ticket.subject }}</p>
         <p><strong>Descripción:</strong> {{ ticket.description|linebreaks }}</p>
         <p><strong>Fecha de Envío:</strong> {{ ticket.created_at|date:"F j, Y, g:i a" }}</p>
+        {% if ticket.attachment %}
+            <p><strong>Archivo Adjunto:</strong> <a href="{{ ticket.attachment.url }}">{{ ticket.attachment.name }}</a></p>
+        {% endif %}
     </div>
 
     <p>Puede verificar el estado de su ticket en cualquier momento visitando el enlace a continuación o utilizando el N°

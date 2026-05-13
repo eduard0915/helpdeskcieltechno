@@ -94,7 +94,7 @@
     <p>Nos complace informarle que su solicitud de soporte ha sido resuelta y el ticket ha sido cerrado.</p>
 
     <div class="ticket-id">
-        Ticket #{{ ticket.ticket_id }}
+        Ticket #{{ ticket.short_id }}
     </div>
 
     <div class="priority priority-{{ ticket.priority }}">
@@ -108,6 +108,9 @@
         <p><strong>Fecha de Envío:</strong> {{ ticket.created_at|date:"F j, Y, g:i a" }}</p>
         <p><strong>Fecha de Cierre:</strong> {{ ticket.closed_at|date:"F j, Y, g:i a" }}</p>
         <p><strong>Tiempo de Resolución:</strong> {{ resolution_time_str }}</p>
+        {% if ticket.attachment %}
+            <p><strong>Archivo Adjunto:</strong> <a href="{{ ticket.attachment.url }}">{{ ticket.attachment.name }}</a></p>
+        {% endif %}
     </div>
 
     <p>Si tiene alguna pregunta adicional o si necesita reabrir este ticket, puede responder a este correo electrónico o visitar el enlace a continuación.</p>

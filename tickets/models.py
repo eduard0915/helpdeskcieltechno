@@ -84,8 +84,13 @@ class Ticket(models.Model):
         
         return ", ".join(parts)
 
+    @property
+    def short_id(self):
+        """Returns the last 12 digits of the ticket_id"""
+        return str(self.ticket_id)[-12:]
+
     def __str__(self):
-        return f"Ticket #{self.ticket_id} - {self.subject}"
+        return f"Ticket #{self.short_id} - {self.subject}"
 
     def get_priority_color(self):
         """Returns Bootstrap color class based on priority"""

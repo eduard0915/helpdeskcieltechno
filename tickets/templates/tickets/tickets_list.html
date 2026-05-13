@@ -31,7 +31,7 @@
                 {% if tickets %}
                     {% for t in tickets %}
                         <tr>
-                            <td class="ps-4"><code>{{ t.ticket_id }}</code></td>
+                            <td class="ps-4"><code>{{ t.short_id }}</code></td>
                             <td class="fw-semibold">{{ t.subject }}</td>
                             <td>
                                 <div>{{ t.requester_name }}</div>
