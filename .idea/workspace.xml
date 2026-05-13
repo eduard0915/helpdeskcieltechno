@@ -5,184 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="da82b7d1-016a-48cf-b328-4810ba114f0a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/help.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/help.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloudbuild.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/cloudbuild.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/cloudbuild.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/helpdes/cloudbuild.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/company/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/company/admin.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/company/apps.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/company/context_processors.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/company/forms.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/company/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/company/migrations/0002_alter_company_address_alter_company_email_and_more.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/company/migrations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/company/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/company/templates/company/company_detail.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/company/templates/company/company_form.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/company/urls.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/company/views.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/helpdesk/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/helpdesk/asgi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/helpdesk/settings.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/helpdesk/storages.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/helpdesk/urls.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/helpdesk/views.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/helpdesk/wsgi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/manage.py" beforeDir="false" afterPath="$PROJECT_DIR$/helpdes/manage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/helpdes/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/static/css/style.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/templates/400.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/templates/404.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/templates/500.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/templates/base.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/admin.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/apps.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/forms.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/migrations/0002_ticketcomment_comment_uuid_alter_ticket_id_and_more.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/migrations/0003_remove_ticket_id_remove_ticketcomment_id_and_more.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/migrations/0004_ticket_attachment.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/migrations/0005_ticketcomment_is_progress_update.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/migrations/0006_alter_ticket_priority_alter_ticket_status_and_more.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/migrations/0007_alter_ticketcomment_ticket.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/migrations/0008_auto_20250626_0000.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/migrations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/templates/tickets/auth/login.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/templates/tickets/auth/logout.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/templates/tickets/check_ticket.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/templates/tickets/create_ticket.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/templates/tickets/dashboard.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/templates/tickets/emails/ticket_closed.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/templates/tickets/emails/ticket_confirmation.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/templates/tickets/emails/ticket_new_support.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/templates/tickets/emails/ticket_status_change.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/templates/tickets/emails/ticket_update.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/templates/tickets/home.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/templates/tickets/manage_tickets.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/templates/tickets/my_assigned_tickets.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/templates/tickets/my_tickets.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/templates/tickets/ticket_detail.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/templates/tickets/tickets_list.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/urls.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/tickets/views.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/helpdes/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/users/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/users/admin.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/users/apps.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/users/forms.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/users/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/users/migrations/0002_userprofile_profile_uuid_alter_userprofile_id.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/users/migrations/0003_remove_userprofile_id_alter_userprofile_profile_uuid.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/users/migrations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/users/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/users/templates/users/register.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/users/templates/users/staff_user_confirm_delete.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/users/templates/users/staff_user_form.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/users/templates/users/staff_user_list.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/users/urls.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/users/views.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdes/wsgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/helpdes/wsgi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/.idea/helpdesk.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/Dockerfile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/asgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/helpdesk/asgi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/cloudbuild.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/company/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/company/admin.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/company/apps.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/company/context_processors.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/company/forms.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/company/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/company/migrations/0002_alter_company_address_alter_company_email_and_more.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/company/migrations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/company/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/company/templates/company/company_detail.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/company/templates/company/company_form.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/company/urls.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/company/views.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/helpdesk/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/helpdesk/asgi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/helpdesk/settings.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/helpdesk/storages.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/helpdesk/urls.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/helpdesk/views.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/helpdesk/wsgi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/manage.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/requirements.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/helpdesk/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/static/css/style.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/templates/400.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/templates/404.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/templates/500.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/templates/base.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/templates/registration/password_reset_complete.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/templates/registration/password_reset_confirm.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/templates/registration/password_reset_done.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/templates/registration/password_reset_email.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/templates/registration/password_reset_form.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/admin.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/apps.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/forms.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/migrations/0002_ticketcomment_comment_uuid_alter_ticket_id_and_more.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/migrations/0003_remove_ticket_id_remove_ticketcomment_id_and_more.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/migrations/0004_ticket_attachment.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/migrations/0005_ticketcomment_is_progress_update.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/migrations/0006_alter_ticket_priority_alter_ticket_status_and_more.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/migrations/0007_alter_ticketcomment_ticket.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/migrations/0008_auto_20250626_0000.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/migrations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/templates/tickets/auth/login.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/templates/tickets/auth/logout.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/templates/tickets/check_ticket.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/templates/tickets/create_ticket.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/templates/tickets/dashboard.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/templates/tickets/emails/ticket_closed.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/templates/tickets/emails/ticket_confirmation.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/templates/tickets/emails/ticket_new_support.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/templates/tickets/emails/ticket_status_change.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/templates/tickets/emails/ticket_update.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/templates/tickets/home.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/templates/tickets/manage_tickets.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/templates/tickets/my_assigned_tickets.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/templates/tickets/my_tickets.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/templates/tickets/ticket_detail.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/templates/tickets/tickets_list.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/urls.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/tickets/views.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/helpdesk/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/users/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/users/admin.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/users/apps.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/users/forms.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/users/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/users/migrations/0002_userprofile_profile_uuid_alter_userprofile_id.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/users/migrations/0003_remove_userprofile_id_alter_userprofile_profile_uuid.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/users/migrations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/users/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/users/templates/users/register.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/users/templates/users/staff_user_confirm_delete.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/users/templates/users/staff_user_form.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/users/templates/users/staff_user_list.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/users/urls.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/users/views.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/wsgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/helpdesk/wsgi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/manage.py" beforeDir="false" afterPath="$PROJECT_DIR$/manage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tickets/templates/tickets/auth/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/tickets/templates/tickets/auth/login.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -194,7 +17,7 @@
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/helpdes" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -234,7 +57,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "dev",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "/home/eduard/DevelopProjects/help",
     "node.js.detected.package.eslint": "true",
@@ -299,7 +122,7 @@
       <updated>1778509487734</updated>
       <workItem from="1778509488777" duration="107000" />
       <workItem from="1778588926385" duration="4655000" />
-      <workItem from="1778602992178" duration="1455000" />
+      <workItem from="1778602992178" duration="1930000" />
     </task>
     <servers />
   </component>
