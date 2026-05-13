@@ -102,7 +102,7 @@
     <p>Se ha registrado un avance en su ticket de soporte técnico:</p>
 
     <div class="ticket-id">
-        Ticket #{{ ticket.ticket_id }}
+        Ticket #{{ ticket.short_id }}
     </div>
 
     <div class="details">
@@ -111,6 +111,9 @@
         <p><strong>Estado actual:</strong> 
             <span class="status status-{{ ticket.status }}">{{ ticket.get_status_display }}</span>
         </p>
+        {% if ticket.attachment %}
+            <p><strong>Archivo Adjunto:</strong> <a href="{{ ticket.attachment.url }}">{{ ticket.attachment.name }}</a></p>
+        {% endif %}
     </div>
 
     <div class="update-box">

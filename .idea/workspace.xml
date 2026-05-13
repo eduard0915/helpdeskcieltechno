@@ -5,7 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="da82b7d1-016a-48cf-b328-4810ba114f0a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tickets/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/tickets/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tickets/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/tickets/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tickets/templates/tickets/check_ticket.html" beforeDir="false" afterPath="$PROJECT_DIR$/tickets/templates/tickets/check_ticket.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tickets/templates/tickets/emails/ticket_closed.html" beforeDir="false" afterPath="$PROJECT_DIR$/tickets/templates/tickets/emails/ticket_closed.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tickets/templates/tickets/emails/ticket_confirmation.html" beforeDir="false" afterPath="$PROJECT_DIR$/tickets/templates/tickets/emails/ticket_confirmation.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tickets/templates/tickets/emails/ticket_new_support.html" beforeDir="false" afterPath="$PROJECT_DIR$/tickets/templates/tickets/emails/ticket_new_support.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tickets/templates/tickets/emails/ticket_status_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/tickets/templates/tickets/emails/ticket_status_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tickets/templates/tickets/emails/ticket_update.html" beforeDir="false" afterPath="$PROJECT_DIR$/tickets/templates/tickets/emails/ticket_update.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tickets/templates/tickets/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/tickets/templates/tickets/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tickets/templates/tickets/manage_tickets.html" beforeDir="false" afterPath="$PROJECT_DIR$/tickets/templates/tickets/manage_tickets.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tickets/templates/tickets/my_assigned_tickets.html" beforeDir="false" afterPath="$PROJECT_DIR$/tickets/templates/tickets/my_assigned_tickets.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tickets/templates/tickets/my_tickets.html" beforeDir="false" afterPath="$PROJECT_DIR$/tickets/templates/tickets/my_tickets.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tickets/templates/tickets/ticket_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/tickets/templates/tickets/ticket_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tickets/templates/tickets/tickets_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/tickets/templates/tickets/tickets_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tickets/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/tickets/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,7 +29,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="3543" />
+    <option name="cachedIndexableFilesCount" value="90" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -25,12 +41,12 @@
     &quot;assignee&quot;: &quot;eduard0915&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/eduard0915/helpdeskcieltechno.git",
-    "accountId": "f1bda196-993c-4b17-8b89-dd29db49e9ed"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/eduard0915/helpdeskcieltechno.git&quot;,
+    &quot;accountId&quot;: &quot;f1bda196-993c-4b17-8b89-dd29db49e9ed&quot;
   }
-}]]></component>
+}</component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
@@ -44,31 +60,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Django Server.help.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "dev",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/home/eduard/DevelopProjects/help",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Django Server.help.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/eduard/DevelopProjects/help&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -123,6 +139,7 @@
       <workItem from="1778509488777" duration="107000" />
       <workItem from="1778588926385" duration="4655000" />
       <workItem from="1778602992178" duration="1930000" />
+      <workItem from="1778681580820" duration="1728000" />
     </task>
     <servers />
   </component>

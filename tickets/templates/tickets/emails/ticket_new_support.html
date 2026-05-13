@@ -83,7 +83,7 @@
         </div>
 
         <div class="section">
-            <div><span class="label">N° de Ticket:</span> <span class="value"><code>{{ ticket.ticket_id }}</code></span>
+            <div><span class="label">N° de Ticket:</span> <span class="value"><code>{{ ticket.short_id }}</code></span>
             </div>
             <div><span class="label">Asunto:</span> <span class="value">{{ ticket.subject }}</span></div>
             <div><span class="label">Prioridad:</span> <span class="value">{{ ticket.get_priority_display }}</span>
@@ -106,7 +106,7 @@
         {% if ticket.attachment %}
             <div class="section">
                 <h3>Adjunto</h3>
-                <div><span class="label">Archivo:</span> <span class="value">{{ ticket.attachment.name }}</span></div>
+                <div><span class="label">Archivo:</span> <span class="value"><a href="{{ ticket.attachment.url }}">{{ ticket.attachment.name }}</a></span></div>
             </div>
         {% endif %}
 

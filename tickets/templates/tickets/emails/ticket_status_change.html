@@ -66,13 +66,16 @@
     <p>El estado de su ticket de soporte técnico ha sido actualizado:</p>
 
     <div class="ticket-id">
-        Ticket N° {{ ticket.ticket_id }}
+        Ticket N° {{ ticket.short_id }}
     </div>
 
     <div class="status-box">
         <p><strong>Asunto:</strong> {{ ticket.subject }}</p>
         <p><strong>Estado anterior:</strong> {{ old_status }}</p>
         <p><strong>Nuevo estado:</strong> <strong>{{ ticket.get_status_display }}</strong></p>
+        {% if ticket.attachment %}
+            <p><strong>Archivo Adjunto:</strong> <a href="{{ ticket.attachment.url }}">{{ ticket.attachment.name }}</a></p>
+        {% endif %}
     </div>
 
     <p>Para ver los detalles completos de su ticket, haga clic en el siguiente enlace:</p>
