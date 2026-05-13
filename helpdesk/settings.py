@@ -114,7 +114,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, '../static'),
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 LOGIN_REDIRECT_URL = '/dashboard/'
@@ -123,7 +123,7 @@ LOGOUT_REDIRECT_URL = '/login/'
 
 LOGIN_URL = '/login/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, '../media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 MEDIA_URL = config('MEDIA_URL')
 
@@ -131,20 +131,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT')
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('MAIL_PASSWORD')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
  
-# Email de soporte técnico (configurable por variables de entorno)
-# Ejemplo en .env:
-# SUPPORT_EMAIL=soporte@tu-dominio.com
+# Email de soporte técnico
 SUPPORT_EMAIL = config('SUPPORT_EMAIL', default=None)
 
 # URL pública del sitio para construir enlaces absolutos en correos
-# Ejemplo: https://mi-helpdesk.com
 SITE_URL = config('SITE_URL', default='')
 
 AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
