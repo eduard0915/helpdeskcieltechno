@@ -88,11 +88,12 @@
 <!-- Footer ligero -->
 <footer class="text-center py-4 bg-white border-top text-muted" style="font-size:.8rem">
     <div class="container">
-        <p class="mb-1">Sistema de Soporte TI-Helpdesk&copy; {% now "Y" %}, un servicio de CielTechno SAS</p>
+        <p class="mb-1">Sistema de Soporte TI-HelpDesk&copy; {% now "Y" %}, un servicio de CielTechno SAS</p>
         {% if company %}
             <p class="mb-0">
-                {% if company.email %}<i class="bi bi-envelope me-1"></i> {{ company.email }} {% endif %}
-                {% if company.phone %}| <i class="bi bi-telephone me-1"></i> {{ company.phone }}{% endif %}
+                <i class="bi bi-envelope me-1"></i> ventas@cieltechno.com | <i class="bi bi-telephone me-1"></i> +57 3166231887
+{#                {% if company.email %}<i class="bi bi-envelope me-1"></i> {{ company.email }} {% endif %}#}
+{#                {% if company.phone %}| <i class="bi bi-telephone me-1"></i> {{ company.phone }}{% endif %}#}
             </p>
         {% endif %}
     </div>

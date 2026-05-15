@@ -47,7 +47,7 @@ class UserProfileForm(BootstrapFormMixin, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['phone_number'].widget.attrs.update({'placeholder': 'Ej. +57 600 000 000'})
+        self.fields['phone_number'].widget.attrs.update({'placeholder': 'Ej. +57 000 000 0000'})
         self.fields['company'].widget.attrs.update({'placeholder': 'Ej. Mi Empresa S.A.'})
 
 class StaffUserCreationForm(BootstrapFormMixin, UserCreationForm):

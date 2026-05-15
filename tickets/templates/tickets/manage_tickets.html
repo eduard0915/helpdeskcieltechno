@@ -85,16 +85,20 @@
                                     <i class="bi bi-eye"></i>
                                 </a>
                                 {% if not ticket.assigned_to %}
-                                <form method="post" action="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="d-inline">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="update_submit" value="1">
-                                    <input type="hidden" name="status" value="{{ ticket.status }}">
-                                    <input type="hidden" name="priority" value="{{ ticket.priority }}">
-                                    <input type="hidden" name="assigned_to" value="{{ user.id }}">
-                                    <button type="submit" class="btn btn-sm btn-outline-success ms-1" title="Asignar a mí">
-                                        <i class="bi bi-person-check"></i>
-                                    </button>
-                                </form>
+                                <button type="button" class="btn btn-sm btn-outline-success ms-1 btn-assign-me" 
+                                        data-ticket-id="{{ ticket.ticket_id }}" 
+                                        data-short-id="{{ ticket.short_id }}"
+                                        title="Asignar a mí">
+                                    <i class="bi bi-person-check"></i>
+                                </button>
+                                {% if user.is_superuser %}
+                                <button type="button" class="btn btn-sm btn-outline-info ms-1 btn-assign-other" 
+                                        data-ticket-id="{{ ticket.ticket_id }}" 
+                                        data-short-id="{{ ticket.short_id }}"
+                                        title="Asignar a otro">
+                                    <i class="bi bi-people"></i>
+                                </button>
+                                {% endif %}
                                 {% endif %}
                             </div>
                         </td>
@@ -110,4 +114,146 @@
         {% endif %}
     </div>
 </div>
+
+<!-- Modales de Asignación -->
+<div class="modal fade" id="assignMeModal" tabindex="-1" aria-labelledby="assignMeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="assignMeModalLabel">Confirmar Asignación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro de asignarse el ticket <strong id="assignMeTicketId"></strong>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="confirmAssignMe">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if user.is_superuser %}
+<div class="modal fade" id="assignOtherModal" tabindex="-1" aria-labelledby="assignOtherModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="assignOtherModalLabel">Asignar Ticket a Staff</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Seleccione un usuario para asignar el ticket <strong id="assignOtherTicketId"></strong>:</p>
+                <input class="form-control" list="staffUsersList" id="staffUserSelect" placeholder="Escriba para buscar usuario...">
+                <datalist id="staffUsersList">
+                    {% for staff_user in staff_users %}
+                    <option data-value="{{ staff_user.id }}" value="{{ staff_user.get_full_name|default:staff_user.username }} ({{ staff_user.username }})"></option>
+                    {% endfor %}
+                </datalist>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="confirmAssignOther">Asignar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let currentTicketId = null;
+    const assignMeModal = new bootstrap.Modal(document.getElementById('assignMeModal'));
+    const assignOtherModal = document.getElementById('assignOtherModal') ? new bootstrap.Modal(document.getElementById('assignOtherModal')) : null;
+
+    // Abrir modal asignar a mí
+    document.querySelectorAll('.btn-assign-me').forEach(btn => {
+        btn.addEventListener('click', function() {
+            currentTicketId = this.dataset.ticketId;
+            document.getElementById('assignMeTicketId').textContent = this.dataset.shortId;
+            assignMeModal.show();
+        });
+    });
+
+    // Abrir modal asignar a otro
+    document.querySelectorAll('.btn-assign-other').forEach(btn => {
+        btn.addEventListener('click', function() {
+            currentTicketId = this.dataset.ticketId;
+            document.getElementById('assignOtherTicketId').textContent = this.dataset.shortId;
+            assignOtherModal.show();
+        });
+    });
+
+    // Confirmar asignar a mí
+    document.getElementById('confirmAssignMe').addEventListener('click', function() {
+        performAssignment(currentTicketId, "{{ user.id }}", assignMeModal);
+    });
+
+    // Confirmar asignar a otro
+    if (document.getElementById('confirmAssignOther')) {
+        document.getElementById('confirmAssignOther').addEventListener('click', function() {
+            const input = document.getElementById('staffUserSelect');
+            const val = input.value;
+            const opts = document.getElementById('staffUsersList').options;
+            let userId = null;
+
+            for (let i = 0; i < opts.length; i++) {
+                if (opts[i].value === val) {
+                    userId = opts[i].dataset.value;
+                    break;
+                }
+            }
+
+            if (!userId) {
+                alert('Por favor seleccione un usuario válido de la lista');
+                return;
+            }
+            performAssignment(currentTicketId, userId, assignOtherModal);
+        });
+    }
+
+    function performAssignment(ticketId, userId, modal) {
+        const url = `/tickets/${ticketId}/assign/`;
+        const formData = new FormData();
+        formData.append('user_id', userId);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                modal.hide();
+                // Actualizar la fila en la tabla
+                const row = document.querySelector(`[data-ticket-id="${ticketId}"]`).closest('row, tr');
+                
+                // Actualizar columna "Asignado a" (índice 6)
+                row.cells[6].innerHTML = data.assigned_to_username;
+                
+                // Actualizar columna "Estado" (índice 4)
+                row.cells[4].innerHTML = `<span class="badge bg-${data.status_color}">${data.status_display}</span>`;
+                
+                // Remover botones de asignación
+                const actionsCell = row.cells[7];
+                const assignButtons = actionsCell.querySelectorAll('.btn-assign-me, .btn-assign-other');
+                assignButtons.forEach(btn => btn.remove());
+
+                // Opcional: mostrar mensaje de éxito
+                alert(data.message);
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ocurrió un error al procesar la solicitud');
+        });
+    }
+});
+</script>
 {% endblock %}

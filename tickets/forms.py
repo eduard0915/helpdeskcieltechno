@@ -23,22 +23,33 @@ class TicketForm(forms.ModelForm):
             self.fields['requester_name'].required = False
             self.fields['requester_email'].required = False
 
+class UserModelChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        full_name = obj.get_full_name()
+        if full_name:
+            return f"{full_name} ({obj.username})"
+        return obj.username
+
 class TicketUpdateForm(forms.ModelForm):
     """Form for updating an existing ticket (admin/staff only)"""
+    assigned_to = UserModelChoiceField(
+        queryset=User.objects.none(),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=False
+    )
+
     class Meta:
         model = Ticket
         fields = ['status', 'priority', 'assigned_to']
         widgets = {
             'status': forms.Select(attrs={'class': 'form-control'}),
             'priority': forms.Select(attrs={'class': 'form-control'}),
-            'assigned_to': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Only show staff users as assignees
         self.fields['assigned_to'].queryset = User.objects.filter(is_staff=True, is_superuser=False).order_by('username')
-        self.fields['assigned_to'].required = False
 
 class TicketCommentForm(forms.ModelForm):
     """Form for adding comments to a ticket"""

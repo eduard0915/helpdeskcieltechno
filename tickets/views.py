@@ -1,6 +1,7 @@
 import uuid
 
-from django.http import Http404
+from django.contrib.auth.models import User
+from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -350,9 +351,49 @@ def manage_tickets(request):
     context = {
         'tickets': tickets,
         'form': form,
+        'staff_users': User.objects.filter(is_staff=True).exclude(id=request.user.id) if request.user.is_superuser else None,
     }
 
     return render(request, 'tickets/manage_tickets.html', context)
+
+@login_required
+def assign_ticket(request, ticket_id):
+    """AJAX view to assign a ticket to a user"""
+    if not request.user.is_staff:
+        return JsonResponse({'success': False, 'error': 'No tienes permiso para realizar esta acción.'}, status=403)
+
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Método no permitido.'}, status=405)
+
+    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
+    user_id = request.POST.get('user_id')
+
+    if not user_id:
+        return JsonResponse({'success': False, 'error': 'ID de usuario no proporcionado.'}, status=400)
+
+    # Si se intenta asignar a otro usuario, verificar que el actual sea superuser
+    if int(user_id) != request.user.id and not request.user.is_superuser:
+        return JsonResponse({'success': False, 'error': 'No tienes permiso para asignar tickets a otros usuarios.'}, status=403)
+
+    try:
+        assigned_user = User.objects.get(id=user_id, is_staff=True)
+        ticket.assigned_to = assigned_user
+        if ticket.status == Ticket.OPEN:
+            ticket.status = Ticket.IN_PROCESS
+        ticket.save()
+
+        return JsonResponse({
+            'success': True,
+            'message': f'Ticket asignado correctamente a {assigned_user.username}.',
+            'assigned_to_username': assigned_user.username,
+            'assigned_to_full_name': assigned_user.get_full_name(),
+            'status_display': ticket.get_status_display(),
+            'status_color': ticket.get_status_color()
+        })
+    except User.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Usuario no encontrado o no es personal del staff.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 @login_required
 def my_assigned_tickets(request):
