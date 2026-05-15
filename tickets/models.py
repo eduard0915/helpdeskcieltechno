@@ -85,6 +85,20 @@ class Ticket(models.Model):
         return ", ".join(parts)
 
     @property
+    def attachment_url(self):
+        """Devuelve la URL absoluta del archivo adjunto"""
+        if not self.attachment:
+            return None
+        
+        url = self.attachment.url
+        if url.startswith('http'):
+            return url
+        
+        from django.conf import settings
+        site_url = getattr(settings, 'SITE_URL', '').rstrip('/')
+        return f"{site_url}{url}"
+
+    @property
     def short_id(self):
         """Returns the last 12 digits of the ticket_id"""
         return str(self.ticket_id)[-12:]

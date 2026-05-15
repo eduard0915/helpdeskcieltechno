@@ -23,11 +23,12 @@
   <div class="d-flex w-100 align-items-center justify-content-between">
     <div class="brand">
         <a href="{% url 'home' %}" class="text-white text-decoration-none">
-            {% if company and company.logo %}
-                <img src="{{ company.logo.url }}" alt="{{ company.name }}" class="h-8 d-inline-block me-2" style="height: 30px;">
-            {% else %}
-                <img src="https://static-files-apps.s3.sa-east-1.amazonaws.com/ti-helpdesk/ti-helpdesk.png" alt="ti-helpdesk" class="d-inline-block me-5" style="height: 30px;">
-            {% endif %}
+{#            {% if company and company.logo %}#}
+{#                <img src="{{ company.logo.url }}" alt="{{ company.name }}" class="h-8 d-inline-block me-2" style="height: 30px;">#}
+{#            {% else %}#}
+{#                <img src="https://static-files-apps.s3.sa-east-1.amazonaws.com/ti-helpdesk/ti-helpdesk.png" alt="ti-helpdesk" class="d-inline-block me-5" style="height: 30px;">#}
+{#            {% endif %}#}
+            <img src="https://static-files-apps.s3.sa-east-1.amazonaws.com/ti-helpdesk/ti-helpdesk.png" alt="ti-helpdesk" class="d-inline-block me-5" style="height: 30px;">
             {% if company and company.name %}
                 {{ company.name }}
             {% else %}

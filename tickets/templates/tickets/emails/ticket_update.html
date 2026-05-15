@@ -112,7 +112,7 @@
             <span class="status status-{{ ticket.status }}">{{ ticket.get_status_display }}</span>
         </p>
         {% if ticket.attachment %}
-            <p><strong>Archivo Adjunto:</strong> <a href="{{ ticket.attachment.url }}">{{ ticket.attachment.name }}</a></p>
+            <p><strong>Archivo Adjunto:</strong> <a href="{{ ticket.attachment_url }}">{{ ticket.attachment.name }}</a></p>
         {% endif %}
     </div>
 

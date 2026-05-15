@@ -110,7 +110,7 @@
         <p><strong>Descripción:</strong> {{ ticket.description|linebreaks }}</p>
         <p><strong>Fecha de Envío:</strong> {{ ticket.created_at|date:"F j, Y, g:i a" }}</p>
         {% if ticket.attachment %}
-            <p><strong>Archivo Adjunto:</strong> <a href="{{ ticket.attachment.url }}">{{ ticket.attachment.name }}</a></p>
+            <p><strong>Archivo Adjunto:</strong> <a href="{{ ticket.attachment_url }}">{{ ticket.attachment.name }}</a></p>
         {% endif %}
     </div>
 
