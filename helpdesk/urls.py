@@ -43,6 +43,10 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    # Serve media files in production if not using S3
+    if not settings.AWS_STORAGE_BUCKET_NAME:
+         urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Error handlers
 handler404 = 'helpdesk.views.handler404'

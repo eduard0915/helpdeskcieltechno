@@ -125,7 +125,7 @@ LOGIN_URL = '/login/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
-MEDIA_URL = config('MEDIA_URL')
+# MEDIA_URL = config('MEDIA_URL')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -144,32 +144,45 @@ SUPPORT_EMAIL = config('SUPPORT_EMAIL', default=None)
 # URL pública del sitio para construir enlaces absolutos en correos
 SITE_URL = config('SITE_URL', default='')
 
-AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = config('BUCKET')
-AWS_S3_REGION_NAME = config('REGION_NAME')
-REGION_NAME = config('REGION_NAME')
-AWS_S3_CUSTOM_DOMAIN = config('AWS_S3_CUSTOM_DOMAIN')
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID', default=None)
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY', default=None)
+AWS_STORAGE_BUCKET_NAME = config('BUCKET', default=None)
+AWS_S3_REGION_NAME = config('REGION_NAME', default=None)
+REGION_NAME = config('REGION_NAME', default=None)
+AWS_S3_CUSTOM_DOMAIN = config('AWS_S3_CUSTOM_DOMAIN', default=None)
 
-STORAGES = {
-    "default": {
-        "BACKEND": "helpdesk.storages.MediaStore",
-        "LOCATION": "media",
-        "OPTIONS": {
-            "location": "media",
-            "file_overwrite": False,
-            "custom_domain": AWS_S3_CUSTOM_DOMAIN,
+# Configuración de STORAGES
+if not DEBUG and AWS_STORAGE_BUCKET_NAME:
+    STORAGES = {
+        "default": {
+            "BACKEND": "helpdesk.storages.MediaStore",
+            "OPTIONS": {
+                "file_overwrite": False,
+                "custom_domain": AWS_S3_CUSTOM_DOMAIN,
+            },
         },
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-        "OPTIONS": {
-            "location": "static",
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
         },
-    },
-}
+    }
+else:
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
 
-# access with url from cloud run service
+# Si estamos en producción y tenemos S3, usamos la URL de S3/CloudFront
+if not DEBUG and AWS_S3_CUSTOM_DOMAIN:
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+else:
+    # En desarrollo usamos la URL de medios local
+    MEDIA_URL = '/media/'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:8000/',
     'http://localhost:8000/',
