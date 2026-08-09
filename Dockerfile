@@ -9,6 +9,8 @@ ARG MEDIA_URL
 ENV SECRET_KEY=$SECRET_KEY \
     DATABASE_URL=$DATABASE_URL \
     MEDIA_URL=$MEDIA_URL \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
     DEBIAN_FRONTEND=noninteractive
 
 # Set work directory
@@ -53,8 +55,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
-# Collect static files (mejor que migrate en build time)
-RUN python3 manage.py collectstatic --noinput || true
+# Collect static files (falla el build si no se pueden recolectar)
+RUN python3 manage.py collectstatic --noinput
+
+# Ejecutar como usuario no-root (principio de menor privilegio)
+RUN useradd --system --create-home --shell /usr/sbin/nologin appuser \
+    && chown -R appuser:appuser /app
+
+USER appuser
 
 # Run the web service on container startup
 CMD python3 manage.py migrate --noinput && \

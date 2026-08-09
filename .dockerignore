@@ -1,0 +1,49 @@
+# Secretos y configuración local (NUNCA copiar a la imagen)
+.env
+.env.*
+local_settings.py
+
+# VCS y directorios de herramientas
+.git
+.gitignore
+.gitattributes
+.idea
+.vscode
+.agents
+
+# Entornos virtuales
+venv
+venv_help
+.venv
+env
+ENV
+
+# Artefactos de Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Archivos estáticos recolectados y media
+staticfiles/
+media/
+
+# Logs y bases de datos
+*.log
+db.sqlite3
+db.sqlite3-journal
+
+# Docker
+Dockerfile
+.dockerignore
+cloudbuild.yaml
+docker-compose*.yml
+
+# Documentación
+*.md
+README*

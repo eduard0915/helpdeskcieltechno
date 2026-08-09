@@ -1,24 +1,23 @@
-import uuid
-
-from django.contrib.auth.models import User
-from django.http import Http404, JsonResponse
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.db.models import Count, Avg, F, ExpressionWrapper, DurationField
-from django.db.models.functions import Coalesce, TruncMonth
-from django.core.mail import send_mail
-from django.core.paginator import Paginator
-from django.conf import settings
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-from django.urls import reverse
-from django.utils import timezone
-from django.contrib.auth import views as auth_views
 import json
 
-from .models import Ticket, TicketComment
-from .forms import TicketForm, TicketUpdateForm, TicketCommentForm, TicketSearchForm
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.core.paginator import Paginator
+from django.db.models import Avg, Count, DurationField, ExpressionWrapper, F
+from django.db.models.functions import Coalesce, TruncMonth
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django.utils import timezone
+from django.utils.html import strip_tags
+
+from .forms import TicketCommentForm, TicketForm, TicketSearchForm, TicketUpdateForm
+from .models import Ticket
 
 def landing(request):
     """Página de inicio (landing page) con diseño de dos columnas"""
@@ -30,6 +29,7 @@ class CustomLoginView(auth_views.LoginView):
             return reverse('manage_tickets')
         return reverse('my_tickets')
 
+@login_required
 def home(request):
     """Home page with dashboard showing ticket counts by status"""
     # Get counts for each status
@@ -45,9 +45,6 @@ def home(request):
 
     for item in status_counts:
         counts[item['status']] = item['count']
-
-    # Get recent tickets (to be removed from UI per request, but kept here if needed elsewhere)
-    recent_tickets = Ticket.objects.order_by('-created_at')[:5]
 
     # Average response time by ticket type (priority) for CLOSED tickets
     # Response time is from created_at to closed_at. Prefer stored resolution_time when available.
@@ -211,7 +208,6 @@ def home(request):
 
     context = {
         'counts': counts,
-        'recent_tickets': recent_tickets,
         'avg_by_priority': avg_by_priority_display,
         'charts_json': charts_json,
     }
@@ -252,22 +248,32 @@ def ticket_detail(request, ticket_id):
     """View for displaying ticket details"""
     ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
 
+    # Control de acceso por objeto:
+    # - staff puede ver y gestionar cualquier ticket
+    # - el solicitante autenticado (mismo email) puede ver y comentar su ticket
+    # - un visitante anónimo puede ver el ticket por su UUID (enlace único de los
+    #   correos: modelo de "el enlace es el acceso"), pero NO puede comentar.
+    is_owner = (
+        request.user.is_authenticated
+        and request.user.email.lower() == (ticket.requester_email or '').lower()
+    )
+    is_staff = request.user.is_authenticated and request.user.is_staff
+
     # Prefetch comments con autor para evitar N+1 queries
     comments = ticket.comments.select_related('author').order_by('created_at')
 
-    # Procesamiento del formulario de comentarios
-    if request.method == 'POST' and 'comment_submit' in request.POST:
+    # Procesamiento del formulario de comentarios (solo solicitante o staff)
+    if (
+        request.method == 'POST'
+        and 'comment_submit' in request.POST
+        and (is_staff or is_owner)
+    ):
         comment_form = TicketCommentForm(request.POST, user=request.user)
         if comment_form.is_valid():
             comment = comment_form.save(commit=False)
             comment.ticket = ticket
-
-            if request.user.is_authenticated:
-                comment.author = request.user
-                comment.author_name = request.user.get_full_name() or request.user.username
-            else:
-                comment.author_name = 'Anonymous'
-
+            comment.author = request.user
+            comment.author_name = request.user.get_full_name() or request.user.username
             comment.save()
 
             # Enviar notificación por correo al cliente
@@ -292,12 +298,12 @@ def ticket_detail(request, ticket_id):
         'comment_form': comment_form,
     }
 
-    if request.user.is_authenticated and request.user.is_staff:
+    if is_staff:
         if request.method == 'POST' and 'update_submit' in request.POST:
             # Capturar el estado antes de que el formulario actualice la instancia
             old_status = ticket.status
             old_status_display = ticket.get_status_display()
-            
+
             update_form = TicketUpdateForm(request.POST, instance=ticket)
             if update_form.is_valid():
                 updated_ticket = update_form.save()
@@ -307,13 +313,25 @@ def ticket_detail(request, ticket_id):
                         if updated_ticket.status == Ticket.CLOSED:
                             send_ticket_closed_email(updated_ticket)
                         else:
-                            send_status_change_email(updated_ticket, old_status_display, updated_ticket.get_status_display())
-                        messages.success(request, f'El ticket se ha actualizado correctamente y se ha notificado el cambio de estado ({updated_ticket.get_status_display()}).')
+                            send_status_change_email(
+                                updated_ticket,
+                                old_status_display,
+                                updated_ticket.get_status_display(),
+                            )
+                        messages.success(
+                            request,
+                            'El ticket se ha actualizado correctamente y se ha notificado '
+                            f'el cambio de estado ({updated_ticket.get_status_display()}).',
+                        )
                     except Exception as e:
-                        messages.warning(request, f'El ticket se ha actualizado, pero no se pudo enviar la notificación de cambio de estado: {str(e)}')
+                        messages.warning(
+                            request,
+                            'El ticket se ha actualizado, pero no se pudo enviar la notificación '
+                            f'de cambio de estado: {str(e)}',
+                        )
                 else:
                     messages.success(request, 'El ticket se ha actualizado correctamente.')
-                
+
                 return redirect('ticket_detail', ticket_id=ticket.ticket_id)
         else:
             update_form = TicketUpdateForm(instance=ticket)
@@ -331,7 +349,7 @@ def manage_tickets(request):
 
     # Initialize search form
     form = TicketSearchForm(request.GET)
-    tickets = Ticket.objects.all().order_by('-created_at')
+    tickets = Ticket.objects.select_related('assigned_to').order_by('-created_at')
 
     # Apply filters if form is valid
     if form.is_valid():
@@ -340,7 +358,11 @@ def manage_tickets(request):
         priority = form.cleaned_data.get('priority')
 
         if search:
-            tickets = tickets.filter(subject__icontains=search) | tickets.filter(description__icontains=search) | tickets.filter(requester_email__icontains=search)
+            tickets = (
+                tickets.filter(subject__icontains=search)
+                | tickets.filter(description__icontains=search)
+                | tickets.filter(requester_email__icontains=search)
+            )
 
         if status:
             tickets = tickets.filter(status=status)
@@ -351,7 +373,11 @@ def manage_tickets(request):
     context = {
         'tickets': tickets,
         'form': form,
-        'staff_users': User.objects.filter(is_staff=True).exclude(id=request.user.id) if request.user.is_superuser else None,
+        'staff_users': (
+            User.objects.filter(is_staff=True).exclude(id=request.user.id)
+            if request.user.is_superuser
+            else None
+        ),
     }
 
     return render(request, 'tickets/manage_tickets.html', context)
@@ -371,9 +397,17 @@ def assign_ticket(request, ticket_id):
     if not user_id:
         return JsonResponse({'success': False, 'error': 'ID de usuario no proporcionado.'}, status=400)
 
+    try:
+        user_id = int(user_id)
+    except (TypeError, ValueError):
+        return JsonResponse({'success': False, 'error': 'ID de usuario no válido.'}, status=400)
+
     # Si se intenta asignar a otro usuario, verificar que el actual sea superuser
-    if int(user_id) != request.user.id and not request.user.is_superuser:
-        return JsonResponse({'success': False, 'error': 'No tienes permiso para asignar tickets a otros usuarios.'}, status=403)
+    if user_id != request.user.id and not request.user.is_superuser:
+        return JsonResponse(
+            {'success': False, 'error': 'No tienes permiso para asignar tickets a otros usuarios.'},
+            status=403,
+        )
 
     try:
         assigned_user = User.objects.get(id=user_id, is_staff=True)
@@ -391,7 +425,10 @@ def assign_ticket(request, ticket_id):
             'status_color': ticket.get_status_color()
         })
     except User.DoesNotExist:
-        return JsonResponse({'success': False, 'error': 'Usuario no encontrado o no es personal del staff.'}, status=404)
+        return JsonResponse(
+            {'success': False, 'error': 'Usuario no encontrado o no es personal del staff.'},
+            status=404,
+        )
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
@@ -422,10 +459,10 @@ def check_ticket_status(request):
                 ticket = Ticket.objects.get(ticket_id=ticket_id_input, requester_email=email)
             else:
                 # Si tiene 12 o menos caracteres, buscar por los últimos 12 caracteres del ticket_id
-                # El ticket_id es un UUID, que en DB se guarda como tal. 
+                # El ticket_id es un UUID, que en DB se guarda como tal.
                 # Usamos __endswith para buscar el final del string representado.
                 ticket = Ticket.objects.get(ticket_id__endswith=ticket_id_input, requester_email=email)
-            
+
             return redirect('ticket_detail', ticket_id=ticket.ticket_id)
         except (Ticket.DoesNotExist, ValueError):
             messages.error(request, 'No se encontró ningún ticket con esa combinación de ID y correo electrónico.')
@@ -453,7 +490,12 @@ def tickets_list(request):
         messages.error(request, 'No tienes permiso para acceder a esta página.')
         return redirect('home')
 
-    tickets_qs = Ticket.objects.all().order_by('-created_at')
+    tickets_qs = Ticket.objects.select_related('assigned_to').order_by('-created_at')
+
+    # Filtro por estado (usado por los enlaces del dashboard: ?status=open/in_process/closed)
+    status = request.GET.get('status')
+    if status in [Ticket.OPEN, Ticket.IN_PROCESS, Ticket.CLOSED]:
+        tickets_qs = tickets_qs.filter(status=status)
 
     # Paginación
     page_number = request.GET.get('page') or 1

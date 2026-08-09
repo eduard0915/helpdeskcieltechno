@@ -1,11 +1,15 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
-from django.contrib.auth import login, authenticate
-from django.urls import reverse
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import UserRegistrationForm, UserProfileForm, StaffUserCreationForm, StaffUserUpdateForm
+from .forms import (
+    StaffUserCreationForm,
+    StaffUserUpdateForm,
+    UserProfileForm,
+    UserRegistrationForm,
+)
 from .models import UserProfile
 
 def register(request):
@@ -49,8 +53,14 @@ def is_staff_user(user):
     """Check if user is staff"""
     return user.is_staff
 
+
+def is_superuser(user):
+    """Check if user is superuser (management de staff restringida)"""
+    return user.is_superuser
+
+
 @login_required
-@user_passes_test(is_staff_user)
+@user_passes_test(is_superuser)
 def staff_user_list(request):
     """View for listing staff users"""
     users = User.objects.filter(is_staff=True)
@@ -60,7 +70,7 @@ def staff_user_list(request):
     })
 
 @login_required
-@user_passes_test(is_staff_user)
+@user_passes_test(is_superuser)
 def staff_user_create(request):
     """View for creating staff users"""
     if request.method == 'POST':
@@ -89,12 +99,17 @@ def staff_user_create(request):
     })
 
 @login_required
-@user_passes_test(is_staff_user)
+@user_passes_test(is_superuser)
 def staff_user_update(request, pk):
     """View for updating staff users"""
     # Get the UserProfile by UUID and then get the associated User
     profile = get_object_or_404(UserProfile, profile_uuid=pk)
     user = profile.user
+
+    # Evitar que un superusuario se modifique a sí mismo
+    if user == request.user:
+        messages.error(request, 'No puedes modificar tu propio usuario desde aquí.')
+        return redirect('staff_user_list')
 
     if request.method == 'POST':
         form = StaffUserUpdateForm(request.POST, instance=user)
@@ -119,12 +134,17 @@ def staff_user_update(request, pk):
     })
 
 @login_required
-@user_passes_test(is_staff_user)
+@user_passes_test(is_superuser)
 def staff_user_delete(request, pk):
     """View for deleting staff users"""
     # Get the UserProfile by UUID and then get the associated User
     profile = get_object_or_404(UserProfile, profile_uuid=pk)
     user = profile.user
+
+    # Evitar que un superusuario se elimine a sí mismo
+    if user == request.user:
+        messages.error(request, 'No puedes eliminar tu propio usuario.')
+        return redirect('staff_user_list')
 
     if request.method == 'POST':
         user.delete()

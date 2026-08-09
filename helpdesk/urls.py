@@ -14,13 +14,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.urls import path, include
+
 from tickets import views as ticket_views
-from django.views.defaults import page_not_found, server_error, bad_request
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,7 +30,7 @@ urlpatterns = [
 
     # Authentication URLs
     path('login/', ticket_views.CustomLoginView.as_view(template_name='tickets/auth/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='tickets/auth/login.html'), name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='tickets/auth/logout.html'), name='logout'),
 
     # Password Reset URLs
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
@@ -41,12 +41,8 @@ urlpatterns = [
 
 # Add static and media file handling in development
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-else:
-    # Serve media files in production if not using S3
-    if not settings.AWS_STORAGE_BUCKET_NAME:
-         urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# En producción los estáticos los sirve Whitenoise y media depende de storage (S3 si está configurado).
 
 # Error handlers
 handler404 = 'helpdesk.views.handler404'

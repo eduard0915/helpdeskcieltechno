@@ -11,7 +11,7 @@
 <div class="ui-card mb-5">
     <div class="card-body p-0 overflow-x-auto">
         {% if tickets %}
-            <table class="table table-hover align-middle mb-0 small">
+            <table class="table table-hover align-middle mb-0 small table-sticky">
                 <thead class="bg-light text-muted fw-bold">
                     <tr>
                         <th class="ps-4">ID</th>
@@ -27,7 +27,7 @@
                     {% for ticket in tickets %}
                     <tr>
                         <td class="ps-4"><code>{{ ticket.short_id }}</code></td>
-                        <td class="fw-semibold">{{ ticket.subject|truncatechars:40 }}</td>
+                        <td class="fw-semibold"><span title="{{ ticket.subject }}">{{ ticket.subject|truncatechars:50 }}</span></td>
                         <td>{{ ticket.requester_name }}</td>
                         <td>
                             <span class="badge bg-{{ ticket.get_priority_color }}">
@@ -42,7 +42,7 @@
                         <td class="text-nowrap">{{ ticket.created_at|date:"d/m/Y" }}</td>
                         <td class="text-end pe-4">
                             <div class="btn-group">
-                                <a href="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="btn btn-sm btn-outline-primary" title="Ver Detalles">
+                                <a href="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="btn btn-sm btn-outline-primary" title="Ver Detalles" aria-label="Ver detalles del ticket {{ ticket.short_id }}">
                                     <i class="bi bi-eye"></i>
                                 </a>
                                 {% if ticket.status != 'closed' %}
@@ -53,7 +53,7 @@
                                         <input type="hidden" name="status" value="in_process">
                                         <input type="hidden" name="priority" value="{{ ticket.priority }}">
                                         <input type="hidden" name="assigned_to" value="{{ user.id }}">
-                                        <button type="submit" class="btn btn-sm btn-outline-primary ms-1" title="Iniciar Gestión">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary ms-1" title="Iniciar Gestión" aria-label="Iniciar gestión del ticket {{ ticket.short_id }}">
                                             <i class="bi bi-play-fill"></i>
                                         </button>
                                     </form>
@@ -64,7 +64,7 @@
                                         <input type="hidden" name="status" value="closed">
                                         <input type="hidden" name="priority" value="{{ ticket.priority }}">
                                         <input type="hidden" name="assigned_to" value="{{ user.id }}">
-                                        <button type="submit" class="btn btn-sm btn-outline-success ms-1" title="Cerrar Ticket">
+                                        <button type="submit" class="btn btn-sm btn-outline-success ms-1" title="Cerrar Ticket" aria-label="Cerrar el ticket {{ ticket.short_id }}">
                                             <i class="bi bi-check-lg"></i>
                                         </button>
                                     </form>
@@ -97,7 +97,7 @@
             <div class="card-body p-4">
                 <div class="d-flex flex-column gap-3">
                     <div class="d-flex align-items-center">
-                        <span class="badge bg-secondary me-3" style="width: 80px;">Normal</span>
+                        <span class="badge bg-info me-3" style="width: 80px;">Normal</span>
                         <small class="text-muted">Respuesta en 48 horas</small>
                     </div>
                     <div class="d-flex align-items-center">

@@ -89,7 +89,7 @@
             <div><span class="label">Prioridad:</span> <span class="value">{{ ticket.get_priority_display }}</span>
             </div>
             <div><span class="label">Estado:</span> <span class="value">{{ ticket.get_status_display }}</span></div>
-            <div><span class="label">Fecha de creación:</span> <span class="value">{{ ticket.created_at }}</span></div>
+            <div><span class="label">Fecha de creación:</span> <span class="value">{{ ticket.created_at|date:"d/m/Y H:i" }}</span></div>
         </div>
 
         <div class="section">

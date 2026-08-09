@@ -42,7 +42,7 @@
 <div class="ui-card">
     <div class="card-body p-0 overflow-x-auto">
         {% if tickets %}
-            <table class="table table-hover align-middle mb-0 small">
+            <table class="table table-hover align-middle mb-0 small table-sticky">
                 <thead class="bg-light text-muted fw-bold">
                     <tr>
                         <th class="ps-4">N° de Ticket</th>
@@ -59,7 +59,7 @@
                     {% for ticket in tickets %}
                     <tr>
                         <td class="ps-4"><code>{{ ticket.short_id }}</code></td>
-                        <td class="fw-semibold">{{ ticket.subject|truncatechars:40 }}</td>
+                        <td class="fw-semibold"><span title="{{ ticket.subject }}">{{ ticket.subject|truncatechars:50 }}</span></td>
                         <td>{{ ticket.requester_name }}</td>
                         <td>
                             <span class="badge bg-{{ ticket.get_priority_color }}">
@@ -81,21 +81,21 @@
                         </td>
                         <td class="text-end pe-4">
                             <div class="btn-group">
-                                <a href="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="btn btn-sm btn-outline-primary" title="Ver Detalles">
+                                <a href="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="btn btn-sm btn-outline-primary" title="Ver Detalles" aria-label="Ver detalles del ticket {{ ticket.short_id }}">
                                     <i class="bi bi-eye"></i>
                                 </a>
                                 {% if not ticket.assigned_to %}
                                 <button type="button" class="btn btn-sm btn-outline-success ms-1 btn-assign-me" 
                                         data-ticket-id="{{ ticket.ticket_id }}" 
                                         data-short-id="{{ ticket.short_id }}"
-                                        title="Asignar a mí">
+                                        title="Asignar a mí" aria-label="Asignarme el ticket {{ ticket.short_id }}">
                                     <i class="bi bi-person-check"></i>
                                 </button>
                                 {% if user.is_superuser %}
                                 <button type="button" class="btn btn-sm btn-outline-info ms-1 btn-assign-other" 
                                         data-ticket-id="{{ ticket.ticket_id }}" 
                                         data-short-id="{{ ticket.short_id }}"
-                                        title="Asignar a otro">
+                                        title="Asignar a otro" aria-label="Asignar el ticket {{ ticket.short_id }} a otro usuario">
                                     <i class="bi bi-people"></i>
                                 </button>
                                 {% endif %}
@@ -115,13 +115,15 @@
     </div>
 </div>
 
+<div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
 <!-- Modales de Asignación -->
 <div class="modal fade" id="assignMeModal" tabindex="-1" aria-labelledby="assignMeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="assignMeModalLabel">Confirmar Asignación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 ¿Está seguro de asignarse el ticket <strong id="assignMeTicketId"></strong>?
@@ -140,16 +142,17 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="assignOtherModalLabel">Asignar Ticket a Staff</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 <p>Seleccione un usuario para asignar el ticket <strong id="assignOtherTicketId"></strong>:</p>
-                <input class="form-control" list="staffUsersList" id="staffUserSelect" placeholder="Escriba para buscar usuario...">
-                <datalist id="staffUsersList">
+                <label for="staffUserSelect" class="form-label fw-semibold">Usuario de soporte</label>
+                <select class="form-select" id="staffUserSelect">
+                    <option value="">— Seleccione un usuario —</option>
                     {% for staff_user in staff_users %}
-                    <option data-value="{{ staff_user.id }}" value="{{ staff_user.get_full_name|default:staff_user.username }} ({{ staff_user.username }})"></option>
+                    <option value="{{ staff_user.id }}">{{ staff_user.get_full_name|default:staff_user.username }} ({{ staff_user.username }})</option>
                     {% endfor %}
-                </datalist>
+                </select>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -192,24 +195,36 @@ document.addEventListener('DOMContentLoaded', function() {
     // Confirmar asignar a otro
     if (document.getElementById('confirmAssignOther')) {
         document.getElementById('confirmAssignOther').addEventListener('click', function() {
-            const input = document.getElementById('staffUserSelect');
-            const val = input.value;
-            const opts = document.getElementById('staffUsersList').options;
-            let userId = null;
-
-            for (let i = 0; i < opts.length; i++) {
-                if (opts[i].value === val) {
-                    userId = opts[i].dataset.value;
-                    break;
-                }
-            }
+            const select = document.getElementById('staffUserSelect');
+            const userId = select.value;
 
             if (!userId) {
-                alert('Por favor seleccione un usuario válido de la lista');
+                showToast('warning', 'Por favor seleccione un usuario válido de la lista');
                 return;
             }
             performAssignment(currentTicketId, userId, assignOtherModal);
         });
+    }
+
+    // Toast helper
+    function showToast(type, message) {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+        const colors = { success: 'text-bg-success', danger: 'text-bg-danger', warning: 'text-bg-warning', info: 'text-bg-info' };
+        const el = document.createElement('div');
+        el.className = `toast align-items-center border-0 ${colors[type] || 'text-bg-info'}`;
+        el.setAttribute('role', 'alert');
+        el.setAttribute('aria-live', 'assertive');
+        el.setAttribute('aria-atomic', 'true');
+        el.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">${message}</div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+            </div>`;
+        container.appendChild(el);
+        const toast = new bootstrap.Toast(el, { delay: 4000 });
+        toast.show();
+        el.addEventListener('hidden.bs.toast', () => el.remove());
     }
 
     function performAssignment(ticketId, userId, modal) {
@@ -243,15 +258,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 const assignButtons = actionsCell.querySelectorAll('.btn-assign-me, .btn-assign-other');
                 assignButtons.forEach(btn => btn.remove());
 
-                // Opcional: mostrar mensaje de éxito
-                alert(data.message);
+                showToast('success', data.message || 'Ticket asignado correctamente');
             } else {
-                alert('Error: ' + data.error);
+                showToast('danger', 'Error: ' + data.error);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Ocurrió un error al procesar la solicitud');
+            showToast('danger', 'Ocurrió un error al procesar la solicitud');
         });
     }
 });

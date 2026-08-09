@@ -16,7 +16,7 @@
 <div class="row g-4 mb-5">
     <!-- Resumen de Tickets -->
     <div class="col-md-3">
-        <div class="ui-card h-100 p-4 border-start border-4 border-secondary shadow-sm">
+        <div class="ui-card stat-card h-100 p-4 border-start border-4 border-secondary shadow-sm">
             <div class="d-flex align-items-center justify-content-between mb-2">
                 <h6 class="text-muted mb-0">Tickets Abiertos</h6>
                 <i class="bi bi-inbox text-secondary fs-4"></i>
@@ -29,7 +29,7 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="ui-card h-100 p-4 border-start border-4 border-primary shadow-sm">
+        <div class="ui-card stat-card h-100 p-4 border-start border-4 border-primary shadow-sm">
             <div class="d-flex align-items-center justify-content-between mb-2">
                 <h6 class="text-primary mb-0">En Proceso</h6>
                 <i class="bi bi-hourglass-split text-primary fs-4"></i>
@@ -42,7 +42,7 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="ui-card h-100 p-4 border-start border-4 border-success shadow-sm">
+        <div class="ui-card stat-card h-100 p-4 border-start border-4 border-success shadow-sm">
             <div class="d-flex align-items-center justify-content-between mb-2">
                 <h6 class="text-success mb-0">Cerrados</h6>
                 <i class="bi bi-check-circle text-success fs-4"></i>
@@ -55,7 +55,7 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="ui-card h-100 p-4 border-start border-4 border-dark shadow-sm bg-dark text-white">
+        <div class="ui-card stat-card h-100 p-4 border-start border-4 border-dark shadow-sm bg-dark text-white">
             <div class="d-flex align-items-center justify-content-between mb-2">
                 <h6 class="text-light mb-0">Total Tickets</h6>
                 <i class="bi bi-bar-chart text-light fs-4"></i>
@@ -79,7 +79,7 @@
                 </div>
                 <div>
                     <h6 class="mb-0 fw-bold small">Promedio Normal</h6>
-                    <small class="text-muted" style="font-size: .6rem;">(Meta: 48 horas)</small>
+                    <small class="text-muted stat-meta">(Meta: 48 horas)</small>
                 </div>
             </div>
             <h3 class="fw-bold text-dark mb-0">{{ avg_by_priority.normal }}</h3>
@@ -93,7 +93,7 @@
                 </div>
                 <div>
                     <h6 class="mb-0 fw-bold small">Promedio Prioritario</h6>
-                    <small class="text-muted" style="font-size: .6rem;">(Meta: 24 horas)</small>
+                    <small class="text-muted stat-meta">(Meta: 24 horas)</small>
                 </div>
             </div>
             <h3 class="fw-bold text-warning mb-0">{{ avg_by_priority.priority }}</h3>
@@ -107,7 +107,7 @@
                 </div>
                 <div>
                     <h6 class="mb-0 fw-bold small">Promedio Urgente</h6>
-                    <small class="text-muted" style="font-size: .6rem;">(Meta: 8 horas)</small>
+                    <small class="text-muted stat-meta">(Meta: 8 horas)</small>
                 </div>
             </div>
             <h3 class="fw-bold text-danger mb-0">{{ avg_by_priority.urgent }}</h3>

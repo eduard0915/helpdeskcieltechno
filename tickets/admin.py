@@ -10,12 +10,12 @@ class TicketCommentInline(admin.TabularInline):
 
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
-    list_display = ('short_id_display', 'subject', 'requester_name', 'requester_email', 
+    list_display = ('short_id_display', 'subject', 'requester_name', 'requester_email',
                     'priority_colored', 'status_colored', 'created_at', 'assigned_to')
     list_filter = ('status', 'priority', 'created_at', 'assigned_to')
     search_fields = ('subject', 'description', 'requester_name', 'requester_email', 'ticket_id')
     readonly_fields = ('ticket_id', 'created_at', 'updated_at', 'closed_at', 'resolution_time')
-    
+
     def short_id_display(self, obj):
         return obj.short_id
     short_id_display.short_description = 'Ticket ID'

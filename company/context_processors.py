@@ -1,16 +1,23 @@
+from django.core.cache import cache
+from django.db.utils import OperationalError
+
 from .models import Company
+
+CACHE_KEY = 'company_info'
+CACHE_TIMEOUT = 300
 
 
 def company_info(request):
     """
     Context processor to make company information available in all templates
     """
-    try:
-        # Try to get the company information
-        company = Company.objects.first()
-        return {
-            'company': company
-        }
-    except:
-        # Return an empty dict if there's an error (e.g., table doesn't exist yet)
-        return {'company': None}
+    company = cache.get(CACHE_KEY)
+    if company is None:
+        try:
+            company = Company.objects.first()
+            if company:
+                cache.set(CACHE_KEY, company, CACHE_TIMEOUT)
+        except (OperationalError, Company.DoesNotExist):
+            # La tabla puede no existir todavía (primer arranque / migraciones)
+            company = None
+    return {'company': company}

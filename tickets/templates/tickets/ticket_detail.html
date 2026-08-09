@@ -93,6 +93,7 @@
                     {% endif %}
 
                     <div class="mt-4 pt-4 border-top">
+                        {% if user.is_authenticated %}
                         <form method="post">
                             {% csrf_token %}
                             <input type="hidden" name="comment_submit" value="1">
@@ -107,6 +108,13 @@
                                 <i class="bi bi-chat-left-text me-2"></i> Guardar Comentario
                             </button>
                         </form>
+                        {% else %}
+                        <p class="text-muted small mb-0">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Inicia sesión para comentar o actualizar tu ticket.
+                            <a href="{% url 'login' %}">Iniciar sesión</a>
+                        </p>
+                        {% endif %}
                     </div>
                 </div>
             </div>

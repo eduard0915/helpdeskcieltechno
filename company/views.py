@@ -1,11 +1,10 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import DetailView, CreateView, UpdateView
-from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DetailView, UpdateView
 
-from .models import Company
 from .forms import CompanyForm
+from .models import Company
 
 class StaffRequiredMixin(UserPassesTestMixin):
     """Mixin to require staff status for views"""

@@ -1,7 +1,7 @@
 import os
-from pathlib import Path
 
 import dj_database_url
+from django.contrib.messages import constants as messages
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG')
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.run.app']
 
@@ -32,6 +32,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # Archivos estáticos
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -60,22 +61,31 @@ TEMPLATES = [
 WSGI_APPLICATION = 'helpdesk.wsgi.application'
 
 
-# Database
+# Base de datos
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# En desarrollo se usa DATABASE_TEST; en producción DATABASE_URL.
+# Se evita que una variable DATABASE_URL presente en local conecte silenciosamente a producción.
 
-DATABASES = {
-    'dev': dj_database_url.config(
-        default=config('DATABASE_TEST')
-    ),
-    'production': dj_database_url.config(
-        default=config('DATABASE_URL')
-    )
-}
+if DEBUG:
+    db_url = config('DATABASE_TEST', default=None)
+else:
+    db_url = config('DATABASE_URL', default=None)
 
-DATABASES['default'] = DATABASES['dev' if DEBUG else 'production']
-
-db_from_env = dj_database_url.config()
-DATABASES['default'].update(db_from_env)
+if db_url:
+    DATABASES = {
+        'default': dj_database_url.parse(
+            db_url,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 CONN_MAX_AGE = 600
 CONN_HEALTH_CHECKS = True
@@ -99,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'es-col'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'America/Bogota'
 
@@ -131,13 +141,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_HOST = config('EMAIL_HOST', default='localhost')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('MAIL_PASSWORD')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
- 
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('MAIL_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@localhost')
 # Email de soporte técnico
 SUPPORT_EMAIL = config('SUPPORT_EMAIL', default=None)
 
@@ -182,9 +191,29 @@ else:
     # En desarrollo usamos la URL de medios local
     MEDIA_URL = '/media/'
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = [
-    'http://127.0.0.1:8000/',
-    'http://localhost:8000/',
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
     'https://*.run.app',
 ]
+
+# Elimina campos irrelevantes de la Lista de Mensajes Flash y alinea con Bootstrap 5.
+MESSAGE_TAGS = {
+    messages.DEBUG: 'secondary',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',
+}
+
+# Seguridad de transporte y cookies
+# Se activan automáticamente cuando DEBUG=False, permitiendo sobreescribir por env si es necesario.
+SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=not DEBUG, cast=bool)
+SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=not DEBUG, cast=bool)
+CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=not DEBUG, cast=bool)
+SECURE_HSTS_SECONDS = config('SECURE_HSTS_SECONDS', default=0 if DEBUG else 31536000, cast=int)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = 'same-origin'
+X_FRAME_OPTIONS = 'DENY'

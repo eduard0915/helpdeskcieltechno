@@ -1,0 +1,15 @@
+{% load forms_extra %}
+<div class="{{ field_classes|default:'' }} mb-3">
+    {% if not hide_label %}
+    <label for="{{ field.id_for_label }}" class="form-label fw-semibold {% if field.field.required %}required{% endif %}">{{ field.label }}</label>
+    {% endif %}
+    {{ field|invalid_class }}
+    {% if field.help_text %}
+        <div class="form-text small">{{ field.help_text }}</div>
+    {% endif %}
+    {% for error in field.errors %}
+        <div class="invalid-feedback d-block">
+            <i class="bi bi-exclamation-circle me-1"></i>{{ error|striptags }}
+        </div>
+    {% endfor %}
+</div>

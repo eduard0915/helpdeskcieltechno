@@ -15,7 +15,10 @@ class UserAdmin(BaseUserAdmin):
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'get_is_client')
 
     def get_is_client(self, obj):
-        return obj.profile.is_client
+        try:
+            return obj.profile.is_client
+        except UserProfile.DoesNotExist:
+            return False
     get_is_client.short_description = 'Is Client'
     get_is_client.boolean = True
 

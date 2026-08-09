@@ -13,7 +13,7 @@
 <div class="ui-card">
     <div class="card-body p-0 overflow-x-auto">
         {% if tickets %}
-            <table class="table table-hover align-middle mb-0 small">
+            <table class="table table-hover align-middle mb-0 small table-sticky">
                 <thead class="bg-light text-muted fw-bold">
                     <tr>
                         <th class="ps-4">N° de Ticket</th>
@@ -29,7 +29,7 @@
                     {% for ticket in tickets %}
                     <tr>
                         <td class="ps-4"><code>{{ ticket.short_id }}</code></td>
-                        <td class="fw-semibold">{{ ticket.subject }}</td>
+                        <td class="fw-semibold"><span title="{{ ticket.subject }}">{{ ticket.subject|truncatechars:50 }}</span></td>
                         <td>
                             <span class="badge bg-{{ ticket.get_status_color }}">
                                 {{ ticket.get_status_display }}
@@ -43,7 +43,7 @@
                         <td class="text-nowrap">{{ ticket.created_at|date:"d/m/Y H:i" }}</td>
                         <td class="text-nowrap">{{ ticket.updated_at|date:"d/m/Y H:i" }}</td>
                         <td class="text-end pe-4">
-                            <a href="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="btn btn-sm btn-outline-primary">
+                            <a href="{% url 'ticket_detail' ticket_id=ticket.ticket_id %}" class="btn btn-sm btn-outline-primary" aria-label="Ver detalle del ticket {{ ticket.short_id }}">
                                 <i class="bi bi-eye"></i>
                             </a>
                         </td>

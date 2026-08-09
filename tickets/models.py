@@ -1,8 +1,8 @@
-from django.db import models
-from django.contrib.auth.models import User
-from django.utils import timezone
 import uuid
-import os
+
+from django.contrib.auth.models import User
+from django.db import models
+from django.utils import timezone
 
 class Ticket(models.Model):
     # Priority levels
@@ -49,8 +49,14 @@ class Ticket(models.Model):
 
     # Relationships
     requester_name = models.CharField(max_length=100)
-    requester_email = models.EmailField()
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_tickets')
+    requester_email = models.EmailField(db_index=True)
+    assigned_to = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='assigned_tickets',
+    )
 
     def save(self, *args, **kwargs):
         # If status is changed to CLOSED, set closed_at time and calculate resolution_time
@@ -69,11 +75,11 @@ class Ticket(models.Model):
         """Returns a friendly string for resolution time"""
         if not self.resolution_time:
             return None
-        
+
         days = self.resolution_time.days
         hours = self.resolution_time.seconds // 3600
         minutes = (self.resolution_time.seconds % 3600) // 60
-        
+
         parts = []
         if days > 0:
             parts.append(f"{days} día{'s' if days != 1 else ''}")
@@ -81,7 +87,7 @@ class Ticket(models.Model):
             parts.append(f"{hours} hora{'s' if hours != 1 else ''}")
         if minutes > 0 or not parts:
             parts.append(f"{minutes} minuto{'s' if minutes != 1 else ''}")
-        
+
         return ", ".join(parts)
 
     @property
@@ -89,11 +95,11 @@ class Ticket(models.Model):
         """Devuelve la URL absoluta del archivo adjunto"""
         if not self.attachment:
             return None
-        
+
         url = self.attachment.url
         if url.startswith('http'):
             return url
-        
+
         from django.conf import settings
         site_url = getattr(settings, 'SITE_URL', '').rstrip('/')
         return f"{site_url}{url}"
@@ -141,7 +147,10 @@ class TicketComment(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     author_name = models.CharField(max_length=100)  # For non-user commenters
     content = models.TextField()
-    is_progress_update = models.BooleanField(default=False, help_text="Si este comentario es una actualización de progreso")
+    is_progress_update = models.BooleanField(
+        default=False,
+        help_text="Si este comentario es una actualización de progreso",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

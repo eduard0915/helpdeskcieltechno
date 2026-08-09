@@ -21,16 +21,30 @@ body{
 
 /* HEADER */
 .top-header{
-  height:var(--header-h);
+  min-height:var(--header-h);
   background:var(--primary);
   color:#fff;
   position:fixed;
   top:0;left:0;right:0;
   z-index:1030;
+  box-shadow:0 2px 6px rgba(0,0,0,.18);
+}
+
+.top-header .navbar{
+  min-height:var(--header-h);
+  padding:.35rem 1rem;
+}
+
+.top-header .navbar-brand{
   display:flex;
   align-items:center;
-  padding:0 1.25rem;
-  box-shadow:0 2px 6px rgba(0,0,0,.18);
+  font-size:1.05rem;
+  font-weight:600;
+  letter-spacing:.5px;
+}
+
+.top-header .navbar-toggler:focus{
+  box-shadow:none;
 }
 
 .brand{font-size:1.15rem;font-weight:600;letter-spacing:.5px;}
@@ -40,6 +54,24 @@ body{
   font-size:.9rem;
   padding:.35rem .7rem;
   margin-left:.25rem;
+  white-space:nowrap;
+}
+
+.btn-header:focus-visible{
+  outline:2px solid #fff;
+  outline-offset:2px;
+}
+
+/* En móvil, el menú colapsable se apila sobre el fondo del header */
+@media (max-width: 991.98px){
+  .top-header{height:auto;}
+  .top-header .navbar-collapse{
+    background:var(--primary);
+    border-radius:.45rem;
+    margin-top:.5rem;
+    padding:.5rem;
+  }
+  .btn-header{width:100%;margin-left:0;}
 }
 
 /* CARDS & UI COMPONENTS */
@@ -120,4 +152,63 @@ footer {
 @media (max-width:576px){
   .ui-header{padding:.6rem .8rem;}
   .card-body.p-3{padding:.5rem !important;}
+}
+
+/* TABLAS CON CABECERA FIJA */
+.table-sticky thead th{
+  position:sticky;
+  top:0;
+  background:#fff;
+  box-shadow:inset 0 -1px 0 rgba(13,27,42,.1);
+  z-index:1;
+}
+
+.table-sticky tbody tr{vertical-align:middle;}
+
+/* ICONOS DE PÁGINAS DE ESTADO / ERROR */
+.error-icon{font-size:5rem;line-height:1;}
+.error-icon-lg{font-size:3rem;}
+.icon-display{font-size:2.5rem;}
+
+/* TOASTS */
+.toast-container{z-index:2005;}
+
+/* KPI DASHBOARD */
+.stat-card .stat-value{font-size:1.9rem;font-weight:700;}
+.stat-card .stat-label{font-size:.8rem;color:var(--muted);}
+.stat-meta{font-size:.7rem;}
+
+/* LEYENDAS DE PRIORIDAD / ESTADO */
+.legend{
+  margin-bottom:1rem;
+  display:flex;
+  flex-wrap:wrap;
+  gap:.5rem;
+}
+
+.legend-item{
+  display:inline-flex;
+  align-items:center;
+  gap:.35rem;
+  font-size:.78rem;
+  color:var(--muted);
+}
+
+.legend-badge{min-width:80px;}
+
+/* FOCO VISIBLE ACCESIBLE EN TABLAS */
+.table a:focus-visible,
+.table button:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:2px;
+}
+
+/* Mensajes flash */
+.vi-messages .alert{
+  border-radius:.6rem;
+}
+
+/* Botonera de tablas en móvil muy pequeño */
+@media (max-width:576px){
+  .btn-group-sm .btn{font-size:.8rem;padding:.3rem .45rem;}
 }

@@ -32,5 +32,7 @@ class Company(models.Model):
     @classmethod
     def get_solo(cls):
         """Get the first company record or create one if none exists"""
-        obj, created = cls.objects.get_or_create(pk=cls.objects.first().pk if cls.objects.exists() else None)
-        return obj
+        company = cls.objects.first()
+        if company:
+            return company
+        return cls.objects.create(name='Mi Empresa')
