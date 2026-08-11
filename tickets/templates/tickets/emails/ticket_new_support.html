@@ -106,7 +106,7 @@
         {% if ticket.attachment %}
             <div class="section">
                 <h3>Adjunto</h3>
-                <div><span class="label">Archivo:</span> <span class="value"><a href="{{ ticket.attachment_url }}">{{ ticket.attachment.name }}</a></span></div>
+                <a class="button" href="{{ ticket.attachment_url }}" target="_blank" rel="noopener">Ver Archivo Adjunto</a>
             </div>
         {% endif %}
 

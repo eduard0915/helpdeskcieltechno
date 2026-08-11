@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="da82b7d1-016a-48cf-b328-4810ba114f0a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/help.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/help.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpdesk/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/helpdesk/urls.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,7 +14,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="112" />
+    <option name="cachedIndexableFilesCount" value="119" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -40,6 +39,65 @@
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.816778813877101" />
+      <entry key="MS500" value="4.485012303497408" />
+      <entry key="S2" value="7.950924493682219" />
+      <entry key="S5" value="10.92721316198794" />
+      <entry key="S10" value="16.323741451967074" />
+      <entry key="S30" value="38.750264387726816" />
+      <entry key="S60" value="54.95431311431265" />
+      <entry key="M2" value="66.73263027362486" />
+      <entry key="M5" value="75.41112888454478" />
+      <entry key="M10" value="78.62469739863843" />
+      <entry key="M15" value="79.76844878218482" />
+      <entry key="M30" value="81.34640235938764" />
+      <entry key="H1" value="83.44430636748211" />
+      <entry key="H2" value="85.94008026099856" />
+      <entry key="H4" value="88.01340683455925" />
+      <entry key="D1" value="90.422315918013" />
+      <entry key="W1" value="90.9152566378676" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="2.3074098405724513E-24" />
+      <entry key="MS500" value="1.877227494106138E-5" />
+      <entry key="S2" value="0.0797984686657508" />
+      <entry key="S5" value="0.518084050024611" />
+      <entry key="S10" value="1.0061459340330379" />
+      <entry key="S30" value="1.5864477807744262" />
+      <entry key="S60" value="1.7806710185289936" />
+      <entry key="M2" value="1.8869951003178342" />
+      <entry key="M5" value="1.9540633965082608" />
+      <entry key="M10" value="1.9962845435559813" />
+      <entry key="M15" value="2.0992998789698056" />
+      <entry key="M30" value="2.6697976031262094" />
+      <entry key="H1" value="3.6423850677272247" />
+      <entry key="H2" value="4.564195307870239" />
+      <entry key="H4" value="5.2028618819342425" />
+      <entry key="D1" value="5.854576998424086" />
+      <entry key="W1" value="5.978894857551575" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="1.778484608502924" />
+      <entry key="MS500" value="4.422876805739481" />
+      <entry key="S2" value="7.863985298056409" />
+      <entry key="S5" value="11.25966177671933" />
+      <entry key="S10" value="17.186142797226687" />
+      <entry key="S30" value="40.26944366618052" />
+      <entry key="S60" value="56.697915364150695" />
+      <entry key="M2" value="68.60010488851464" />
+      <entry key="M5" value="77.3571264780014" />
+      <entry key="M10" value="80.61683946543708" />
+      <entry key="M15" value="81.86476376233016" />
+      <entry key="M30" value="84.01407243253888" />
+      <entry key="H1" value="87.0850831861928" />
+      <entry key="H2" value="90.50321274914907" />
+      <entry key="H4" value="93.21564754850615" />
+      <entry key="D1" value="96.2767741055776" />
+      <entry key="W1" value="96.89413410569828" />
+    </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0,
@@ -91,6 +149,7 @@
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="DJANGO_SETTINGS_MODULE" value="helpdesk.settings" />
       </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="" />
@@ -134,6 +193,9 @@
       <workItem from="1778812941202" duration="2260000" />
       <workItem from="1779669860725" duration="659000" />
       <workItem from="1785904383829" duration="25000" />
+      <workItem from="1786250615565" duration="7626000" />
+      <workItem from="1786362235674" duration="2526000" />
+      <workItem from="1786428717299" duration="2688000" />
     </task>
     <servers />
   </component>

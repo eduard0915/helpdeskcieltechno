@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import PasswordResetForm as DjangoPasswordResetForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -50,6 +51,19 @@ class UserProfileForm(BootstrapFormMixin, forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['phone_number'].widget.attrs.update({'placeholder': 'Ej. +57 000 000 0000'})
         self.fields['company'].widget.attrs.update({'placeholder': 'Ej. Mi Empresa S.A.'})
+
+class PasswordResetForm(BootstrapFormMixin, DjangoPasswordResetForm):
+    """Formulario de recuperación de contraseña que valida que el correo
+    corresponda a un usuario existente y activo."""
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email', '').strip().lower()
+        users = User.objects.filter(email__iexact=email)
+        if not users.exists():
+            raise forms.ValidationError('No existe ninguna cuenta registrada con este correo electrónico.')
+        if not users.filter(is_active=True).exists():
+            raise forms.ValidationError('La cuenta asociada a este correo está inactiva. Contacta al administrador.')
+        return self.cleaned_data['email']
 
 class StaffUserCreationForm(BootstrapFormMixin, UserCreationForm):
     email = forms.EmailField(required=True)

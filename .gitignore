@@ -13,6 +13,8 @@ media
 venv_help/
 staticfiles/
 .idea
+tests
+test
 
 # Los archivos .dockerignore, .agents y skills-lock.json se versionan en el repo
 # (tooling de build y skills del proyecto).

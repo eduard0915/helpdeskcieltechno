@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cambio de Estado del Ticket</title>
+    <title>Ticket Asignado</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,6 +13,7 @@
             margin: 0 auto;
             padding: 20px;
         }
+
         .header {
             background-color: #0d6efd;
             color: white;
@@ -20,25 +21,28 @@
             text-align: center;
             border-radius: 5px 5px 0 0;
         }
+
         .content {
             padding: 20px;
             border: 1px solid #ddd;
             border-top: none;
             border-radius: 0 0 5px 5px;
         }
+
         .ticket-id {
             font-size: 24px;
             font-weight: bold;
             color: #0d6efd;
             margin: 20px 0;
         }
-        .status-box {
+
+        .details {
             background-color: #f8f9fa;
             padding: 15px;
             border-radius: 5px;
             margin: 20px 0;
-            border-left: 4px solid #0d6efd;
         }
+
         a.button {
             display: inline-block;
             background-color: #0d6efd;
@@ -48,6 +52,7 @@
             border-radius: 5px;
             margin-top: 20px;
         }
+
         .footer {
             margin-top: 30px;
             font-size: 12px;
@@ -58,41 +63,43 @@
 </head>
 <body>
 <div class="header">
-    <h1>Actualización de Estado de su Ticket</h1>
+    <h1>Ticket Asignado</h1>
 </div>
 <div class="content">
-    <p>Hola {{ ticket.requester_name }},</p>
+    <p>Hola {{ assigned_user.get_full_name|default:assigned_user.username }},</p>
 
-    <p>El estado de su ticket de soporte técnico ha sido actualizado:</p>
+    <p>Se le ha asignado el siguiente ticket de soporte técnico para su gestión:</p>
 
     <div class="ticket-id">
         Ticket N° {{ ticket.short_id }}
     </div>
 
-    <div class="status-box">
+    <div class="details">
+        <h3>Detalles del Ticket:</h3>
         <p><strong>Asunto:</strong> {{ ticket.subject }}</p>
-        <p><strong>Estado anterior:</strong> {{ old_status }}</p>
-        <p><strong>Nuevo estado:</strong> <strong>{{ ticket.get_status_display }}</strong></p>
+        <p><strong>Prioridad:</strong> {{ ticket.get_priority_display }}</p>
+        <p><strong>Estado:</strong> {{ ticket.get_status_display }}</p>
+        <p><strong>Descripción:</strong> {{ ticket.description|linebreaks }}</p>
+        <p><strong>Solicitante:</strong> {{ ticket.requester_name }} ({{ ticket.requester_email }})</p>
+        <p><strong>Fecha de Creación:</strong> {{ ticket.created_at|date:"d/m/Y H:i" }}</p>
         {% if ticket.attachment %}
             <p><strong>Archivo Adjunto:</strong></p>
             <a href="{{ ticket.attachment_url }}" class="button" target="_blank" rel="noopener">Ver Archivo Adjunto</a>
         {% endif %}
     </div>
 
-    <p>Para ver los detalles completos de su ticket, haga clic en el siguiente enlace:</p>
+    <p>Para gestionar este ticket, haga clic en el siguiente enlace:</p>
 
-    <a href="{{ ticket_url }}" class="button" target="_blank">
-        Ver detalles del Ticket
-    </a>
+    <a href="{{ ticket_url }}" class="button" target="_blank" rel="noopener">Ver ticket asignado</a>
 
-    <p>Gracias por su paciencia.</p>
+    <p>Gracias.</p>
 
     <p>Atentamente,<br>
-        Equipo de Soporte TI-Helpdesk</p>
+        Equipo de Soporte Helpdesk</p>
 </div>
 <div class="footer">
     <p>Este es un mensaje automático. Por favor, no responda directamente a este correo electrónico.</p>
-    <p>&copy; {% now "Y" %} Sistema de Soporte TI-Helpdesk. Todos los derechos reservados.</p>
+    <p>&copy; {% now "Y" %} Sistema de Soporte Helpdesk. Todos los derechos reservados.</p>
 </div>
 </body>
 </html>

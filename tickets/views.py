@@ -300,13 +300,28 @@ def ticket_detail(request, ticket_id):
 
     if is_staff:
         if request.method == 'POST' and 'update_submit' in request.POST:
-            # Capturar el estado antes de que el formulario actualice la instancia
+            # Capturar el estado y el asignado antes de que el formulario actualice la instancia
             old_status = ticket.status
             old_status_display = ticket.get_status_display()
+            old_assigned_to = ticket.assigned_to
 
             update_form = TicketUpdateForm(request.POST, instance=ticket)
             if update_form.is_valid():
                 updated_ticket = update_form.save()
+
+                # Notificar por correo al nuevo usuario asignado si cambió la asignación
+                if (
+                    updated_ticket.assigned_to
+                    and updated_ticket.assigned_to != old_assigned_to
+                ):
+                    try:
+                        send_ticket_assigned_email(updated_ticket, updated_ticket.assigned_to)
+                    except Exception as e:
+                        messages.warning(
+                            request,
+                            'El ticket se ha actualizado, pero no se pudo enviar la notificación '
+                            f'al usuario asignado: {str(e)}',
+                        )
 
                 if old_status != updated_ticket.status:
                     try:
@@ -415,6 +430,19 @@ def assign_ticket(request, ticket_id):
         if ticket.status == Ticket.OPEN:
             ticket.status = Ticket.IN_PROCESS
         ticket.save()
+
+        # Notificar por correo al usuario al que se asignó el ticket
+        try:
+            send_ticket_assigned_email(ticket, assigned_user)
+        except Exception as e:
+            return JsonResponse({
+                'success': True,
+                'message': f'Ticket asignado correctamente a {assigned_user.username}, pero no se pudo enviar la notificación: {str(e)}.',
+                'assigned_to_username': assigned_user.username,
+                'assigned_to_full_name': assigned_user.get_full_name(),
+                'status_display': ticket.get_status_display(),
+                'status_color': ticket.get_status_color()
+            })
 
         return JsonResponse({
             'success': True,
@@ -569,6 +597,33 @@ def send_ticket_to_support_email(ticket):
         plain_message,
         settings.DEFAULT_FROM_EMAIL,
         recipients,
+        html_message=html_message,
+        fail_silently=False,
+    )
+
+def send_ticket_assigned_email(ticket, assigned_user):
+    """Envía por correo al miembro del staff al que se le asignó el ticket."""
+    if not assigned_user or not assigned_user.email:
+        return
+
+    # Construir URL del ticket
+    ticket_url = reverse('ticket_detail', kwargs={'ticket_id': ticket.ticket_id})
+    absolute_url = f"{settings.SITE_URL}{ticket_url}" if hasattr(settings, 'SITE_URL') else ticket_url
+
+    subject = f"Ticket N° {ticket.short_id} asignado — {ticket.subject}"
+
+    html_message = render_to_string('tickets/emails/ticket_assigned.html', {
+        'ticket': ticket,
+        'assigned_user': assigned_user,
+        'ticket_url': absolute_url,
+    })
+    plain_message = strip_tags(html_message)
+
+    send_mail(
+        subject,
+        plain_message,
+        settings.DEFAULT_FROM_EMAIL,
+        [assigned_user.email],
         html_message=html_message,
         fail_silently=False,
     )
