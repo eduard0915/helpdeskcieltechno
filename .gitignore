@@ -15,6 +15,7 @@ staticfiles/
 .idea
 tests
 test
+tests.py
 
 # Los archivos .dockerignore, .agents y skills-lock.json se versionan en el repo
 # (tooling de build y skills del proyecto).
