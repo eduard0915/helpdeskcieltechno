@@ -208,6 +208,7 @@ MESSAGE_TAGS = {
 
 # Seguridad de transporte y cookies
 # Se activan automáticamente cuando DEBUG=False, permitiendo sobreescribir por env si es necesario.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=not DEBUG, cast=bool)
 SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=not DEBUG, cast=bool)
 CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=not DEBUG, cast=bool)
