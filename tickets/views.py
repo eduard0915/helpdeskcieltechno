@@ -248,18 +248,13 @@ def ticket_detail(request, ticket_id):
     """View for displaying ticket details"""
     ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
 
-    # Control de acceso por objeto:
-    # - staff puede ver y gestionar cualquier ticket
-    # - el solicitante autenticado (mismo email) puede ver y comentar su ticket
-    # - un visitante anónimo puede ver el ticket por su UUID (enlace único de los
-    #   correos: modelo de "el enlace es el acceso"), pero NO puede comentar.
+    # Control de acceso por objeto
     is_owner = (
         request.user.is_authenticated
         and request.user.email.lower() == (ticket.requester_email or '').lower()
     )
     is_staff = request.user.is_authenticated and request.user.is_staff
 
-    # Prefetch comments con autor para evitar N+1 queries
     comments = ticket.comments.select_related('author').order_by('created_at')
 
     # Procesamiento del formulario de comentarios (solo solicitante o staff)

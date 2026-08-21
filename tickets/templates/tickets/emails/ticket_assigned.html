@@ -84,7 +84,7 @@
         <p><strong>Fecha de Creación:</strong> {{ ticket.created_at|date:"d/m/Y H:i" }}</p>
         {% if ticket.attachment %}
             <p><strong>Archivo Adjunto:</strong></p>
-            <a href="{{ ticket.attachment_url }}" class="button" target="_blank" rel="noopener">Ver Archivo Adjunto</a>
+            <a href="{{ ticket.attachment.url }}" class="button" target="_blank" rel="noopener">Ver Archivo Adjunto</a>
         {% endif %}
     </div>
 
